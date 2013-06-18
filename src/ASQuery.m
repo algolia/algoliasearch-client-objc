@@ -1,0 +1,167 @@
+/*
+ * Copyright (c) 2013 Algolia
+ * http://www.algolia.com/
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+#import "ASQuery.h"
+#import "ASAPIClient+Network.h"
+
+@implementation ASQuery
+
++(id) queryWithFullTextQuery:(NSString *)fullTextQuery
+{
+    return [[ASQuery alloc] initWithFullTextQuery:fullTextQuery];
+}
+
+-(id) init
+{
+    self = [super init];
+    if (self) {
+        self.minWordSizeForApprox1 = 3;
+        self.minWordSizeForApprox2 = 7;
+        self.getRankingInfo = NO;
+        self.page = 0;
+        self.hitsPerPage = 20;
+        self.attributesToHighlight = nil;
+        self.attributesToRetrieve = nil;
+        self.tags = nil;
+        self.fullTextQuery = nil;
+        self.insideBoundingBox = nil;
+        self.aroundLatLong = nil;
+    }
+    return self;
+}
+
+-(id) initWithFullTextQuery:(NSString *)pfullTextQuery
+{
+    self = [super init];
+    if (self) {
+        self.minWordSizeForApprox1 = 3;
+        self.minWordSizeForApprox2 = 7;
+        self.getRankingInfo = NO;
+        self.page = 0;
+        self.hitsPerPage = 20;
+        self.fullTextQuery = pfullTextQuery;
+        self.attributesToHighlight = nil;
+        self.attributesToRetrieve = nil;
+        self.tags = nil;
+        self.insideBoundingBox = nil;
+        self.aroundLatLong = nil;
+    }
+    return self;
+}
+
+-(ASQuery*) searchAroundLatitude:(float)latitude longitude:(float)longitude maxDist:(NSUInteger)maxDist
+{
+    self.aroundLatLong = [NSString stringWithFormat:@"aroundLatLng=%f,%f&aroundRadius=%zd", latitude, longitude, maxDist];
+    return self;
+}
+
+-(ASQuery*) searchInsideBoundingBoxWithLatitudeP1:(float)latitudeP1 longitudeP1:(float)longitudeP1 latitudeP2:(float)latitudeP2 longitudeP2:(float)longitudeP2
+{
+    self.insideBoundingBox = [NSString stringWithFormat:@"insideBoundingBox=%f,%f,%f,%f", latitudeP1, longitudeP1, latitudeP2, longitudeP2];
+    return self;
+}
+
+-(NSString*) buildURL
+{
+    NSMutableString *stringBuilder = [[NSMutableString alloc] init];
+    if (self.attributesToRetrieve != nil) {
+        [stringBuilder appendString:@"attributes="];
+        BOOL first = YES;
+        for (NSString* attribute in self.attributesToRetrieve) {
+            if (!first)
+                [stringBuilder appendString:@","];
+            [stringBuilder appendString:[ASAPIClient urlEncode:attribute]];
+            first = NO;
+        }
+    }
+    if (self.attributesToHighlight != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"attributesToHighlight="];
+        BOOL first = YES;
+        for (NSString* attribute in self.attributesToHighlight) {
+            if (!first)
+                [stringBuilder appendString:@","];
+            [stringBuilder appendString:[ASAPIClient urlEncode:attribute]];
+            first = NO;
+        }
+    }
+    if (self.minWordSizeForApprox1 != 3) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"minWordSizeForApprox1=%zd", self.minWordSizeForApprox1];
+    }
+    if (self.minWordSizeForApprox2 != 7) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"minWordSizeForApprox2=%zd", self.minWordSizeForApprox2];
+    }
+    if (self.getRankingInfo) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"getRankingInfo=1"];
+    }
+    if (self.page > 0) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"page=%zd", self.page];
+    }
+    if (hitsPerPage != 20 && hitsPerPage > 0) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"hitsPerPage=%zd", self.hitsPerPage];
+    }
+    if (tags != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"tags=%@", [ASAPIClient urlEncode:self.tags]];
+    }
+    if (insideBoundingBox != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:self.insideBoundingBox];
+    } else if (aroundLatLong != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:self.aroundLatLong];
+    }
+    if (self.fullTextQuery != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"query=%@", [ASAPIClient urlEncode:self.fullTextQuery]];
+    }
+    return stringBuilder;
+}
+
+@synthesize attributesToRetrieve;
+@synthesize attributesToHighlight;
+@synthesize tags;
+@synthesize insideBoundingBox;
+@synthesize aroundLatLong;
+@synthesize fullTextQuery;
+@synthesize minWordSizeForApprox1;
+@synthesize minWordSizeForApprox2;
+@synthesize page;
+@synthesize hitsPerPage;
+@synthesize getRankingInfo;
+@end
