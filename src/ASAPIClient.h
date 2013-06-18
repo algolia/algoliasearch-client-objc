@@ -53,7 +53,7 @@
  * { "items": [ {"name": "contacts", "createdAt": "2013-01-18T15:33:13.556Z"},
  *              {"name": "notes", "createdAt": "2013-01-18T15:33:13.556Z"}]}
  */
--(void) listIndexes:(void(^)(id JSON))success
+-(void) listIndexes:(void(^)(NSDictionary* result))success
                     failure:(void(^)(NSString *errorMessage))failure;
 
 /**
@@ -62,7 +62,7 @@
  * @param indexName the name of index to delete
  * return an object containing a "deletedAt" attribute in the success block
  */
--(void) deleteIndex:(NSString*)indexName success:(void(^)(NSString *indexName, NSDictionary *JSON))success
+-(void) deleteIndex:(NSString*)indexName success:(void(^)(NSString *indexName, NSDictionary *result))success
                                          failure:(void(^)(NSString *indexName, NSString *errorMessage))failure;
 
 /**
@@ -75,19 +75,19 @@
 /**
  * List all existing user keys with their associated ACLs
  */
--(void) listUserKeys:(void(^)(id JSON))success
+-(void) listUserKeys:(void(^)(NSDictionary* result))success
                      failure:(void(^)(NSString *errorMessage))failure;
 
 /**
  * Get ACL of a user key
  */
--(void) getUserKeyACL:(NSString*)key success:(void(^)(NSString *key, NSDictionary *JSON))success
+-(void) getUserKeyACL:(NSString*)key success:(void(^)(NSString *key, NSDictionary *result))success
                                      failure:(void(^)(NSString *key, NSString *errorMessage))failure;
 
 /**
  * Delete an existing user key
  */
--(void) deleteUserKey:(NSString*)key success:(void(^)(NSString *key, NSDictionary *JSON))success
+-(void) deleteUserKey:(NSString*)key success:(void(^)(NSString *key, NSDictionary *result))success
                                      failure:(void(^)(NSString *key, NSString *errorMessage))failure;
 
 /**
@@ -103,7 +103,7 @@
  *   - settings : allows to get index settings (https only)
  *   - editSettings : allows to change index settings (https only)
  */
--(void) addUserKey:(NSArray*)acls success:(void(^)(NSArray *acls, NSDictionary *JSON))success
+-(void) addUserKey:(NSArray*)acls success:(void(^)(NSArray *acls, NSDictionary *result))success
                                   failure:(void(^)(NSArray *acls, NSString *errorMessage))failure;
 
 @property (strong, nonatomic) NSString *applicationID;

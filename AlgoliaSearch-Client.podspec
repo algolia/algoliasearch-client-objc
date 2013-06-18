@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.summary  = 'Algolia Search API Client for iOS & OS X.'
   s.homepage = 'https://github.com/algolia/algoliasearch-client-objc'
   s.author   = { 'Algolia' => 'contact@algolia.com' }
-  s.source   = { :git => 'https://github.com/algolia/algoliasearch-client-objc', :tag => '1.0.0' }
+  s.source   = { :git => 'https://github.com/algolia/algoliasearch-client-objc.git', :tag => '1.0.1' }
   s.source_files = 'src'
   s.requires_arc = true
 
@@ -15,5 +15,5 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = '10.7'
   s.osx.frameworks = 'CoreServices', 'SystemConfiguration', 'Security'
 
-  s.dependency 'AFNetworking', '~> 1.3'
+  s.dependency 'AFNetworking', '~> 1.2'
 end

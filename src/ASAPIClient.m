@@ -75,12 +75,12 @@
     return self;
 }
 
--(void) listIndexes:(void(^)(id JSON))success failure:(void(^)(NSString *errorMessage))failure
+-(void) listIndexes:(void(^)(NSDictionary* result))success failure:(void(^)(NSString *errorMessage))failure
 {
     [self performHTTPQuery:@"/1/indexes" method:@"GET" body:nil index:0 success:success failure:failure];
 }
 
--(void) deleteIndex:(NSString*)indexName success:(void(^)(NSString *indexName, NSDictionary *JSON))success
+-(void) deleteIndex:(NSString*)indexName success:(void(^)(NSString *indexName, NSDictionary *result))success
             failure:(void(^)(NSString *indexName, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@", [ASAPIClient urlEncode:indexName]];
@@ -94,13 +94,13 @@
     }];
 }
 
--(void) listUserKeys:(void(^)(id JSON))success
+-(void) listUserKeys:(void(^)(NSDictionary* result))success
                      failure:(void(^)(NSString *errorMessage))failure
 {
     [self performHTTPQuery:@"/1/keys" method:@"GET" body:nil index:0 success:success failure:failure];
 }
 
--(void) getUserKeyACL:(NSString*)key success:(void(^)(NSString *key, NSDictionary *JSON))success
+-(void) getUserKeyACL:(NSString*)key success:(void(^)(NSString *key, NSDictionary *result))success
                       failure:(void(^)(NSString *key, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
@@ -113,7 +113,7 @@
     }];
 }
 
--(void) deleteUserKey:(NSString*)key success:(void(^)(NSString *key, NSDictionary *JSON))success
+-(void) deleteUserKey:(NSString*)key success:(void(^)(NSString *key, NSDictionary *result))success
                        failure:(void(^)(NSString *key, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
@@ -126,7 +126,7 @@
     }];
 }
 
--(void) addUserKey:(NSArray*)acls success:(void(^)(NSArray *acls, NSDictionary *JSON))success
+-(void) addUserKey:(NSArray*)acls success:(void(^)(NSArray *acls, NSDictionary *result))success
            failure:(void(^)(NSArray *acls, NSString *errorMessage))failure
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:acls forKey:@"acl"];
