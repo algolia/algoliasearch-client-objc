@@ -42,10 +42,12 @@
         self.hitsPerPage = 20;
         self.attributesToHighlight = nil;
         self.attributesToRetrieve = nil;
+        self.attributesToSnippet = nil;
         self.tags = nil;
         self.fullTextQuery = nil;
         self.insideBoundingBox = nil;
         self.aroundLatLong = nil;
+        self.queryType = nil;
     }
     return self;
 }
@@ -62,9 +64,11 @@
         self.fullTextQuery = pfullTextQuery;
         self.attributesToHighlight = nil;
         self.attributesToRetrieve = nil;
+        self.attributesToSnippet = nil;
         self.tags = nil;
         self.insideBoundingBox = nil;
         self.aroundLatLong = nil;
+        self.queryType = nil;
     }
     return self;
 }
@@ -106,6 +110,18 @@
             first = NO;
         }
     }
+    if (self.attributesToSnippet != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"attributesToSnippet="];
+        BOOL first = YES;
+        for (NSString* attribute in self.attributesToSnippet) {
+            if (!first)
+                [stringBuilder appendString:@","];
+            [stringBuilder appendString:[ASAPIClient urlEncode:attribute]];
+            first = NO;
+        }
+    }
     if (self.minWordSizeForApprox1 != 3) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
@@ -131,6 +147,11 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"hitsPerPage=%zd", self.hitsPerPage];
     }
+    if (queryType != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"queryType=%@", [ASAPIClient urlEncode:self.queryType]];
+    }
     if (tags != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
@@ -155,6 +176,7 @@
 
 @synthesize attributesToRetrieve;
 @synthesize attributesToHighlight;
+@synthesize attributesToSnippet;
 @synthesize tags;
 @synthesize insideBoundingBox;
 @synthesize aroundLatLong;
@@ -164,4 +186,5 @@
 @synthesize page;
 @synthesize hitsPerPage;
 @synthesize getRankingInfo;
+@synthesize queryType;
 @end

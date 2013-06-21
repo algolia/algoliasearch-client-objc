@@ -62,6 +62,14 @@
 -(NSString*) buildURL;
 
 /**
+ * Select how the query words are interpreted:
+ * "prefixAll": all query words are interpreted as prefixes (default behavior).
+ * "prefixLast": only the last word is interpreted as a prefix. This option is recommended if you have a lot of content to speedup the processing.
+ * "prefixNone": no query word is interpreted as a prefix. This option is not recommended.
+ */
+@property (strong, nonatomic) NSString            *queryType;
+
+/**
  * Specify the list of attribute names to retrieve.
  * By default all attributes are retrieved.
  */
@@ -71,6 +79,13 @@
  * By default indexed attributes are highlighted.
  */
 @property (strong, nonatomic) NSArray             *attributesToHighlight;
+/**
+ * Specify the list of attributes to snippet alongside the number of words to return 
+ * (syntax is 'attributeName:nbWords'). 
+ * Attributes are separated by a comma (Example: "attributesToSnippet=name:10,content:10").
+ * By default no snippet is computed.
+*/
+@property (strong, nonatomic) NSArray             *attributesToSnippet;
 /**
  * Filter the query by a set of tags. You can AND tags by separating them by commas. To OR tags, you must add parentheses. For example tag1,(tag2,tag3) means tag1 AND (tag2 OR tag3).
  * At indexing, tags should be added in the _tags attribute of objects (for example {"_tags":["tag1","tag2"]} )
