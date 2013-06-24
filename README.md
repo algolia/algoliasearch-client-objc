@@ -13,8 +13,9 @@ To setup your project, follow these steps:
  3. Initialize the client with your ApplicationID, API-Key and list of hostnames (you can find all of them on your Algolia account)
 
 ```objc
-  ASAPIClient *apiClient = [ASAPIClient apiClientWithApplicationID:@"YourApplicationID" apiKey:@"YourAPIKey" 
-                            hostnames:[NSArray arrayWithObjects:@"user-1.algolia.io", @"user-2.algolia.io", @"user-3.algolia.io", nil]];
+  ASAPIClient *apiClient = 
+    [ASAPIClient apiClientWithApplicationID:@"YourApplicationID" apiKey:@"YourAPIKey" 
+     hostnames:[NSArray arrayWithObjects:@"user-1.algolia.io", @"user-2.algolia.io", @"user-3.algolia.io", nil]];
 ```
 
 
@@ -27,7 +28,7 @@ Without any prior-configuration, you can index the 1000 world's biggest cities i
 // Load JSON file
 NSString *jsonPath = [[NSBundle mainBundle] pathForResource:@"1000-cities" ofType:@"json"];
 NSData* jsonData = [NSData dataWithContentsOfFile:jsonPath];
-NSDictionary* dict = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];$index = $client->initIndex("cities");
+NSDictionary* dict = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
 // Load all objects of json file in an index named "cities"
 ASRemoteIndex *index = [apiClient getIndex:@"cities"];
 [apiClient listIndexes:^(id JSON) {
