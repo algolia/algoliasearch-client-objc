@@ -15,7 +15,9 @@ To setup your project, follow these steps:
 ```objc
   ASAPIClient *apiClient = 
     [ASAPIClient apiClientWithApplicationID:@"YourApplicationID" apiKey:@"YourAPIKey" 
-     hostnames:[NSArray arrayWithObjects:@"user-1.algolia.io", @"user-2.algolia.io", @"user-3.algolia.io", nil]];
+                hostnames:[NSArray arrayWithObjects:@"user-1.algolia.io", 
+                                                    @"user-2.algolia.io", 
+                                                    @"user-3.algolia.io", nil]];
 ```
 
 
