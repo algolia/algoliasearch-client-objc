@@ -53,8 +53,8 @@
  * { "items": [ {"name": "contacts", "createdAt": "2013-01-18T15:33:13.556Z"},
  *              {"name": "notes", "createdAt": "2013-01-18T15:33:13.556Z"}]}
  */
--(void) listIndexes:(void(^)(NSDictionary* result))success
-                    failure:(void(^)(NSString *errorMessage))failure;
+-(void) listIndexes:(void(^)(ASAPIClient *client, NSDictionary *result))success
+                    failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure;
 
 /**
  * Delete an index
@@ -62,8 +62,9 @@
  * @param indexName the name of index to delete
  * return an object containing a "deletedAt" attribute in the success block
  */
--(void) deleteIndex:(NSString*)indexName success:(void(^)(NSString *indexName, NSDictionary *result))success
-                                         failure:(void(^)(NSString *indexName, NSString *errorMessage))failure;
+-(void) deleteIndex:(NSString*)indexName
+            success:(void(^)(ASAPIClient *client, NSString *indexName, NSDictionary *result))success
+            failure:(void(^)(ASAPIClient *client, NSString *indexName, NSString *errorMessage))failure;
 
 /**
  * Get the index object initialized (no server call needed for initialization)
@@ -75,20 +76,20 @@
 /**
  * List all existing user keys with their associated ACLs
  */
--(void) listUserKeys:(void(^)(NSDictionary* result))success
-                     failure:(void(^)(NSString *errorMessage))failure;
+-(void) listUserKeys:(void(^)(ASAPIClient *client, NSDictionary *result))success
+                     failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure;
 
 /**
  * Get ACL of a user key
  */
--(void) getUserKeyACL:(NSString*)key success:(void(^)(NSString *key, NSDictionary *result))success
-                                     failure:(void(^)(NSString *key, NSString *errorMessage))failure;
+-(void) getUserKeyACL:(NSString*)key success:(void(^)(ASAPIClient *client, NSString *key, NSDictionary *result))success
+                                     failure:(void(^)(ASAPIClient *client, NSString *key, NSString *errorMessage))failure;
 
 /**
  * Delete an existing user key
  */
--(void) deleteUserKey:(NSString*)key success:(void(^)(NSString *key, NSDictionary *result))success
-                                     failure:(void(^)(NSString *key, NSString *errorMessage))failure;
+-(void) deleteUserKey:(NSString*)key success:(void(^)(ASAPIClient *client, NSString *key, NSDictionary *result))success
+                                     failure:(void(^)(ASAPIClient *client, NSString *key, NSString *errorMessage))failure;
 
 /**
  * Create a new user key
@@ -96,15 +97,32 @@
  * @param acls the list of ACL for this key. Defined by an array of NSString that
  * can contains the following values:
  *   - search: allow to search (https and http)
- *   - addObject: allows to add a new object in the index (https only)
- *   - updateObject : allows to change content of an existing object (https only)
+ *   - addObject: allows to add/update an object in the index (https only)
  *   - deleteObject : allows to delete an existing object (https only)
  *   - deleteIndex : allows to delete index content (https only)
  *   - settings : allows to get index settings (https only)
  *   - editSettings : allows to change index settings (https only)
  */
--(void) addUserKey:(NSArray*)acls success:(void(^)(NSArray *acls, NSDictionary *result))success
-                                  failure:(void(^)(NSArray *acls, NSString *errorMessage))failure;
+-(void) addUserKey:(NSArray*)acls
+           success:(void(^)(ASAPIClient *client, NSArray *acls, NSDictionary *result))success
+           failure:(void(^)(ASAPIClient *client, NSArray *acls, NSString *errorMessage))failure;
+
+/**
+ * Create a new user key associated to this index
+ *
+ * @param acls the list of ACL for this key. Defined by an array of NSString that
+ * can contains the following values:
+ *   - search: allow to search (https and http)
+ *   - addObject: allows to add/update an object in the index (https only)
+ *   - deleteObject : allows to delete an existing object (https only)
+ *   - deleteIndex : allows to delete index content (https only)
+ *   - settings : allows to get index settings (https only)
+ *   - editSettings : allows to change index settings (https only)
+ * @param validity the number of seconds after which the key will be automatically removed (0 means no time limit for this key)
+ */
+-(void) addUserKey:(NSArray*)acls withValidity:(NSUInteger)validity
+           success:(void(^)(ASAPIClient *client, NSArray *acls, NSDictionary *result))success
+           failure:(void(^)(ASAPIClient *client, NSArray *acls, NSString *errorMessage))failure;
 
 @property (strong, nonatomic) NSString *applicationID;
 @property (strong, nonatomic) NSString *apiKey;

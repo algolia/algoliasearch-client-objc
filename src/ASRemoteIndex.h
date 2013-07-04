@@ -49,8 +49,9 @@
  * @param content contains the object to add inside the index.
  *  The object is represented by an associative array
  */
--(void) addObject:(NSDictionary*)object success:(void(^)(NSDictionary *object, NSDictionary *result))success
-                                        failure:(void(^)(NSDictionary *object, NSString *errorMessage))failure;
+-(void) addObject:(NSDictionary*)object
+          success:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result))success
+          failure:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage))failure;
 
 /**
  * Add an object in this index
@@ -61,24 +62,26 @@
  * (if the attribute already exist the old object will be overwrite)
  */
 -(void) addObject:(NSDictionary*)object withObjectID:(NSString*)objectID
-           success:(void(^)(NSDictionary *object, NSString *objectID, NSDictionary *result))success
-           failure:(void(^)(NSDictionary *object, NSString *objectID, NSString *errorMessage))failure;
+           success:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSDictionary *result))success
+           failure:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSString *errorMessage))failure;
 
 /**
  * Add several objects
  *
  * @param objects contains an array of objects to add (NSArray of NSDictionary object).
  */
--(void) addObjects:(NSArray*)objects success:(void(^)(NSArray *objects, NSDictionary *result))success
-                             failure:(void(^)(NSArray *objects, NSString *errorMessage))failure;
+-(void) addObjects:(NSArray*)objects
+           success:(void(^)(ASRemoteIndex *index, NSArray *objects, NSDictionary *result))success
+           failure:(void(^)(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage))failure;
 
 /**
  * Get an object from this index
  *
  * @param objectID the unique identifier of the object to retrieve
  */
--(void) getObject:(NSString*)objectID success:(void(^)(NSString *objectID, NSDictionary *result))success
-          failure:(void(^)(NSString *objectID, NSString *errorMessage))failure;
+-(void) getObject:(NSString*)objectID
+          success:(void(^)(ASRemoteIndex *index, NSString *objectID, NSDictionary *result))success
+          failure:(void(^)(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage))failure;
 
 /**
  * Get an object from this index
@@ -87,8 +90,8 @@
  * @param attributesToRetrieve, contains the list of attributes to retrieve as a string separated by ","
  */
 -(void) getObject:(NSString*)objectID attributesToRetrieve:(NSArray*)attributes
-          success:(void(^)(NSString *objectID, NSArray *attributesToRetrieve, NSDictionary *result))success
-          failure:(void(^)(NSString *objectID, NSArray *attributesToRetrieve, NSString *errorMessage))failure;
+          success:(void(^)(ASRemoteIndex *index, NSString *objectID, NSArray *attributesToRetrieve, NSDictionary *result))success
+          failure:(void(^)(ASRemoteIndex *index, NSString *objectID, NSArray *attributesToRetrieve, NSString *errorMessage))failure;
 
 /**
  * Update partially an object (only update attributes passed in argument)
@@ -97,8 +100,8 @@
  *  object must contains an objectID attribute
  */
 -(void) partialUpdateObject:(NSDictionary*)partialObject objectID:(NSString*)objectID
-                    success:(void(^)(NSDictionary *partialObject, NSString *objectID, NSDictionary *result))success
-                    failure:(void(^)(NSDictionary *partialObject, NSString *objectID, NSString *errorMessage))failure;
+                    success:(void(^)(ASRemoteIndex *index, NSDictionary *partialObject, NSString *objectID, NSDictionary *result))success
+                    failure:(void(^)(ASRemoteIndex *index, NSDictionary *partialObject, NSString *objectID, NSString *errorMessage))failure;
 
 /**
  * Override the content of object
@@ -106,8 +109,8 @@
  * @param object contains the object to save
  */
 -(void) saveObject:(NSDictionary*)object objectID:(NSString*)objectID
-           success:(void(^)(NSDictionary *object, NSString *objectID, NSDictionary *result))success
-           failure:(void(^)(NSDictionary *object, NSString *objectID, NSString *errorMessage))failure;
+           success:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSDictionary *result))success
+           failure:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSString *errorMessage))failure;
 
 /**
  * Override the content of several objects
@@ -115,8 +118,8 @@
  * @param objects contains an array of NSDictionary to update (each NSDictionary must contains an objectID attribute)
  */
 -(void) saveObjects:(NSArray*)objects
-            success:(void(^)(NSArray *objects, NSDictionary *result))success
-            failure:(void(^)(NSArray *objects, NSString *errorMessage))failure;
+            success:(void(^)(ASRemoteIndex *index, NSArray *objects, NSDictionary *result))success
+            failure:(void(^)(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage))failure;
 
 /**
  * Delete an object from the index
@@ -124,15 +127,15 @@
  * @param objectID the unique identifier of object to delete
  */
 -(void) deleteObject:(NSString*)objectID
-             success:(void(^)(NSString *objectID, NSDictionary *result))success
-             failure:(void(^)(NSString *objectID, NSString *errorMessage))failure;
+             success:(void(^)(ASRemoteIndex *index, NSString *objectID, NSDictionary *result))success
+             failure:(void(^)(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage))failure;
 
 /**
  * Search inside the index
  */
 -(void) search:(ASQuery*)query
-       success:(void(^)(ASQuery *query, NSDictionary *result))success
-       failure:(void(^)(ASQuery *query, NSString *errorMessage))failure;
+       success:(void(^)(ASRemoteIndex *index, ASQuery *query, NSDictionary *result))success
+       failure:(void(^)(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage))failure;
 
 /**
  * Wait the publication of a task on the server.
@@ -141,15 +144,15 @@
  * @param taskID the id of the task returned by server
  */
 -(void) waitTask:(NSString*)taskID
-         success:(void(^)(NSString *taskID, NSDictionary *result))success
-         failure:(void(^)(NSString *taskID, NSString *errorMessage))failure;
+         success:(void(^)(ASRemoteIndex *index, NSString *taskID, NSDictionary *result))success
+         failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage))failure;
 
 
 /**
  * Get settings of this index
  */
--(void) getSettings:(void(^)(NSDictionary *result))success
-                    failure:(void(^)(NSString *errorMessage))failure;
+-(void) getSettings:(void(^)(ASRemoteIndex *index, NSDictionary *result))success
+                    failure:(void(^)(ASRemoteIndex *index, NSString *errorMessage))failure;
 
 /**
  * Set settings for this index
@@ -181,8 +184,59 @@
  *    by asc (ascending order) or desc (descending order) operator.
  */
 -(void) setSettings:(NSDictionary*)settings
-            success:(void(^)(NSDictionary *settings, NSDictionary *result))success
-            failure:(void(^)(NSDictionary *settings, NSString *errorMessage))failure;
+            success:(void(^)(ASRemoteIndex *index, NSDictionary *settings, NSDictionary *result))success
+            failure:(void(^)(ASRemoteIndex *index, NSDictionary *settings, NSString *errorMessage))failure;
+
+/**
+ * List all existing user keys associated to this index
+ */
+-(void) listUserKeys:(void(^)(ASRemoteIndex *index, NSDictionary *result))success
+             failure:(void(^)(ASRemoteIndex *index, NSString *errorMessage))failure;
+
+/**
+ * Get ACL of a user key associated to this index
+ */
+-(void) getUserKeyACL:(NSString*)key success:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *result))success
+              failure:(void(^)(ASRemoteIndex *index, NSString *key, NSString *errorMessage))failure;
+
+/**
+ * Delete an existing user key associated to this index
+ */
+-(void) deleteUserKey:(NSString*)key success:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *result))success
+              failure:(void(^)(ASRemoteIndex *index, NSString *key, NSString *errorMessage))failure;
+
+/**
+ * Create a new user key associated to this index
+ *
+ * @param acls the list of ACL for this key. Defined by an array of NSString that
+ * can contains the following values:
+ *   - search: allow to search (https and http)
+ *   - addObject: allows to add/update an object in the index (https only)
+ *   - deleteObject : allows to delete an existing object (https only)
+ *   - deleteIndex : allows to delete index content (https only)
+ *   - settings : allows to get index settings (https only)
+ *   - editSettings : allows to change index settings (https only)
+ */
+-(void) addUserKey:(NSArray*)acls
+           success:(void(^)(ASRemoteIndex *index, NSArray *acls, NSDictionary *result))success
+           failure:(void(^)(ASRemoteIndex *index, NSArray *acls, NSString *errorMessage))failure;
+
+/**
+ * Create a new user key associated to this index
+ *
+ * @param acls the list of ACL for this key. Defined by an array of NSString that
+ * can contains the following values:
+ *   - search: allow to search (https and http)
+ *   - addObject: allows to add/update an object in the index (https only)
+ *   - deleteObject : allows to delete an existing object (https only)
+ *   - deleteIndex : allows to delete index content (https only)
+ *   - settings : allows to get index settings (https only)
+ *   - editSettings : allows to change index settings (https only)
+ * @param validity the number of seconds after which the key will be automatically removed (0 means no time limit for this key)
+ */
+-(void) addUserKey:(NSArray*)acls withValidity:(NSUInteger)validity
+           success:(void(^)(ASRemoteIndex *index, NSArray *acls, NSDictionary *result))success
+           failure:(void(^)(ASRemoteIndex *index, NSArray *acls, NSString *errorMessage))failure;
 
 @property (strong, nonatomic) NSString     *indexName;
 @property (strong, nonatomic) ASAPIClient  *apiClient;

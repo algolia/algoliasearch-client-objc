@@ -75,67 +75,88 @@
     return self;
 }
 
--(void) listIndexes:(void(^)(NSDictionary* result))success failure:(void(^)(NSString *errorMessage))failure
+-(void) listIndexes:(void(^)(ASAPIClient *client, NSDictionary* result))success failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure
 {
-    [self performHTTPQuery:@"/1/indexes" method:@"GET" body:nil index:0 success:success failure:failure];
+    [self performHTTPQuery:@"/1/indexes" method:@"GET" body:nil index:0 success:^(id JSON) {
+        success(self, JSON);
+    } failure:^(NSString *errorMessage) {
+        failure(self, errorMessage);
+    }];
 }
 
--(void) deleteIndex:(NSString*)indexName success:(void(^)(NSString *indexName, NSDictionary *result))success
-            failure:(void(^)(NSString *indexName, NSString *errorMessage))failure
+-(void) deleteIndex:(NSString*)indexName success:(void(^)(ASAPIClient *client, NSString *indexName, NSDictionary *result))success
+            failure:(void(^)(ASAPIClient *client, NSString *indexName, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@", [ASAPIClient urlEncode:indexName]];
     
     [self performHTTPQuery:path method:@"DELETE" body:nil index:0 success:^(id JSON) {
         if (success != nil)
-            success(indexName, JSON);
+            success(self, indexName, JSON);
     } failure:^(NSString *errorMessage) {
         if (failure != nil)
-            failure(indexName, errorMessage);
+            failure(self, indexName, errorMessage);
     }];
 }
 
--(void) listUserKeys:(void(^)(NSDictionary* result))success
-                     failure:(void(^)(NSString *errorMessage))failure
+-(void) listUserKeys:(void(^)(ASAPIClient *client, NSDictionary* result))success
+                     failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure
 {
-    [self performHTTPQuery:@"/1/keys" method:@"GET" body:nil index:0 success:success failure:failure];
+    [self performHTTPQuery:@"/1/keys" method:@"GET" body:nil index:0 success:^(id JSON) {
+        success(self, JSON);
+    } failure:^(NSString *errorMessage) {
+        failure(self, errorMessage);
+    }];
 }
 
--(void) getUserKeyACL:(NSString*)key success:(void(^)(NSString *key, NSDictionary *result))success
-                      failure:(void(^)(NSString *key, NSString *errorMessage))failure
+-(void) getUserKeyACL:(NSString*)key success:(void(^)(ASAPIClient *client, NSString *key, NSDictionary *result))success
+                      failure:(void(^)(ASAPIClient *client, NSString *key, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
     [self performHTTPQuery:path method:@"GET" body:nil index:0 success:^(id JSON) {
         if (success != nil)
-            success(key, JSON);
+            success(self, key, JSON);
     } failure:^(NSString *errorMessage) {
         if (failure != nil)
-            failure(key, errorMessage);
+            failure(self, key, errorMessage);
     }];
 }
 
--(void) deleteUserKey:(NSString*)key success:(void(^)(NSString *key, NSDictionary *result))success
-                       failure:(void(^)(NSString *key, NSString *errorMessage))failure
+-(void) deleteUserKey:(NSString*)key success:(void(^)(ASAPIClient *client, NSString *key, NSDictionary *result))success
+                       failure:(void(^)(ASAPIClient *client, NSString *key, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
     [self performHTTPQuery:path method:@"DELETE" body:nil index:0 success:^(id JSON) {
         if (success != nil)
-            success(key, JSON);
+            success(self, key, JSON);
     } failure:^(NSString *errorMessage) {
         if (failure != nil)
-            failure(key, errorMessage);
+            failure(self, key, errorMessage);
     }];
 }
 
--(void) addUserKey:(NSArray*)acls success:(void(^)(NSArray *acls, NSDictionary *result))success
-           failure:(void(^)(NSArray *acls, NSString *errorMessage))failure
+-(void) addUserKey:(NSArray*)acls success:(void(^)(ASAPIClient *client, NSArray *acls, NSDictionary *result))success
+           failure:(void(^)(ASAPIClient *client, NSArray *acls, NSString *errorMessage))failure
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:acls forKey:@"acl"];
     [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict index:0 success:^(id JSON) {
         if (success != nil)
-            success(acls, JSON);
+            success(self, acls, JSON);
     } failure:^(NSString *errorMessage) {
         if (failure != nil)
-            failure(acls, errorMessage);
+            failure(self, acls, errorMessage);
+    }];
+}
+
+-(void) addUserKey:(NSArray*)acls withValidity:(NSUInteger)validity success:(void(^)(ASAPIClient *client, NSArray *acls, NSDictionary *result))success
+           failure:(void(^)(ASAPIClient *client, NSArray *acls, NSString *errorMessage))failure
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl", [NSNumber numberWithUnsignedInteger:validity], @"validity", nil];
+    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict index:0 success:^(id JSON) {
+        if (success != nil)
+            success(self, acls, JSON);
+    } failure:^(NSString *errorMessage) {
+        if (failure != nil)
+            failure(self, acls, errorMessage);
     }];
 }
 
