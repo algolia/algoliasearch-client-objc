@@ -312,7 +312,7 @@ For example, to wait for indexing of a new object:
 ```objc
 [index addObject:newObject 
   success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-    #Wait task
+    // Wait task
     [index waitTask:[result valueForKey:@"objectID"] 
       success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
         NSLog(@"New object is indexed");
