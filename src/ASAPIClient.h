@@ -36,9 +36,24 @@
  * Algolia Search initialization
  * @param applicationID the application ID you have in your admin interface
  * @param apiKey a valid API key for the service
+ */
++(id) apiClientWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey;
+
+/**
+ * Algolia Search initialization
+ * @param applicationID the application ID you have in your admin interface
+ * @param apiKey a valid API key for the service
  * @param hostnames the list of hosts that you have received for the service
  */
 +(id) apiClientWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames;
+
+/**
+ * Algolia Search initialization
+ * @param applicationID the application ID you have in your admin interface
+ * @param apiKey a valid API key for the service
+ */
+-(id) initWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey;
+
 /**
  * Algolia Search initialization
  * @param applicationID the application ID you have in your admin interface

@@ -31,14 +31,11 @@ To setup your project, follow these steps:
 
  1. Use cocoapods or Add source to your project by adding `pod 'AlgoliaSearch-Client', '~> 1.0'`in your Podfile or drop the source folder on your project (If you are not using a Podfile, you will also need to add [AFNetworking library](https://github.com/AFNetworking/AFNetworking) in your project).
  2. Add the `#import "ASAPIClient.h"` call to your project
- 3. Initialize the client with your ApplicationID, API-Key and list of hostnames (you can find all of them on your Algolia account)
+ 3. Initialize the client with your ApplicationID and API-Key(you can find all of them on your Algolia account)
 
 ```objc
   ASAPIClient *apiClient = 
-    [ASAPIClient apiClientWithApplicationID:@"YourApplicationID" apiKey:@"YourAPIKey" 
-                hostnames:[NSArray arrayWithObjects:@"YourHostname-1.algolia.io", 
-                                                    @"YourHostname-2.algolia.io", 
-                                                    @"YourHostname-3.algolia.io", nil]];
+    [ASAPIClient apiClientWithApplicationID:@"YourApplicationID" apiKey:@"YourAPIKey"];
 ```
 
 Quick Start

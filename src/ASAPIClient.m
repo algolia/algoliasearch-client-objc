@@ -37,6 +37,52 @@
     return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:hostnames];
 }
 
++(id) apiClientWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey
+{
+    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey];
+}
+
+-(id) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey
+{
+    self = [super init];
+    if (self) {
+        self.applicationID = papplicationID;
+        self.apiKey = papiKey;
+        
+        NSMutableArray *array = [NSMutableArray arrayWithObjects:
+                                 [NSString stringWithFormat:@"%@-1.algolia.io", papplicationID],
+                                 [NSString stringWithFormat:@"%@-2.algolia.io", papplicationID],
+                                 [NSString stringWithFormat:@"%@-3.algolia.io", papplicationID],
+                                 nil];
+        srandom((unsigned int)time(NULL));
+        NSUInteger count = [array count];
+        for (NSUInteger i = 0; i < count; ++i) {
+            // Select a random element between i and end of array to swap with.
+            NSUInteger nElements = count - i;
+            NSUInteger n = (random() % nElements) + i;
+            [array exchangeObjectAtIndex:i withObjectAtIndex:n];
+        }
+        self.hostnames = array;
+        if (self.applicationID == nil || [self.applicationID length] == 0)
+            @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"Application ID must be set" userInfo:nil];
+        if (self.apiKey == nil || [self.apiKey length] == 0)
+            @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"APIKey must be set" userInfo:nil];
+        if ([self.hostnames count] == 0)
+            @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"List of hosts must be set" userInfo:nil];
+        NSMutableArray *httpClients = [[NSMutableArray alloc] init];
+        for (NSString *host in self.hostnames) {
+            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@", host]];
+            AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
+            [httpClient registerHTTPOperationClass:[AFJSONRequestOperation class]];
+            [httpClient setDefaultHeader:@"Accept" value:@"application/json"];
+            [httpClient setParameterEncoding:AFJSONParameterEncoding];
+            [httpClients addObject:httpClient];
+        }
+        clients = httpClients;
+    }
+    return self;
+}
+
 -(id) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey hostnames:(NSArray*)phostnames
 {
     self = [super init];
