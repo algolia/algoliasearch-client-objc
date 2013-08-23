@@ -37,4 +37,5 @@
 -(void) performHTTPQuery:(NSString*)path method:(NSString*)method body:(NSDictionary*)body index:(NSUInteger)index
                  success:(void(^)(id JSON))success failure:(void(^)(NSString *errorMessage))failure;
 
+-(void) cancelQueries:(NSString*)method path:(NSString*)path;
 @end

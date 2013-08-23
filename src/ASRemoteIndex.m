@@ -193,20 +193,21 @@
        failure:(void(^)(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage))failure
 {
     NSString *queryParams = [query buildURL];
-    NSString *path = nil;
-    
-    if ([queryParams length] > 0) {
-        path = [NSString stringWithFormat:@"/1/indexes/%@?%@", self.urlEncodedIndexName, queryParams];
-    } else {
-        path = [NSString stringWithFormat:@"/1/indexes/%@", self.urlEncodedIndexName];
-    }
-    [self.apiClient performHTTPQuery:path method:@"GET" body:nil index:0 success:^(id JSON) {
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/query", self.urlEncodedIndexName];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:queryParams forKey:@"params"];
+    [self.apiClient performHTTPQuery:path method:@"POST" body:dict index:0 success:^(id JSON) {
         if (success != nil)
             success(self, query, JSON);
     } failure:^(NSString *errorMessage) {
         if (failure != nil)
             failure(self, query, errorMessage);
     }];
+}
+
+-(void) cancelPreviousSearches
+{
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/query", self.urlEncodedIndexName];
+    [self.apiClient cancelQueries:@"POST" path:path];
 }
 
 -(void) waitTask:(NSString*)taskID

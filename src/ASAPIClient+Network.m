@@ -29,6 +29,15 @@
     return [originalStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 }
 
+-(void) cancelQueries:(NSString*)method path:(NSString*)path
+{
+    NSUInteger count = [self.clients count];
+    for (NSUInteger i = 0; i < count; ++i) {
+        AFHTTPClient *httpClient = [self.clients objectAtIndex:i];
+        [httpClient cancelAllHTTPOperationsWithMethod:method path:path];
+    }
+}
+
 -(void) performHTTPQuery:(NSString*)path method:(NSString*)method body:(NSDictionary*)body index:(NSUInteger)index
                  success:(void(^)(id JSON))success failure:(void(^)(NSString *errorMessage))failure
 {
@@ -59,6 +68,6 @@
             }
         }
     }];
-    [operation start];
+    [httpClient.operationQueue addOperation:operation];
 }
 @end

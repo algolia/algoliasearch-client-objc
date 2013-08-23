@@ -176,7 +176,7 @@
  *     We have four available criteria:
  *       - typo (sort according to number of typos),
  *       - geo: (sort according to decreassing distance when performing a geo-location based search),
- *       - proximity: sort according to the proximity of query words in hits, 
+ *       - proximity: sort according to the proximity of query words in hits,
  *       - attribute: sort according to the order of attributes defined by **attributesToIndex**,
  *       - exact: sort according to the number of words that are matched identical to query word (and not as a prefix),
  *       - custom which is user defined
@@ -239,6 +239,11 @@
 -(void) addUserKey:(NSArray*)acls withValidity:(NSUInteger)validity
            success:(void(^)(ASRemoteIndex *index, NSArray *acls, NSDictionary *result))success
            failure:(void(^)(ASRemoteIndex *index, NSArray *acls, NSString *errorMessage))failure;
+
+/**
+ * Delete all previous search queries
+ */
+-(void) cancelPreviousSearches;
 
 @property (strong, nonatomic) NSString     *indexName;
 @property (strong, nonatomic) ASAPIClient  *apiClient;
