@@ -29,7 +29,7 @@ Setup
 -------------
 To setup your project, follow these steps:
 
- 1. [Download and add sources](https://github.com/algolia/algoliasearch-client-objc/archive/master.zip) to your project or use cocoapods or by adding `pod 'AlgoliaSearch-Client', '~> 1.0'`in your Podfile or drop the source folder on your project (If you are not using a Podfile, you will also need to add [AFNetworking library](https://github.com/AFNetworking/AFNetworking) in your project).
+ 1. [Download and add sources](https://github.com/algolia/algoliasearch-client-objc/archive/master.zip) to your project or use cocoapods by adding `pod 'AlgoliaSearch-Client', '~> 1.0'`in your Podfile or drop the source folder on your project (If you are not using a Podfile, you will also need to add [AFNetworking library](https://github.com/AFNetworking/AFNetworking) in your project).
  2. Add the `#import "ASAPIClient.h"` call to your project
  3. Initialize the client with your ApplicationID and API-Key(you can find all of them on your Algolia account)
 
