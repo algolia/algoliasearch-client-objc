@@ -178,6 +178,10 @@
              success:(void(^)(ASRemoteIndex *index, NSString *objectID, NSDictionary *result))success
              failure:(void(^)(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage))failure
 {
+    if (objectID == nil || [objectID length]) {
+        failure(self, objectID, @"empty objectID is not allowed");
+        return;
+    }
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/%@", self.urlEncodedIndexName, [ASAPIClient urlEncode:objectID]];
     [self.apiClient performHTTPQuery:path method:@"DELETE" body:nil index:0 success:^(id JSON) {
         if (success != nil)
