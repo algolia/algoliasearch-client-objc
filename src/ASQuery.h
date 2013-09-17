@@ -91,6 +91,13 @@
  * At indexing, tags should be added in the _tags attribute of objects (for example {"_tags":["tag1","tag2"]} )
  */
 @property (strong, nonatomic) NSString            *tags;
+
+/**
+ * Add a list of numeric filters separated by a comma.
+ * The syntax of one filter is `attributeName` followed by `operand` followed by `value. Supported operands are `<`, `<=`, `=`, `>` and `>=`.
+ * You can have multiple conditions on one attribute like for example `numerics=price>100,price<1000`.
+ */
+@property (strong, nonatomic) NSString            *numerics;
 /**
  * Set the full text query.
  */

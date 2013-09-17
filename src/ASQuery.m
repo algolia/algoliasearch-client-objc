@@ -44,6 +44,7 @@
         self.attributesToRetrieve = nil;
         self.attributesToSnippet = nil;
         self.tags = nil;
+        self.numerics = nil;
         self.fullTextQuery = nil;
         self.insideBoundingBox = nil;
         self.aroundLatLong = nil;
@@ -66,6 +67,7 @@
         self.attributesToRetrieve = nil;
         self.attributesToSnippet = nil;
         self.tags = nil;
+        self.numerics = nil;
         self.insideBoundingBox = nil;
         self.aroundLatLong = nil;
         self.queryType = nil;
@@ -142,26 +144,31 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"page=%zd", self.page];
     }
-    if (hitsPerPage != 20 && hitsPerPage > 0) {
+    if (self.hitsPerPage != 20 && self.hitsPerPage > 0) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"hitsPerPage=%zd", self.hitsPerPage];
     }
-    if (queryType != nil) {
+    if (self.queryType != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"queryType=%@", [ASAPIClient urlEncode:self.queryType]];
     }
-    if (tags != nil) {
+    if (self.tags != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"tags=%@", [ASAPIClient urlEncode:self.tags]];
     }
-    if (insideBoundingBox != nil) {
+    if (self.numerics != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"numerics=%@", [ASAPIClient urlEncode:self.numerics]];
+    }
+    if (self.insideBoundingBox != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:self.insideBoundingBox];
-    } else if (aroundLatLong != nil) {
+    } else if (self.aroundLatLong != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:self.aroundLatLong];

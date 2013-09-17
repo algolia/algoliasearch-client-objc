@@ -164,7 +164,7 @@
  *  - attributesToRetrieve: (array of strings) default list of attributes to retrieve for objects
  *  - attributesToHighlight: (array of strings) default list of attributes to highlight
  *  - attributesToIndex: (array of strings) the list of fields you want to index.
- *    By default all textual attributes of your objects are indexed, but you should update it to get optimal
+ *    By default all textual and numerical attributes of your objects are indexed, but you should update it to get optimal
  *    results. This parameter has two important uses:
  *       - Limit the attributes to index.
  *         For example if you store a binary image in base64, you want to store it in the index but you

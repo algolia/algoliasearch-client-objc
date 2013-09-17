@@ -130,6 +130,58 @@
     }];
 }
 
+-(void) moveIndex:(NSString*)srcIndexName to:(NSString*)dstIndexName
+          success:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result))success
+          failure:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage))failure
+{
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/operation", [ASAPIClient urlEncode:srcIndexName]];
+    NSDictionary *request = [NSDictionary dictionaryWithObjectsAndKeys:dstIndexName, @"destination", @"move", @"operation", nil];
+    [self performHTTPQuery:path method:@"POST" body:request index:0 success:^(id JSON) {
+        if (success != nil)
+            success(self, srcIndexName, dstIndexName, JSON);
+    } failure:^(NSString *errorMessage) {
+        if (failure != nil)
+            failure(self, srcIndexName, dstIndexName,errorMessage);
+    }];
+}
+
+-(void) copyIndex:(NSString*)srcIndexName to:(NSString*)dstIndexName
+          success:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result))success
+          failure:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage))failure
+{
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/operation", [ASAPIClient urlEncode:srcIndexName]];
+    NSDictionary *request = [NSDictionary dictionaryWithObjectsAndKeys:dstIndexName, @"destination", @"copy", @"operation", nil];
+    [self performHTTPQuery:path method:@"POST" body:request index:0 success:^(id JSON) {
+        if (success != nil)
+            success(self, srcIndexName, dstIndexName, JSON);
+    } failure:^(NSString *errorMessage) {
+        if (failure != nil)
+            failure(self, srcIndexName, dstIndexName,errorMessage);
+    }];
+}
+
+-(void) getLogs:(void(^)(ASAPIClient *client, NSDictionary *result))success
+        failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure
+{
+    [self performHTTPQuery:@"/1/logs" method:@"GET" body:nil index:0 success:^(id JSON) {
+        success(self, JSON);
+    } failure:^(NSString *errorMessage) {
+        failure(self, errorMessage);
+    }];
+}
+
+-(void) getLogsWithOffset:(NSUInteger)offset length:(NSUInteger)length
+                  success:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSDictionary *result))success
+                  failure:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString *errorMessage))failure
+{
+    NSString *url = [NSString stringWithFormat:@"/1/logs?offset=%zd&length=%zd", offset, length];
+    [self performHTTPQuery:url method:@"GET" body:nil index:0 success:^(id JSON) {
+        success(self, offset, length, JSON);
+    } failure:^(NSString *errorMessage) {
+        failure(self, offset, length, errorMessage);
+    }];
+}
+
 -(void) deleteIndex:(NSString*)indexName success:(void(^)(ASAPIClient *client, NSString *indexName, NSDictionary *result))success
             failure:(void(^)(ASAPIClient *client, NSString *indexName, NSString *errorMessage))failure
 {

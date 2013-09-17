@@ -82,6 +82,38 @@
             failure:(void(^)(ASAPIClient *client, NSString *indexName, NSString *errorMessage))failure;
 
 /**
+ * Move an existing index.
+ * @param srcIndexName the name of index to copy.
+ * @param dstIndexName the new index name that will contains a copy of srcIndexName (destination will be overriten if it already exist).
+ */
+-(void) moveIndex:(NSString*)srcIndexName to:(NSString*)dstIndexName
+            success:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result))success
+            failure:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage))failure;
+/**
+ * Copy an existing index.
+ * @param srcIndexName the name of index to copy.
+ * @param dstIndexName the new index name that will contains a copy of srcIndexName (destination will be overriten if it already exist).
+ */
+-(void) copyIndex:(NSString*)srcIndexName to:(NSString*)dstIndexName
+          success:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result))success
+          failure:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage))failure;
+
+/**
+ * Return 10 last log entries.
+ */
+-(void) getLogs:(void(^)(ASAPIClient *client, NSDictionary *result))success
+          failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure;
+
+/**
+ * Return last logs entries.
+ * @param offset Specify the first entry to retrieve (0-based, 0 is the most recent log entry).
+ * @param length Specify the maximum number of entries to retrieve starting at offset. Maximum allowed value: 1000.
+ */
+-(void) getLogsWithOffset:(NSUInteger)offset length:(NSUInteger)length
+        success:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSDictionary *result))success
+        failure:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString *errorMessage))failure;
+
+/**
  * Get the index object initialized (no server call needed for initialization)
  *
  * @param indexName the name of index
