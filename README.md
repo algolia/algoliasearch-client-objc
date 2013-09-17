@@ -24,6 +24,8 @@ Table of Content
 1. [Wait indexing](#wait-indexing)
 1. [Batch writes](#batch-writes)
 1. [Security / User API Keys](#security--user-api-keys)
+1. [Copy or rename an index](#copy-or-rename-an-index)
+1. [Logs](#logs)
 
 Setup
 -------------
@@ -117,6 +119,8 @@ You can use the following optional arguments on ASQuery class:
 
  * **fullTextQuery**: the full text query.
  * **attributesToRetrieve**: specify the list of attribute names to retrieve.<br/>By default all attributes are retrieved.
+ * **numerics**: specify the list of numeric filters you want to apply separated by a comma. The syntax of one filter is `attributeName` followed by `operand` followed by `value`. Supported operands are `<`, `<=`, `=`, `>` and `>=`. 
+ You can have multiple conditions on one attribute like for example `numerics=price>100,price<1000`.
  * **attributesToHighlight**: specify the list of attribute names to highlight.<br/>By default indexed attributes are highlighted. Numerical attributes cannot be highlighted. A **matchLevel** is returned for each highlighted attribute and can contain: "full" if all the query terms were found in the attribute, "partial" if only some of the query terms were found, or "none" if none of the query terms were found.
  * **attributesToSnippet**: specify the list of attributes to snippet alongside the number of words to return (syntax is 'attributeName:nbWords').<br/>By default no snippet is computed.
  * **minWordSizeForApprox1**: the minimum number of characters in a query word to accept one typo in this word.<br/>Defaults to 3.
@@ -300,7 +304,7 @@ You can retrieve all settings using the `getSettings` function. The result will 
  * **attributesToRetrieve**: (array of strings) default list of attributes to retrieve in objects.
  * **attributesToHighlight**: (array of strings) default list of attributes to highlight.
  * **attributesToSnippet**: (array of strings) default list of attributes to snippet alongside the number of words to return (syntax is 'attributeName:nbWords')<br/>By default no snippet is computed.
- * **attributesToIndex**: (array of strings) the list of fields you want to index.<br/>By default all textual attributes of your objects are indexed, but you should update it to get optimal results.<br/>This parameter has two important uses:
+ * **attributesToIndex**: (array of strings) the list of fields you want to index.<br/>By default all textual and numerical attributes of your objects are indexed, but you should update it to get optimal results.<br/>This parameter has two important uses:
   * *Limits the attributes to index*.<br/>For example if you store a binary image in base64, you want to store it and be able to retrieve it but you don't want to search in the base64 string.
   * *Controls part of the ranking*.<br/>Matches in attributes at the beginning of the list will be considered more important than matches in attributes further down the list. 
  * **ranking**: (array of strings) controls the way hits are sorted.<br/>We have six available criteria:
@@ -487,4 +491,62 @@ Delete an existing key:
   failure:^(ASRemoteIndex *index, NSString *key, NSString *errorMessage) {
    NSLog(@"Delete error: %@", errorMessage);
 }]; 
+```
+
+Copy or rename an index
+-------------
+
+You can easily copy or rename an existing index using the `copy` and `move` command. 
+**Note**: Move and copy commands overwrite destination index.
+
+The move command is particulary usefull is you want to update a big index atomically from one version to another. For example, if you recreate your index `MyIndex`each night from a database by batch, you have just to :
+ 1. Import your database in a new index using [batches](#batch-writes). We will call this new index `MyNewIndex`
+ 1. Rename `MyNewIndex` in `MyIndex` using the move command. This will automatically override the old index and new queries will be served on this index.
+
+```objc
+// Rename MyNewIndex in MyIndex
+[apiClient moveIndex:@"MyNewIndex" to:@"MyIndex" success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
+    NSLog(@"Move Success: %@", result);
+} failure:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage) {
+    NSLog(@"Move Failure: %@", errorMessage);
+}];
+// Copy MyNewIndex in MyIndex
+[apiClient copyIndex:@"MyNewIndex" to:@"MyIndex" success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
+    NSLog(@"Copy Success: %@", result);
+} failure:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage) {
+    NSLog(@"Copy Failure: %@", errorMessage);
+}];
+```
+
+Logs
+-------------
+
+You can retrieve last logs via this API. Each log entry contains: 
+ * Timestamp in ISO-8601 format
+ * Client IP
+ * Request Headers (API-Key is obfuscated)
+ * Request URL
+ * Request method
+ * Request body
+ * Answer HTTP code
+ * Answer body
+ * SHA1 ID of entry
+
+You can retrieve log of your last 1000 API calls and you can navigate into them using the offset/length parameter:
+ * ***offset***: Specify the first entry to retrieve (0-based, 0 is the most recent log entry). Default to 0.
+ * ***length***: Specify the maximum number of entries to retrieve starting at offset. Default to 10. Maximum allowed value: 1000.
+
+```objc
+// Get last 10 log entries
+[apiClient getLogs:^(ASAPIClient *client, NSDictionary *result) {
+    NSLog(@"GetLogs success: %@", result);
+} failure:^(ASAPIClient *client, NSString *errorMessage) {
+    NSLog(@"GetLogs failure: %@", errorMessage);
+}];
+// Get last 100 log entries
+[apiClient getLogsWithOffset:0 length:100 success:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSDictionary *result) {
+    NSLog(@"GetLog success: %@", result);
+} failure:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString *errorMessage) {
+    NSLog(@"GetLogs failure: %@", errorMessage);
+}];
 ```
