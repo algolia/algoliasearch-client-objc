@@ -119,8 +119,6 @@ You can use the following optional arguments on ASQuery class:
 
  * **fullTextQuery**: the full text query.
  * **attributesToRetrieve**: specify the list of attribute names to retrieve.<br/>By default all attributes are retrieved.
- * **numerics**: specify the list of numeric filters you want to apply separated by a comma. The syntax of one filter is `attributeName` followed by `operand` followed by `value`. Supported operands are `<`, `<=`, `=`, `>` and `>=`. 
- You can have multiple conditions on one attribute like for example `numerics=price>100,price<1000`.
  * **attributesToHighlight**: specify the list of attribute names to highlight.<br/>By default indexed attributes are highlighted. Numerical attributes cannot be highlighted. A **matchLevel** is returned for each highlighted attribute and can contain: "full" if all the query terms were found in the attribute, "partial" if only some of the query terms were found, or "none" if none of the query terms were found.
  * **attributesToSnippet**: specify the list of attributes to snippet alongside the number of words to return (syntax is 'attributeName:nbWords').<br/>By default no snippet is computed.
  * **minWordSizeForApprox1**: the minimum number of characters in a query word to accept one typo in this word.<br/>Defaults to 3.
@@ -134,6 +132,8 @@ You can use the following optional arguments on ASQuery class:
   * **prefixAll**: all query words are interpreted as prefixes (default behavior).
   * **prefixLast**: only the last word is interpreted as a prefix. This option is recommended if you have a lot of content to speedup the processing.
   * **prefixNone**: no query word is interpreted as a prefix. This option is not recommended.
+ * **numerics**: specify the list of numeric filters you want to apply separated by a comma. The syntax of one filter is `attributeName` followed by `operand` followed by `value`. Supported operands are `<`, `<=`, `=`, `>` and `>=`. 
+ You can have multiple conditions on one attribute like for example `numerics=price>100,price<1000`.
  * **tags**: filter the query by a set of tags. You can AND tags by separating them by commas. To OR tags, you must add parentheses. For example, `tag1,(tag2,tag3)` means *tag1 AND (tag2 OR tag3)*.<br/>At indexing, tags should be added in the _tags attribute of objects (for example `{"_tags":["tag1","tag2"]}` )
 
 ```objc
@@ -496,12 +496,12 @@ Delete an existing key:
 Copy or rename an index
 -------------
 
-You can easily copy or rename an existing index using the `copy` and `move` command. 
+You can easily copy or rename an existing index using the `copy` and `move` commands.
 **Note**: Move and copy commands overwrite destination index.
 
-The move command is particulary usefull is you want to update a big index atomically from one version to another. For example, if you recreate your index `MyIndex`each night from a database by batch, you have just to :
- 1. Import your database in a new index using [batches](#batch-writes). We will call this new index `MyNewIndex`
- 1. Rename `MyNewIndex` in `MyIndex` using the move command. This will automatically override the old index and new queries will be served on this index.
+The move command is particularly useful is you want to update a big index atomically from one version to another. For example, if you recreate your index `MyIndex` each night from a database by batch, you just have to:
+ 1. Import your database in a new index using [batches](#batch-writes). Let's call this new index `MyNewIndex`.
+ 1. Rename `MyNewIndex` in `MyIndex` using the move command. This will automatically override the old index and new queries will be served on the new one.
 
 ```objc
 // Rename MyNewIndex in MyIndex
@@ -521,7 +521,7 @@ The move command is particulary usefull is you want to update a big index atomic
 Logs
 -------------
 
-You can retrieve last logs via this API. Each log entry contains: 
+You can retrieve the last logs via this API. Each log entry contains: 
  * Timestamp in ISO-8601 format
  * Client IP
  * Request Headers (API-Key is obfuscated)
@@ -532,9 +532,9 @@ You can retrieve last logs via this API. Each log entry contains:
  * Answer body
  * SHA1 ID of entry
 
-You can retrieve log of your last 1000 API calls and you can navigate into them using the offset/length parameter:
+You can retrieve the logs of your last 1000 API calls and browse them using the offset/length parameters:
  * ***offset***: Specify the first entry to retrieve (0-based, 0 is the most recent log entry). Default to 0.
- * ***length***: Specify the maximum number of entries to retrieve starting at offset. Default to 10. Maximum allowed value: 1000.
+ * ***length***: Specify the maximum number of entries to retrieve starting at offset. Defaults to 10. Maximum allowed value: 1000.
 
 ```objc
 // Get last 10 log entries
