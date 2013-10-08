@@ -158,8 +158,8 @@
  * Set settings for this index
  *
  * @param settigns the settings object that can contains :
- *  - minWordSizeForApprox1 (integer) the minimum number of characters to accept one typo (default = 3)
- *  - minWordSizeForApprox2: (integer) the minimum number of characters to accept two typos (default = 7)
+ *  - minWordSizefor1Typo (integer) the minimum number of characters to accept one typo (default = 3)
+ *  - minWordSizefor2Typos: (integer) the minimum number of characters to accept two typos (default = 7)
  *  - hitsPerPage: (integer) the number of hits per page (default = 10)
  *  - attributesToRetrieve: (array of strings) default list of attributes to retrieve for objects
  *  - attributesToHighlight: (array of strings) default list of attributes to highlight
@@ -172,6 +172,9 @@
  *       - Control part of the ranking (see the ranking parameter for full explanation).
  *         Matches in attributes at the beginning of the list will be considered more important than matches
  *         in attributes further down the list.
+ *         In one attribute, matching text at the beginning of the attribute will be considered more important than text after, 
+ *         you can disable this behavior if you add your attribute inside `unordered(AttributeName)`, 
+ *         for example `attributesToIndex:["title", "unordered(text)"]`.
  *  - ranking: (array of strings) controls the way results are sorted.
  *     We have four available criteria:
  *       - typo (sort according to number of typos),

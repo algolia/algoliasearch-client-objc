@@ -127,12 +127,12 @@
     if (self.minWordSizeForApprox1 != 3) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendFormat:@"minWordSizeForApprox1=%zd", self.minWordSizeForApprox1];
+        [stringBuilder appendFormat:@"minWordSizefor1Typo=%zd", self.minWordSizeForApprox1];
     }
     if (self.minWordSizeForApprox2 != 7) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendFormat:@"minWordSizeForApprox2=%zd", self.minWordSizeForApprox2];
+        [stringBuilder appendFormat:@"minWordSizefor2Typos=%zd", self.minWordSizeForApprox2];
     }
     if (self.getRankingInfo) {
         if ([stringBuilder length] > 0)

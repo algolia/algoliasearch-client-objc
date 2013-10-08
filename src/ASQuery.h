@@ -63,8 +63,8 @@
 
 /**
  * Select how the query words are interpreted:
- * "prefixAll": all query words are interpreted as prefixes (default behavior).
- * "prefixLast": only the last word is interpreted as a prefix. This option is recommended if you have a lot of content to speedup the processing.
+ * "prefixAll": all query words are interpreted as prefixes,
+ * "prefixLast": only the last word is interpreted as a prefix (default behavior),
  * "prefixNone": no query word is interpreted as a prefix. This option is not recommended.
  */
 @property (strong, nonatomic) NSString            *queryType;
