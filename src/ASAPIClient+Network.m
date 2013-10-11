@@ -31,43 +31,48 @@
 
 -(void) cancelQueries:(NSString*)method path:(NSString*)path
 {
-    NSUInteger count = [self.clients count];
+    NSUInteger count = [self.operationManagers count];
     for (NSUInteger i = 0; i < count; ++i) {
-        AFHTTPClient *httpClient = [self.clients objectAtIndex:i];
-        [httpClient cancelAllHTTPOperationsWithMethod:method path:path];
+        AFHTTPRequestOperationManager *httpRequestOperationManager = [self.operationManagers objectAtIndex:i];
+        for (AFHTTPRequestOperation *operation in httpRequestOperationManager.operationQueue.operations) {
+            if ([operation.request.URL.path isEqualToString:path]) {
+                if ([operation.request.HTTPMethod isEqualToString:method]) {
+                    [operation cancel];
+                }
+            }
+        }
     }
 }
 
 -(void) performHTTPQuery:(NSString*)path method:(NSString*)method body:(NSDictionary*)body index:(NSUInteger)index
                  success:(void(^)(id JSON))success failure:(void(^)(NSString *errorMessage))failure
 {
-    assert(index < [self.clients count]);
-    AFHTTPClient *httpClient = [self.clients objectAtIndex:index];
-    NSMutableURLRequest *request = [httpClient requestWithMethod:method path:path parameters:body];
-    [request setValue:self.apiKey forHTTPHeaderField:@"X-Algolia-API-Key"];
-    [request setValue:self.applicationID forHTTPHeaderField:@"X-Algolia-Application-Id"];
-    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        success(JSON);
-    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        if (index < [self.hostnames count]) {
-            if (response.statusCode == 403) {
-                failure(@"Invalid Application-ID or API-Key");
-            } else if(response.statusCode == 404) {
-                failure(@"Resource does not exist");
+    assert(index < [self.operationManagers count]);
+    AFHTTPRequestOperationManager *httpRequestOperationManager = [self.operationManagers objectAtIndex:index];
+    NSMutableURLRequest *request = [httpRequestOperationManager.requestSerializer requestWithMethod:method URLString:path parameters:body];
+    
+    AFHTTPRequestOperation *operation = [httpRequestOperationManager HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id JSON) {
+        if (operation.response.statusCode == 200) {
+            success(JSON);
+        } else if (operation.response.statusCode == 403) {
+            failure(@"Invalid Application-ID or API-Key");
+        } else if(operation.response.statusCode == 404) {
+            failure(@"Resource does not exist");
+        } else {
+            if ((index + 1) < [self.operationManagers count]) {
+                [self performHTTPQuery:path method:method body:body index:(index + 1) success:success failure:failure];
             } else {
-                if ((index + 1) < [self.clients count]) {
-                    [self performHTTPQuery:path method:method body:body index:(index + 1) success:success failure:failure];
+                if (JSON != nil) {
+                    NSDictionary *json = (NSDictionary*)JSON;
+                    failure([json objectForKey:@"message"]);
                 } else {
-                    if (JSON != nil) {
-                        NSDictionary *json = (NSDictionary*)JSON;
-                        failure([json objectForKey:@"message"]);
-                    } else {
-                        failure(error.localizedDescription);
-                    }
+                    failure(@"No error message");
                 }
             }
         }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        failure(error.localizedDescription);
     }];
-    [httpClient.operationQueue addOperation:operation];
+    [httpRequestOperationManager.operationQueue addOperation:operation];
 }
 @end

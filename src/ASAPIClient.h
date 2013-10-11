@@ -174,5 +174,5 @@
 @property (strong, nonatomic) NSString *applicationID;
 @property (strong, nonatomic) NSString *apiKey;
 @property (strong, nonatomic) NSArray  *hostnames;
-@property (strong, nonatomic) NSArray  *clients;
+@property (strong, nonatomic) NSArray  *operationManagers;
 @end
