@@ -129,7 +129,7 @@
                     success:(void(^)(ASRemoteIndex *index, NSDictionary *partialObject, NSString *objectID, NSDictionary *result))success
                     failure:(void(^)(ASRemoteIndex *index, NSDictionary *partialObject, NSString *objectID, NSString *errorMessage))failure
 {
-    NSMutableString *path = [NSString stringWithFormat:@"/1/indexes/%@/%@/partial", self.urlEncodedIndexName, [ASAPIClient urlEncode:objectID]];
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/%@/partial", self.urlEncodedIndexName, [ASAPIClient urlEncode:objectID]];
     [self.apiClient performHTTPQuery:path method:@"POST" body:partialObject index:0 success:^(id JSON) {
         if (success != nil)
             success(self, partialObject, objectID, JSON);
@@ -143,7 +143,7 @@
            success:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSDictionary *result))success
            failure:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSString *errorMessage))failure
 {
-    NSMutableString *path = [NSString stringWithFormat:@"/1/indexes/%@/%@", self.urlEncodedIndexName, [ASAPIClient urlEncode:objectID]];
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/%@", self.urlEncodedIndexName, [ASAPIClient urlEncode:objectID]];
     [self.apiClient performHTTPQuery:path method:@"PUT" body:object index:0 success:^(id JSON) {
         if (success != nil)
             success(self, object, objectID, JSON);

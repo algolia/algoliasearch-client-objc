@@ -69,16 +69,17 @@
             @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"APIKey must be set" userInfo:nil];
         if ([self.hostnames count] == 0)
             @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"List of hosts must be set" userInfo:nil];
-        NSMutableArray *httpClients = [[NSMutableArray alloc] init];
+        NSMutableArray *httpRequestOperationManagers = [[NSMutableArray alloc] init];
         for (NSString *host in self.hostnames) {
             NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@", host]];
-            AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
-            [httpClient registerHTTPOperationClass:[AFJSONRequestOperation class]];
-            [httpClient setDefaultHeader:@"Accept" value:@"application/json"];
-            [httpClient setParameterEncoding:AFJSONParameterEncoding];
-            [httpClients addObject:httpClient];
+            AFHTTPRequestOperationManager *httpRequestOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:url];
+            httpRequestOperationManager.responseSerializer = [AFJSONResponseSerializer serializer];
+            httpRequestOperationManager.requestSerializer = [AFJSONRequestSerializer serializer];
+            [httpRequestOperationManager.requestSerializer setValue:self.apiKey forHTTPHeaderField:@"X-Algolia-API-Key"];
+            [httpRequestOperationManager.requestSerializer setValue:self.applicationID forHTTPHeaderField:@"X-Algolia-Application-Id"];
+            [httpRequestOperationManagers addObject:httpRequestOperationManager];
         }
-        clients = httpClients;
+        operationManagers = httpRequestOperationManagers;
     }
     return self;
 }
@@ -107,16 +108,17 @@
             @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"APIKey must be set" userInfo:nil];
         if ([self.hostnames count] == 0)
             @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"List of hosts must be set" userInfo:nil];
-        NSMutableArray *httpClients = [[NSMutableArray alloc] init];
+        NSMutableArray *httpRequestOperationManagers = [[NSMutableArray alloc] init];
         for (NSString *host in self.hostnames) {
             NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@", host]];
-            AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
-            [httpClient registerHTTPOperationClass:[AFJSONRequestOperation class]];
-            [httpClient setDefaultHeader:@"Accept" value:@"application/json"];
-            [httpClient setParameterEncoding:AFJSONParameterEncoding];
-            [httpClients addObject:httpClient];
+            AFHTTPRequestOperationManager *httpRequestOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:url];
+            httpRequestOperationManager.responseSerializer = [AFJSONResponseSerializer serializer];
+            httpRequestOperationManager.requestSerializer = [AFJSONRequestSerializer serializer];
+            [httpRequestOperationManager.requestSerializer setValue:self.apiKey forHTTPHeaderField:@"X-Algolia-API-Key"];
+            [httpRequestOperationManager.requestSerializer setValue:self.applicationID forHTTPHeaderField:@"X-Algolia-Application-Id"];
+            [httpRequestOperationManagers addObject:httpRequestOperationManager];
         }
-        clients = httpClients;
+        operationManagers = httpRequestOperationManagers;
     }
     return self;
 }
@@ -266,5 +268,5 @@
 @synthesize applicationID;
 @synthesize apiKey;
 @synthesize hostnames;
-@synthesize clients;
+@synthesize operationManagers;
 @end
