@@ -49,7 +49,7 @@
 {
     assert(index < [self.operationManagers count]);
     AFHTTPRequestOperationManager *httpRequestOperationManager = [self.operationManagers objectAtIndex:index];
-    NSMutableURLRequest *request = [httpRequestOperationManager.requestSerializer requestWithMethod:method URLString:path parameters:body];
+    NSMutableURLRequest *request = [httpRequestOperationManager.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:path relativeToURL:httpRequestOperationManager.baseURL] absoluteString]  parameters:body];
     
     AFHTTPRequestOperation *operation = [httpRequestOperationManager HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id JSON) {
         if (operation.response.statusCode == 200) {
@@ -71,8 +71,13 @@
             }
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        failure(error.localizedDescription);
+        if ((index + 1) < [self.operationManagers count]) {
+            [self performHTTPQuery:path method:method body:body index:(index + 1) success:success failure:failure];
+        } else {
+            failure(error.localizedDescription);
+        }
     }];
     [httpRequestOperationManager.operationQueue addOperation:operation];
+
 }
 @end
