@@ -127,6 +127,7 @@ You can use the following optional arguments on ASQuery class:
  * **page**: *(pagination parameter)* page to retrieve (zero base).<br/>Defaults to 0.
  * **hitsPerPage**: *(pagination parameter)* number of hits per page.<br/>Defaults to 10.
  * **searchAroundLatitude:longitude:maxDist**: search for entries around a given latitude/longitude.<br/>You specify the maximum distance in meters with the **radius** parameter (in meters).<br/>At indexing, you should specify geoloc of an object with the _geoloc attribute (in the form `{"_geoloc":{"lat":48.853409, "lng":2.348800}}`)
+  * **searchAroundLatitude:longitude:maxDist:prevision**: search for entries around a given latitude/longitude with a given precision for ranking (for example if you set precision=100, two objects that are distant of less than 100m will be considered as identical for "geo" ranking parameter).
  * **searchInsideBoundingBoxWithLatitudeP1:longitudeP1:latitudeP2:longitudeP2:**: search for entries inside a given area defined by the two extreme points of a rectangle.<br/>At indexing, you should specify geoloc of an object with the _geoloc attribute (in the form `{"_geoloc":{"lat":48.853409, "lng":2.348800}}`)
  * **queryType**: select how the query words are interpreted:
   * **prefixAll**: all query words are interpreted as prefixes,
