@@ -500,22 +500,31 @@ Copy or rename an index
 You can easily copy or rename an existing index using the `copy` and `move` commands.
 **Note**: Move and copy commands overwrite destination index.
 
+```objc
+// Rename MyIndex in MyIndexNewName
+[apiClient moveIndex:@"MyIndex" to:@"MyIndexNewName" success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
+    NSLog(@"Move Success: %@", result);
+} failure:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage) {
+    NSLog(@"Move Failure: %@", errorMessage);
+}];
+// Copy MyIndex in MyIndexCopy
+[apiClient copyIndex:@"MyIndex" to:@"MyIndexCopy" success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
+    NSLog(@"Copy Success: %@", result);
+} failure:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage) {
+    NSLog(@"Copy Failure: %@", errorMessage);
+}];
+```
+
 The move command is particularly useful is you want to update a big index atomically from one version to another. For example, if you recreate your index `MyIndex` each night from a database by batch, you just have to:
  1. Import your database in a new index using [batches](#batch-writes). Let's call this new index `MyNewIndex`.
  1. Rename `MyNewIndex` in `MyIndex` using the move command. This will automatically override the old index and new queries will be served on the new one.
 
 ```objc
-// Rename MyNewIndex in MyIndex
+// Rename MyNewIndex in MyIndex (and overwrite it)
 [apiClient moveIndex:@"MyNewIndex" to:@"MyIndex" success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
     NSLog(@"Move Success: %@", result);
 } failure:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage) {
     NSLog(@"Move Failure: %@", errorMessage);
-}];
-// Copy MyNewIndex in MyIndex
-[apiClient copyIndex:@"MyNewIndex" to:@"MyIndex" success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
-    NSLog(@"Copy Success: %@", result);
-} failure:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage) {
-    NSLog(@"Copy Failure: %@", errorMessage);
 }];
 ```
 
