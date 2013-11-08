@@ -98,14 +98,14 @@
  * Filter the query by a set of tags. You can AND tags by separating them by commas. To OR tags, you must add parentheses. For example tag1,(tag2,tag3) means tag1 AND (tag2 OR tag3).
  * At indexing, tags should be added in the _tags attribute of objects (for example {"_tags":["tag1","tag2"]} )
  */
-@property (strong, nonatomic) NSString            *tagsFilter;
+@property (strong, nonatomic) NSString            *tagFilters;
 
 /**
  * Add a list of numeric filters separated by a comma.
  * The syntax of one filter is `attributeName` followed by `operand` followed by `value. Supported operands are `<`, `<=`, `=`, `>` and `>=`.
  * You can have multiple conditions on one attribute like for example `numerics=price>100,price<1000`.
  */
-@property (strong, nonatomic) NSString            *numericsFilter;
+@property (strong, nonatomic) NSString            *numericFilters;
 /**
  * Set the full text query.
  */
@@ -149,7 +149,7 @@
 /**
  * Filter the query by a list of facets. Each facet is encoded as `attributeName:value`. For example: ["category:Book","author:John%20Doe"].
  */
-@property (strong, nonatomic) NSArray              *facetsFilter;
+@property (strong, nonatomic) NSArray              *facetFilters;
 
 /**
  * List of object attributes that you want to use for faceting. <br/>
