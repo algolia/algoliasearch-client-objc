@@ -205,7 +205,7 @@
 /**
  * Delete the index content without removing settings and index specific API keys.
  */
--(void) clearIndex:((void(^)(ASRemoteIndex *index, NSDictionary *result))success
+-(void) clearIndex:(void(^)(ASRemoteIndex *index, NSDictionary *result))success
             failure:(void(^)(ASRemoteIndex *index, NSString *errorMessage))failure;
 
 /**
