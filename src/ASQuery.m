@@ -43,8 +43,8 @@
         self.attributesToHighlight = nil;
         self.attributesToRetrieve = nil;
         self.attributesToSnippet = nil;
-        self.tags = nil;
-        self.numerics = nil;
+        self.tagsFilter = nil;
+        self.numericsFilter = nil;
         self.fullTextQuery = nil;
         self.insideBoundingBox = nil;
         self.aroundLatLong = nil;
@@ -66,8 +66,8 @@
         self.attributesToHighlight = nil;
         self.attributesToRetrieve = nil;
         self.attributesToSnippet = nil;
-        self.tags = nil;
-        self.numerics = nil;
+        self.tagsFilter = nil;
+        self.numericsFilter = nil;
         self.insideBoundingBox = nil;
         self.aroundLatLong = nil;
         self.queryType = nil;
@@ -130,6 +130,43 @@
             first = NO;
         }
     }
+    if (self.facetsFilter != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"facetsFilter="];
+        NSError* err = nil;
+        NSData *data = [NSJSONSerialization dataWithJSONObject:facetsFilter options:NSJSONWritingPrettyPrinted error:&err];
+        if (err == nil) {
+            NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            [stringBuilder appendString:[ASAPIClient urlEncode:jsonString]];
+        } else {
+            @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"Invalid facetsFilter (should be an array of string)" userInfo:nil];
+        }
+    }
+    if (self.facets != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"facets="];
+        BOOL first = YES;
+        for (NSString* attribute in self.facets) {
+            if (!first)
+                [stringBuilder appendString:@","];
+            [stringBuilder appendString:[ASAPIClient urlEncode:attribute]];
+            first = NO;
+        }
+    }
+    if (self.optionalWords != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"optionalWords="];
+        BOOL first = YES;
+        for (NSString* word in self.optionalWords) {
+            if (!first)
+                [stringBuilder appendString:@","];
+            [stringBuilder appendString:[ASAPIClient urlEncode:word]];
+            first = NO;
+        }
+    }
     if (self.minWordSizeForApprox1 != 3) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
@@ -160,15 +197,15 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"queryType=%@", [ASAPIClient urlEncode:self.queryType]];
     }
-    if (self.tags != nil) {
+    if (self.tagsFilters != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendFormat:@"tags=%@", [ASAPIClient urlEncode:self.tags]];
+        [stringBuilder appendFormat:@"tags=%@", [ASAPIClient urlEncode:self.tagsFilter]];
     }
-    if (self.numerics != nil) {
+    if (self.numericsFilter != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendFormat:@"numerics=%@", [ASAPIClient urlEncode:self.numerics]];
+        [stringBuilder appendFormat:@"numerics=%@", [ASAPIClient urlEncode:self.numericsFilter]];
     }
     if (self.insideBoundingBox != nil) {
         if ([stringBuilder length] > 0)
@@ -190,7 +227,8 @@
 @synthesize attributesToRetrieve;
 @synthesize attributesToHighlight;
 @synthesize attributesToSnippet;
-@synthesize tags;
+@synthesize tagsFilter;
+@synthesize numericsFilter;
 @synthesize insideBoundingBox;
 @synthesize aroundLatLong;
 @synthesize fullTextQuery;
@@ -200,4 +238,7 @@
 @synthesize hitsPerPage;
 @synthesize getRankingInfo;
 @synthesize queryType;
+@synthesize facetsFilter;
+@synthesize facets;
+@synthesize optionalWords;
 @end

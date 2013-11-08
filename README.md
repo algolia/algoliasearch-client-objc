@@ -1,8 +1,19 @@
 Algolia Search API Client for iOS and OS X
 ==================
 
-This Objective-C client let you easily use the Algolia Search API from your application.
-The service is currently in Beta, you can request an invite on our [website](http://www.algolia.com/pricing/).
+[Algolia Search](http://www.algolia.com) is a search API that provides hosted full-text, numerical and faceted search.
+Algolia’s Search API makes it easy to deliver a great search experience in your apps & websites providing:
+
+ * REST and JSON-based API
+ * search among infinite attributes from a single searchbox
+ * instant-search after each keystroke
+ * relevance & popularity combination
+ * typo-tolerance in any language
+ * faceting
+ * 99.99% SLA
+ * first-class data security
+
+This Objective-C client let you easily use the Algolia Search API from your application (iOS & OSX).
 
 Table of Content
 -------------
@@ -21,6 +32,7 @@ Table of Content
 1. [Index settings](#index-settings)
 1. [List indexes](#list-indexes)
 1. [Delete an index](#delete-an-index)
+1. [Clear an index](#clear-an-index)
 1. [Wait indexing](#wait-indexing)
 1. [Batch writes](#batch-writes)
 1. [Security / User API Keys](#security--user-api-keys)
@@ -31,7 +43,7 @@ Setup
 -------------
 To setup your project, follow these steps:
 
- 1. [Download and add sources](https://github.com/algolia/algoliasearch-client-objc/archive/master.zip) to your project or use cocoapods by adding `pod 'AlgoliaSearch-Client', '~> 3.0'` in your Podfile (or `pod 'AlgoliaSearch-Client', '~> 2.0'` if your are using AFNetworking 1.x in your project)  or drop the source folder on your project (If you are not using a Podfile, you will also need to add [AFNetworking library](https://github.com/AFNetworking/AFNetworking) in your project).
+ 1. [Download and add sources](https://github.com/algolia/algoliasearch-client-objc/archive/master.zip) to your project or use cocoapods by adding `pod 'AlgoliaSearch-Client', '~> 3.1'` in your Podfile (or `pod 'AlgoliaSearch-Client', '~> 2.0'` if your are using AFNetworking 1.x in your project)  or drop the source folder on your project (If you are not using a Podfile, you will also need to add [AFNetworking library](https://github.com/AFNetworking/AFNetworking) in your project).
  2. Add the `#import "ASAPIClient.h"` call to your project
  3. Initialize the client with your ApplicationID and API-Key. You can find all of them on [your Algolia account](http://www.algolia.com/users/edit).
 
@@ -117,25 +129,30 @@ Search
 To perform a search, you just need to initialize the index and perform a call to the search function.<br/>
 You can use the following optional arguments on ASQuery class:
 
- * **fullTextQuery**: the full text query.
- * **attributesToRetrieve**: specify the list of attribute names to retrieve.<br/>By default all attributes are retrieved.
- * **attributesToHighlight**: specify the list of attribute names to highlight.<br/>By default indexed attributes are highlighted. Numerical attributes cannot be highlighted. A **matchLevel** is returned for each highlighted attribute and can contain: "full" if all the query terms were found in the attribute, "partial" if only some of the query terms were found, or "none" if none of the query terms were found.
- * **attributesToSnippet**: specify the list of attributes to snippet alongside the number of words to return (syntax is 'attributeName:nbWords').<br/>By default no snippet is computed.
- * **minWordSizefor1Typo**: the minimum number of characters in a query word to accept one typo in this word.<br/>Defaults to 3.
- * **minWordSizefor2Typos**: the minimum number of characters in a query word to accept two typos in this word.<br/>Defaults to 7.
- * **getRankingInfo**: if set to YES, the result hits will contain ranking information in _rankingInfo attribute.
- * **page**: *(pagination parameter)* page to retrieve (zero base).<br/>Defaults to 0.
- * **hitsPerPage**: *(pagination parameter)* number of hits per page.<br/>Defaults to 10.
- * **searchAroundLatitude:longitude:maxDist**: search for entries around a given latitude/longitude.<br/>You specify the maximum distance in meters with the **radius** parameter (in meters).<br/>At indexing, you should specify geoloc of an object with the _geoloc attribute (in the form `{"_geoloc":{"lat":48.853409, "lng":2.348800}}`)
-  * **searchAroundLatitude:longitude:maxDist:precision**: search for entries around a given latitude/longitude with a given precision for ranking (for example if you set precision=100, two objects that are distant of less than 100m will be considered as identical for "geo" ranking parameter).
- * **searchInsideBoundingBoxWithLatitudeP1:longitudeP1:latitudeP2:longitudeP2:**: search for entries inside a given area defined by the two extreme points of a rectangle.<br/>At indexing, you should specify geoloc of an object with the _geoloc attribute (in the form `{"_geoloc":{"lat":48.853409, "lng":2.348800}}`)
- * **queryType**: select how the query words are interpreted:
+ * **page**: (integer) Pagination parameter used to select the page to retrieve.<br/>Page is zero-based and defaults to 0. Thus, to retrieve the 10th page you need to set `page=9`
+ * **hitsPerPage**: (integer) Pagination parameter used to select the number of hits per page. Defaults to 20.
+ * **attributesToRetrieve**: The list of object attributes you want to retrieve (let you minimize the answer size). By default, all attributes are retrieved. You can also use `*` to retrieve all values when an **attributesToRetrieve** setting is specified for your index.
+ * **attributesToHighlight**: The list of attributes you want to highlight according to the query. If an attribute has no match for the query, the raw value is returned. By default all indexed text attributes are highlighted. You can use `*` if you want to highlight all textual attributes. Numerical attributes are not highlighted. A matchLevel is returned for each highlighted attribute and can contain:
+  * **full**: if all the query terms were found in the attribute,
+  * **partial**: if only some of the query terms were found,
+  * **none**: if none of the query terms were found.
+ * **attributesToSnippet**: The list of attributes to snippet alongside the number of words to return (syntax is `attributeName:nbWords`). By default no snippet is computed.
+ * **minWordSizeForApprox1**: the minimum number of characters in a query word to accept one typo in this word.<br/>Defaults to 3.
+ * **minWordSizeForApprox2**: the minimum number of characters in a query word to accept two typos in this word.<br/>Defaults to 7.
+ * **getRankingInfo**: if set to YES, the result hits will contain ranking information in **_rankingInfo** attribute.
+ * **searchAroundLatitude:longitude:maxDist**: search for entries around a given latitude/longitude.<br/>You specify the maximum distance in meters with the **maxDist** parameter (in meters).<br/>At indexing, you should specify geoloc of an object with the _geoloc attribute (in the form `{"_geoloc":{"lat":48.853409, "lng":2.348800}}`)
+ * **searchAroundLatitude:longitude:maxDist:precision**: search for entries around a given latitude/longitude with a given precision for ranking (for example if you set precision=100, two objects that are distant of less than 100m will be considered as identical for "geo" ranking parameter).
+ * **searchInsideBoundingBoxWithLatitudeP1:longitudeP1:latitudeP2:longitudeP2**: search entries inside a given area defined by the two extreme points of a rectangle (defined by 4 floats: p1Lat,p1Lng,p2Lat,p2Lng).<br/>For example `searchInsideBoundingBoxWithLatitudeP1(47.3165, 4.9665, 47.3424, 5.0201)`).<br/>At indexing, you should specify geoloc of an object with the _geoloc attribute (in the form `{"_geoloc":{"lat":48.853409, "lng":2.348800}}`)
+ * **numericsFilter**: a string that contains the list of numeric filters you want to apply separated by a comma. The syntax of one filter is `attributeName` followed by `operand` followed by `value`. Supported operands are `<`, `<=`, `=`, `>` and `>=`. 
+ You can have multiple conditions on one attribute like for example `numerics=price>100,price<1000`. You can also use a string array encoding (for example `numericFilters: ["price>100","price<1000"]`).
+ * **tagsFilter0**: filter the query by a set of tags. You can AND tags by separating them by commas. To OR tags, you must add parentheses. For example, `tags=tag1,(tag2,tag3)` means *tag1 AND (tag2 OR tag3)*. You can also use a string array encoding, for example `tagFilters: ["tag1",["tag2","tag3"]]` means *tag1 AND (tag2 OR tag3)*.<br/>At indexing, tags should be added in the **_tags** attribute of objects (for example `{"_tags":["tag1","tag2"]}`).
+ * **facetsFilter**: filter the query by a list of facets. Each facet is encoded as `attributeName:value`. For example: `["category:Book","author:John%20Doe"]`).
+ * **facets**: List of object attributes that you want to use for faceting. <br/>Only attributes that have been added in **attributesForFaceting** index setting can be used in this parameter. You can also use `*` to perform faceting on all attributes specified in **attributesForFaceting**.
+ * **setQueryType**: select how the query words are interpreted, it can be one of the following value:
   * **prefixAll**: all query words are interpreted as prefixes,
   * **prefixLast**: only the last word is interpreted as a prefix (default behavior),
   * **prefixNone**: no query word is interpreted as a prefix. This option is not recommended.
- * **numerics**: specify the list of numeric filters you want to apply separated by a comma. The syntax of one filter is `attributeName` followed by `operand` followed by `value`. Supported operands are `<`, `<=`, `=`, `>` and `>=`. 
- You can have multiple conditions on one attribute like for example `numerics=price>100,price<1000`.
- * **tags**: filter the query by a set of tags. You can AND tags by separating them by commas. To OR tags, you must add parentheses. For example, `tag1,(tag2,tag3)` means *tag1 AND (tag2 OR tag3)*.<br/>At indexing, tags should be added in the _tags attribute of objects (for example `{"_tags":["tag1","tag2"]}` )
+ * **optionalWords**: a string that contains the list of words that should be considered as optional when found in the query. The list of words is comma separated.
 
 ```objc
 ASRemoteIndex *index = [apiClient getIndex:@"contacts"];
@@ -161,17 +178,6 @@ The server response will look like:
     {
       "firstname": "Jimmie",
       "lastname": "Barninger",
-      "company": "California Paint & Wlpaper Str",
-      "address": "Box #-4038",
-      "city": "Modesto",
-      "county": "Stanislaus",
-      "state": "CA",
-      "zip": "95352",
-      "phone": "209-525-7568",
-      "fax": "209-525-4389",
-      "email": "jimmie@barninger.com",
-      "web": "http://www.jimmiebarninger.com",
-      "followers": 3947,
       "objectID": "433",
       "_highlightResult": {
         "firstname": {
@@ -185,18 +191,6 @@ The server response will look like:
         "company": {
           "value": "California <em>Paint</em> & Wlpaper Str",
           "matchLevel": "partial"
-        },
-        "address": {
-          "value": "Box #-4038",
-          "matchLevel": "none"
-        },
-        "city": {
-          "value": "Modesto",
-          "matchLevel": "none"
-        },
-        "email": {
-          "value": "<em>jimmie</em>@barninger.com",
-          "matchLevel": "partial"
         }
       }
     }
@@ -207,7 +201,7 @@ The server response will look like:
   "hitsPerPage": 20,
   "processingTimeMS": 1,
   "query": "jimmie paint",
-  "params": "query=jimmie+paint&"
+  "params": "query=jimmie+paint&attributesToRetrieve=firstname,lastname&hitsPerPage=50"
 }
 ```
 
@@ -302,31 +296,34 @@ You can retrieve all settings using the `getSettings` function. The result will 
  * **minWordSizefor1Typo**: (integer) the minimum number of characters to accept one typo (default = 3).
  * **minWordSizefor2Typos**: (integer) the minimum number of characters to accept two typos (default = 7).
  * **hitsPerPage**: (integer) the number of hits per page (default = 10).
- * **attributesToRetrieve**: (array of strings) default list of attributes to retrieve in objects.
- * **attributesToHighlight**: (array of strings) default list of attributes to highlight.
- * **attributesToSnippet**: (array of strings) default list of attributes to snippet alongside the number of words to return (syntax is 'attributeName:nbWords')<br/>By default no snippet is computed.
- * **attributesToIndex**: (array of strings) the list of fields you want to index.<br/>By default all textual and numerical attributes of your objects are indexed, but you should update it to get optimal results.<br/>This parameter has two important uses:
-  * *Limits the attributes to index*.<br/>For example if you store a binary image in base64, you want to store it and be able to retrieve it but you don't want to search in the base64 string.
-  * *Controls part of the ranking*.<br/>Matches in attributes at the beginning of the list will be considered more important than matches in attributes further down the list. In one attribute, matching text at the beginning of the attribute will be considered more important than text after, you can disable this behavior if you add your attribute inside `unordered(AttributeName)`, for example `attributesToIndex:["title", "unordered(text)"]`.
- * **ranking**: (array of strings) controls the way hits are sorted.<br/>We have six available criteria:
+ * **attributesToRetrieve**: (array of strings) default list of attributes to retrieve in objects. If set to null, all attributes are retrieved.
+ * **attributesToHighlight**: (array of strings) default list of attributes to highlight. If set to null, all indexed attributes are highlighted.
+ * **attributesToSnippet**: (array of strings) default list of attributes to snippet alongside the number of words to return (syntax is 'attributeName:nbWords')<br/>By default no snippet is computed. If set to null, no snippet is computed.
+ * **attributesToIndex**: (array of strings) the list of fields you want to index.<br/>If set to null, all textual and numerical attributes of your objects are indexed, but you should update it to get optimal results.<br/>This parameter has two important uses:
+  * *Limit the attributes to index*.<br/>For example if you store a binary image in base64, you want to store it and be able to retrieve it but you don't want to search in the base64 string.
+  * *Control part of the ranking*.<br/>(see the ranking parameter for full explanation) Matches in attributes at the beginning of the list will be considered more important than matches in attributes further down the list. In one attribute, matching text at the beginning of the attribute will be considered more important than text after, you can disable this behavior if you add your attribute inside `unordered(AttributeName)`, for example `attributesToIndex: ["title", "unordered(text)"]`.
+ * **attributesForFaceting**: (array of strings) The list of fields you want to use for faceting. All strings in the attribute selected for faceting are extracted and added as a facet. If set to null, no attribute is used for faceting.
+ * **ranking**: (array of strings) controls the way results are sorted.<br/>We have six available criteria: 
   * **typo**: sort according to number of typos,
-  * **geo**: sort according to decreasing distance when performing a geo-location based search,
-  * **proximity**: sort according to the proximity of query words in hits, 
-  * **attribute**: sort according to the order of attributes defined by **attributesToIndex**,
+  * **geo**: sort according to decreassing distance when performing a geo-location based search,
+  * **proximity**: sort according to the proximity of query words in hits,
+  * **attribute**: sort according to the order of attributes defined by attributesToIndex,
   * **exact**: sort according to the number of words that are matched identical to query word (and not as a prefix),
-  * **custom**: sort according to a user defined formula set in **customRanking** attribute.
-  <br/>The default order is `["typo", "geo", "proximity", "attribute", "exact", "custom"]`. We strongly recommend to keep this configuration.
+  * **custom**: sort according to a user defined formula set in **customRanking** attribute.<br/>The standard order is ["typo", "geo", "proximity", "attribute", "exact", "custom"]
  * **customRanking**: (array of strings) lets you specify part of the ranking.<br/>The syntax of this condition is an array of strings containing attributes prefixed by asc (ascending order) or desc (descending order) operator.
- For example `"customRanking" => ["desc(population)", "asc(name)"]`
- * **queryType**: select how the query words are interpreted:
+For example `"customRanking" => ["desc(population)", "asc(name)"]`  
+ * **queryType**: Select how the query words are interpreted, it can be one of the following value:
   * **prefixAll**: all query words are interpreted as prefixes,
   * **prefixLast**: only the last word is interpreted as a prefix (default behavior),
   * **prefixNone**: no query word is interpreted as a prefix. This option is not recommended.
+ * **highlightPreTag**: (string) Specify the string that is inserted before the highlighted parts in the query result (default to "&lt;em&gt;").
+ * **highlightPostTag**: (string) Specify the string that is inserted after the highlighted parts in the query result (default to "&lt;/em&gt;").
+ * **optionalWords**: (array of strings) Specify a list of words that should be considered as optional when found in the query.
 
 You can easily retrieve settings or update them:
 
 ```objc
-[index getSettings:^(NSDictionary *result) {
+[index getSettings:^(ASRemoteIndex *index, NSDictionary *result) {
     NSLog(@"Settings: %@", result);
 } failure:nil];
 ```
@@ -342,7 +339,7 @@ List indexes
 You can list all your indexes with their associated information (number of entries, disk size, etc.) with the `listIndexes` method:
 
 ```objc
-[client listIndexes:^(id result) {
+[client listIndexes:^(ASAPIClient *client, NSDictionary *result) {
     NSLog(@"Indexes: %@", result);
 } failure:nil];
 ```
@@ -355,6 +352,17 @@ You can delete an index using its name:
 [client deleteIndex:@"contacts" success:nil 
   failure:^(ASAPIClient *client, NSString *indexName, NSString *errorMessage) {
     NSLog(@"Could not delete: %@", errorMessage);
+}];
+```
+
+Clear an index
+-------------
+You can delete the index content without removing settings and index specific API keys with the clearIndex command:
+
+```objc
+[index clearIndex:nil 
+  failure:^(ASRemoteIndex *index, NSString *errorMessage) {
+    NSLog(@"Could not clear index: %@", errorMessage);
 }];
 ```
 
@@ -451,16 +459,20 @@ Example of API Key creation:
     NSLog(@"API Key:%@", [result objectForKey:@"key"]);
 } failure:nil];
 ```
+You can also create an API Key with advanced restrictions:
 
-You can also create a temporary API key that will be valid only for a specific period of time (in seconds):
+ * Add a validity period: the key will be valid only for a specific period of time (in seconds),
+ * Specify the maximum number of API calls allowed from an IP address per hour. Each time an API call is performed with this key, a check is performed. If the IP at the origin of the call did more than this number of calls in the last hour, a 403 code is returned. Defaults to 0 (no rate limit). This parameter can be used to protect you from attempts at retrieving your entire content by massively querying the index.
+ * Specify the maximum number of hits this API key can retrieve in one call. Defaults to 0 (unlimited). This parameter can be used to protect you from attempts at retrieving your entire content by massively querying the index.
+
 ```objc
 // Creates a new global API key that is valid for 300 seconds
-[apiClient addUserKey:[NSArray arrayWithObject:@"search"] withValidity:300 
+[apiClient addUserKey:[NSArray arrayWithObject:@"search"] withValidity:300 maxQueriesPerIPPerHour:0 maxHitsPerQuery:0
   success:^(ASAPIClient *client, NSArray *acls, NSDictionary *result) {
     NSLog(@"API Key:%@", [result objectForKey:@"key"]);
 } failure:nil];
-// Creates a new index specific API key valid for 300 seconds
-[index addUserKey:[NSArray arrayWithObject:@"search"] withValidity:300 
+// Creates a new index specific API key valid for 300 seconds, with a rate limit of 100 calls per hour per IP and a maximum of 20 hits
+[index addUserKey:[NSArray arrayWithObject:@"search"] withValidity:300 maxQueriesPerIPPerHour:100 maxHitsPerQuery:20
   success:^(ASRemoteIndex *index, NSArray *acls, NSDictionary *result) {
     NSLog(@"API Key:%@", [result objectForKey:@"key"]);
 } failure:nil];

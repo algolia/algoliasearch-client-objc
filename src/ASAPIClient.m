@@ -247,10 +247,15 @@
     }];
 }
 
--(void) addUserKey:(NSArray*)acls withValidity:(NSUInteger)validity success:(void(^)(ASAPIClient *client, NSArray *acls, NSDictionary *result))success
+-(void) addUserKey:(NSArray*)acls withValidity:(NSUInteger)validity maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
+           success:(void(^)(ASAPIClient *client, NSArray *acls, NSDictionary *result))success
            failure:(void(^)(ASAPIClient *client, NSArray *acls, NSString *errorMessage))failure
 {
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl", [NSNumber numberWithUnsignedInteger:validity], @"validity", nil];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl", 
+                                [NSNumber numberWithUnsignedInteger:validity], @"validity", 
+                                [NSNumber numberWithUnsignedInteger:maxQueriesPerIPPerHour], @"maxQueriesPerIPPerHour", 
+                                [NSNumber numberWithUnsignedInteger:maxHitsPerQuery], @"maxHitsPerQuery", 
+                                nil];
     [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict index:0 success:^(id JSON) {
         if (success != nil)
             success(self, acls, JSON);
