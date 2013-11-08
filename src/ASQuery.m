@@ -197,7 +197,7 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"queryType=%@", [ASAPIClient urlEncode:self.queryType]];
     }
-    if (self.tagsFilters != nil) {
+    if (self.tagsFilter != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"tags=%@", [ASAPIClient urlEncode:self.tagsFilter]];

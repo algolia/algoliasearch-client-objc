@@ -98,7 +98,7 @@
  * Filter the query by a set of tags. You can AND tags by separating them by commas. To OR tags, you must add parentheses. For example tag1,(tag2,tag3) means tag1 AND (tag2 OR tag3).
  * At indexing, tags should be added in the _tags attribute of objects (for example {"_tags":["tag1","tag2"]} )
  */
-@property (strong, nonatomic) NSString            *tagsFilters;
+@property (strong, nonatomic) NSString            *tagsFilter;
 
 /**
  * Add a list of numeric filters separated by a comma.
