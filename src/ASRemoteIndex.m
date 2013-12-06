@@ -139,6 +139,27 @@
     }];
 }
 
+-(void) partialUpdateObjects:(NSArray*)objects
+            success:(void(^)(ASRemoteIndex *index, NSArray *objects, NSDictionary *result))success
+            failure:(void(^)(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage))failure
+{
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/batch", self.urlEncodedIndexName];
+    NSMutableArray *requests = [[NSMutableArray alloc] initWithCapacity:[objects count]];
+    for (NSDictionary *object in objects) {
+        [requests addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"partialUpdateObject", @"action",
+                             [object valueForKey:@"objectID"], @"objectID",
+                             object, @"body", nil]];
+    }
+    NSDictionary *request = [NSDictionary dictionaryWithObjectsAndKeys:requests, @"requests", nil];
+    [self.apiClient performHTTPQuery:path method:@"POST" body:request index:0 success:^(id JSON) {
+        if (success != nil)
+            success(self, objects, JSON);
+    } failure:^(NSString *errorMessage) {
+        if (failure != nil)
+            failure(self, objects, errorMessage);
+    }];
+}
+
 -(void) saveObject:(NSDictionary*)object objectID:(NSString*)objectID
            success:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSDictionary *result))success
            failure:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSString *errorMessage))failure
@@ -298,6 +319,35 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
             failure(self, key, errorMessage);
     }];
 }
+
+-(void) browse:(NSUInteger)page hitsPerPage:(NSUInteger)hitsPerPage
+       success:(void(^)(ASRemoteIndex *index, NSUInteger page, NSUInteger hitsPerPage, NSDictionary *result))success
+       failure:(void(^)(ASRemoteIndex *index, NSUInteger page, NSUInteger hitsPerPage, NSString *errorMessage))failure
+{
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/browse?page=%d&hitsPerPage=%d", self.urlEncodedIndexName, page, hitsPerPage];
+    [self.apiClient performHTTPQuery:path method:@"GET" body:nil index:0 success:^(id JSON) {
+        if (success != nil)
+            success(self, page, hitsPerPage, JSON);
+    } failure:^(NSString *errorMessage) {
+        if (failure != nil)
+            failure(self, page, hitsPerPage, errorMessage);
+    }];
+}
+
+-(void) browse:(NSUInteger)page
+       success:(void(^)(ASRemoteIndex *index, NSUInteger page, NSDictionary *result))success
+       failure:(void(^)(ASRemoteIndex *index, NSUInteger page, NSString *errorMessage))failure
+{
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/browse?page=%d&hitsPerPage=%d", self.urlEncodedIndexName, page, hitsPerPage];
+    [self.apiClient performHTTPQuery:path method:@"GET" body:nil index:0 success:^(id JSON) {
+        if (success != nil)
+            success(self, page, JSON);
+    } failure:^(NSString *errorMessage) {
+        if (failure != nil)
+            failure(self, page, errorMessage);
+    }];
+}
+
 
 -(void) deleteUserKey:(NSString*)key success:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *result))success
               failure:(void(^)(ASRemoteIndex *index, NSString *key, NSString *errorMessage))failure

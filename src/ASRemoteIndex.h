@@ -104,6 +104,16 @@
                     failure:(void(^)(ASRemoteIndex *index, NSDictionary *partialObject, NSString *objectID, NSString *errorMessage))failure;
 
 /**
+ * Partially Override the content of several objects
+ *
+ * @param objects contains an array of NSDictionary to update (each NSDictionary must contains an objectID attribute)
+ */
+-(void) partialUpdateObjects:(NSArray*)objects
+            success:(void(^)(ASRemoteIndex *index, NSArray *objects, NSDictionary *result))success
+            failure:(void(^)(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage))failure;
+
+
+/**
  * Override the content of object
  *
  * @param object contains the object to save
@@ -260,6 +270,27 @@
 -(void) addUserKey:(NSArray*)acls withValidity:(NSUInteger)validity maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
            success:(void(^)(ASRemoteIndex *index, NSArray *acls, NSDictionary *result))success
            failure:(void(^)(ASRemoteIndex *index, NSArray *acls, NSString *errorMessage))failure;
+
+/**
+ * Browse all index content
+ *
+ * @param page Pagination parameter used to select the page to retrieve.
+ *             Page is zero-based and defaults to 0. Thus, to retrieve the 10th page you need to set page=9
+ * @param hitsPerPage: Pagination parameter used to select the number of hits per page. Defaults to 1000.
+ */
+-(void) browse:(NSUInteger)page hitsPerPage:(NSUInteger)hitsPerPage
+       success:(void(^)(ASRemoteIndex *index, NSUInteger page, NSUInteger hitsPerPage, NSDictionary *result))success
+       failure:(void(^)(ASRemoteIndex *index, NSUInteger page, NSUInteger hitsPerPage, NSString *errorMessage))failure;
+
+/**
+ * Browse all index content
+ *
+ * @param page Pagination parameter used to select the page to retrieve.
+ *             Page is zero-based and defaults to 0. Thus, to retrieve the 10th page you need to set page=9
+ */
+-(void) browse:(NSUInteger)page
+       success:(void(^)(ASRemoteIndex *index, NSUInteger page, NSDictionary *result))success
+       failure:(void(^)(ASRemoteIndex *index, NSUInteger page, NSString *errorMessage))failure;
 
 /**
  * Delete all previous search queries
