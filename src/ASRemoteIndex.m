@@ -324,7 +324,7 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
        success:(void(^)(ASRemoteIndex *index, NSUInteger page, NSUInteger hitsPerPage, NSDictionary *result))success
        failure:(void(^)(ASRemoteIndex *index, NSUInteger page, NSUInteger hitsPerPage, NSString *errorMessage))failure
 {
-    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/browse?page=%d&hitsPerPage=%d", self.urlEncodedIndexName, page, hitsPerPage];
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/browse?page=%lu&hitsPerPage=%lu", self.urlEncodedIndexName, (unsigned long)page, (unsigned long)hitsPerPage];
     [self.apiClient performHTTPQuery:path method:@"GET" body:nil index:0 success:^(id JSON) {
         if (success != nil)
             success(self, page, hitsPerPage, JSON);
@@ -338,7 +338,7 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
        success:(void(^)(ASRemoteIndex *index, NSUInteger page, NSDictionary *result))success
        failure:(void(^)(ASRemoteIndex *index, NSUInteger page, NSString *errorMessage))failure
 {
-    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/browse?page=%d&hitsPerPage=%d", self.urlEncodedIndexName, page, hitsPerPage];
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/browse?page=%lu", self.urlEncodedIndexName, (unsigned long)page];
     [self.apiClient performHTTPQuery:path method:@"GET" body:nil index:0 success:^(id JSON) {
         if (success != nil)
             success(self, page, JSON);
