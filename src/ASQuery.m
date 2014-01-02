@@ -182,6 +182,11 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:@"getRankingInfo=1"];
     }
+    if (self.distinct) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"distinct=1"];
+    }
     if (self.page > 0) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];

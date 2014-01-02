@@ -132,6 +132,17 @@
  * if set, the result hits will contain ranking information in _rankingInfo attribute.
  */
 @property BOOL                                     getRankingInfo;
+
+/**
+ *
+ * @param If set to YES, enable the distinct feature (disabled by default) if the attributeForDistinct index 
+ *   setting is set.
+ *   This feature is similar to the SQL "distinct" keyword: when enabled in a query with the distinct=1 parameter,
+ *   all hits containing a duplicate value for the attributeForDistinct attribute are removed from results.
+ *   For example, if the chosen attribute is show_name and several hits have the same value for show_name, 
+ *   then only the best one is kept and others are removed.
+ */
+@property BOOL                                     distinct;
 /**
  * Contains insideBoundingBox query (you should use searchInsideBoundingBox selector to set it)
  */
