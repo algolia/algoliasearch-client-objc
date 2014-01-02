@@ -38,6 +38,7 @@
         self.minWordSizeForApprox1 = 3;
         self.minWordSizeForApprox2 = 7;
         self.getRankingInfo = NO;
+        self.distinct = NO;
         self.page = 0;
         self.hitsPerPage = 20;
         self.attributesToHighlight = nil;
@@ -60,6 +61,7 @@
         self.minWordSizeForApprox1 = 3;
         self.minWordSizeForApprox2 = 7;
         self.getRankingInfo = NO;
+        self.distinct = NO;
         self.page = 0;
         self.hitsPerPage = 20;
         self.fullTextQuery = pfullTextQuery;
