@@ -23,6 +23,7 @@ This Objective-C client let you easily use the Algolia Search API from your appl
 
 
 
+
 Table of Content
 -------------
 **Get started**
@@ -227,6 +228,8 @@ NSDictionary *partialObject = [NSDictionary dictionaryWithObjectsAndKeys:@"San F
 [index partialUpdateObject:partialObject objectID:@"myID" success:nil failure:nil];
 ```
 
+
+
 Search
 -------------
 
@@ -255,7 +258,7 @@ You can use the following optional arguments on ASQuery class:
 
 #### Geo-search parameters
 
- * **searchAroundLatitude:longitude:maxDist**: search for entries around a given latitude/longitude.<br/>You specify the maximum distance in meters with the **maxDist** parameter (in meters).<br/>At indexing, you should specify geoloc of an object with the _geoloc attribute (in the form `{"_geoloc":{"lat":48.853409, "lng":2.348800}}`)
+ * **searchAroundLatitude:longitude:maxDist**: search for entries around a given latitude/longitude.<br/>You specify the maximum distance in meters with the **maxDist** parameter (in meters).<br/>At indexing, you should specify geoloc of an object with the `_geoloc` attribute (in the form ` {"_geoloc":{"lat":48.853409, "lng":2.348800}} `)
  * **searchAroundLatitude:longitude:maxDist:precision**: search for entries around a given latitude/longitude with a given precision for ranking (for example if you set precision=100, two objects that are distant of less than 100m will be considered as identical for "geo" ranking parameter).
 
  * **searchInsideBoundingBoxWithLatitudeP1:longitudeP1:latitudeP2:longitudeP2**: search entries inside a given area defined by the two extreme points of a rectangle (defined by 4 floats: p1Lat,p1Lng,p2Lat,p2Lng).<br/>For example `searchInsideBoundingBoxWithLatitudeP1(47.3165, 4.9665, 47.3424, 5.0201)`).<br/>At indexing, you should specify geoloc of an object with the _geoloc attribute (in the form `{"_geoloc":{"lat":48.853409, "lng":2.348800}}`)
@@ -281,6 +284,7 @@ You can use the following optional arguments on ASQuery class:
 #### Faceting parameters
  * **facetFilters**: filter the query by a list of facets. Facets are separated by commas and each facet is encoded as `attributeName:value`. To OR facets, you must add parentheses. For example: `facetFilters=(category:Book,category:Movie),author:John%20Doe`. You can also use a string array encoding (for example `[["category:Book","category:Movie"],"author:John%20Doe"]`).
  * **facets**: List of object attributes that you want to use for faceting. <br/>Attributes are separated with a comma (for example `"category,author"` ). You can also use a JSON string array encoding (for example `["category","author"]` ). Only attributes that have been added in **attributesForFaceting** index setting can be used in this parameter. You can also use `*` to perform faceting on all attributes specified in **attributesForFaceting**.
+ * **maxValuesPerFacet**: Limit the number of facet values returned for each facet. For example: `maxValuesPerFacet=10` will retrieve max 10 values per facet.
 
 #### Distinct parameter
  * **distinct**: If set to YES, enable the distinct feature (disabled by default) if the `attributeForDistinct` index setting is set. This feature is similar to the SQL "distinct" keyword: when enabled in a query with the `distinct=1` parameter, all hits containing a duplicate value for the attributeForDistinct attribute are removed from results. For example, if the chosen attribute is `show_name` and several hits have the same value for `show_name`, then only the best one is kept and others are removed.
@@ -335,6 +339,10 @@ The server response will look like:
   "params": "query=jimmie+paint&attributesToRetrieve=firstname,lastname&hitsPerPage=50"
 }
 ```
+
+
+
+
 
 Get an object
 -------------
@@ -477,6 +485,7 @@ You may want to perform multiple operations with one API call to reduce latency.
 We expose three methods to perform batch:
  * `addObjects`: add an array of object using automatic `objectID` assignement
  * `saveObjects`: add or update an array of object that contains an `objectID` attribute
+ * `deleteObjects`: delete an array of objectIDs
  * `partialUpdateObjects`: partially update an array of objects that contain an `objectID` attribute (only specified attributes will be updated, other will remain unchanged)
 
 Example using automatic `objectID` assignement:
@@ -502,6 +511,13 @@ NSDictionary *obj2 = [NSDictionary dictionaryWithObjectsAndKeys:@"Warren", @"fir
 [index saveObjects:[NSArray arrayWithObjects:obj1, obj2, nil] 
   success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
     NSLog(@"Object IDs: %@", result);
+} failure:nil];
+```
+
+Example that delete a set of records:
+```objc
+[index deleteObjects:[NSArray arrayWithObjects:@"myID1", @"myID2", nil] 
+  success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
 } failure:nil];
 ```
 
@@ -567,6 +583,7 @@ You can also create an API Key with advanced restrictions:
  * Specify the maximum number of API calls allowed from an IP address per hour. Each time an API call is performed with this key, a check is performed. If the IP at the origin of the call did more than this number of calls in the last hour, a 403 code is returned. Defaults to 0 (no rate limit). This parameter can be used to protect you from attempts at retrieving your entire content by massively querying the index.
 
  * Specify the maximum number of hits this API key can retrieve in one call. Defaults to 0 (unlimited). This parameter can be used to protect you from attempts at retrieving your entire content by massively querying the index.
+ * Specify the list of targeted indexes. Defaults to all indexes if empty of blank.
 
 ```objc
 // Creates a new global API key that is valid for 300 seconds
@@ -608,6 +625,8 @@ Delete an existing key:
    NSLog(@"Delete error: %@", errorMessage);
 }]; 
 ```
+
+
 
 Copy or rename an index
 -------------
