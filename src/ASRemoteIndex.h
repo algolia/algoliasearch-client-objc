@@ -75,6 +75,15 @@
            failure:(void(^)(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage))failure;
 
 /**
+ * Delete several objects
+ *
+ * @param objects contains an array of objectID to delete (NSArray of NSString object).
+ */
+-(void) deleteObjects:(NSArray*)objects
+           success:(void(^)(ASRemoteIndex *index, NSArray *objects, NSDictionary *result))success
+           failure:(void(^)(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage))failure;
+
+/**
  * Get an object from this index
  *
  * @param objectID the unique identifier of the object to retrieve

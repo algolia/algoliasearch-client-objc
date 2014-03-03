@@ -90,6 +90,26 @@
     }];
 }
 
+-(void) deleteObjects:(NSArray*)objects
+           success:(void(^)(ASRemoteIndex *index, NSArray *objects, NSDictionary *result))success
+           failure:(void(^)(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage))failure
+{
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/batch", self.urlEncodedIndexName];
+    NSMutableArray *requests = [[NSMutableArray alloc] initWithCapacity:[objects count]];
+    for (NSString *object in objects) {
+        [requests addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"deleteObject", @"action",
+                             object, @"objectID", nil]];
+    }
+    NSDictionary *request = [NSDictionary dictionaryWithObjectsAndKeys:requests, @"requests", nil];
+    [self.apiClient performHTTPQuery:path method:@"POST" body:request index:0 success:^(id JSON) {
+        if (success != nil)
+            success(self, objects, JSON);
+    } failure:^(NSString *errorMessage) {
+        if (failure != nil)
+            failure(self, objects, errorMessage);
+    }];
+}
+
 -(void) getObject:(NSString*)objectID
           success:(void(^)(ASRemoteIndex *index, NSString *objectID, NSDictionary *result))success
           failure:(void(^)(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage))failure
