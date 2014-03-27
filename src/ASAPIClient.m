@@ -287,6 +287,24 @@
     }];
 }
 
+-(void) addUserKey:(NSArray*)acls withIndexes:(NSArray*)indexes withValidity:(NSUInteger)validity maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
+           success:(void(^)(ASAPIClient *client, NSArray *acls, NSArray *indexes, NSDictionary *result))success
+           failure:(void(^)(ASAPIClient *client, NSArray *acls, NSArray *indexes, NSString *errorMessage))failure
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl", indexes, @"indexes",
+                                 [NSNumber numberWithUnsignedInteger:validity], @"validity",
+                                 [NSNumber numberWithUnsignedInteger:maxQueriesPerIPPerHour], @"maxQueriesPerIPPerHour",
+                                 [NSNumber numberWithUnsignedInteger:maxHitsPerQuery], @"maxHitsPerQuery",
+                                 nil];
+    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict index:0 success:^(id JSON) {
+        if (success != nil)
+            success(self, acls, indexes, JSON);
+    } failure:^(NSString *errorMessage) {
+        if (failure != nil)
+            failure(self, acls, indexes, errorMessage);
+    }];
+}
+
 -(ASRemoteIndex*) getIndex:(NSString*)indexName
 {
     return [ASRemoteIndex remoteIndexWithAPIClient:self indexName:indexName];
