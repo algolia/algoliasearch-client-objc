@@ -121,6 +121,15 @@
 -(ASRemoteIndex*) getIndex:(NSString*)indexName;
 
 /**
+ * Query multiple indexes with one API call
+ *
+ * @param
+ */
+-(void) multipleQueries:(NSArray*)query
+                        success:(void(^)(ASAPIClient *client, NSArray *queries, NSDictionary *result))success
+                        failure: (void(^)(ASAPIClient *client, NSArray *queries, NSString *errorMessage))failure;
+
+/**
  * List all existing user keys with their associated ACLs
  */
 -(void) listUserKeys:(void(^)(ASAPIClient *client, NSDictionary *result))success

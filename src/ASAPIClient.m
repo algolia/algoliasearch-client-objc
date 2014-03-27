@@ -123,6 +123,28 @@
     return self;
 }
 
+-(void) multipleQueries:(NSArray*)queries
+                success:(void(^)(ASAPIClient *client, NSArray *queries, NSDictionary *result))success
+                failure: (void(^)(ASAPIClient *client, NSArray *queries, NSString *errorMessage))failure
+{
+    NSMutableArray *queriesTab =[[NSMutableArray alloc] initWithCapacity:[queries count]];
+    int i = 0;
+    for (ASQuery *query in queries) {
+        NSString *queryParams = [query buildURL];
+        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:queryParams forKey:@"params"];
+        queriesTab[i++] = dict;
+    }
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/*/query"];
+    NSMutableDictionary *request = [NSMutableDictionary dictionaryWithObject:queriesTab forKey:@"requests"];
+    [self performHTTPQuery:path method:@"POST" body:request index:0 success:^(id JSON) {
+        if (success != nil)
+            success(self, queries, JSON);
+    } failure:^(NSString *errorMessage) {
+        if (failure != nil)
+            failure(self, queries, errorMessage);
+    }];
+}
+
 -(void) listIndexes:(void(^)(ASAPIClient *client, NSDictionary* result))success failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure
 {
     [self performHTTPQuery:@"/1/indexes" method:@"GET" body:nil index:0 success:^(id JSON) {
