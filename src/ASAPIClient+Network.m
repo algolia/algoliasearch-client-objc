@@ -26,7 +26,8 @@
 @implementation ASAPIClient (Network)
 
 +(NSString *) urlEncode:(NSString*)originalStr {
-    return [originalStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    //return [originalStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    return (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)originalStr, NULL, (CFStringRef)@"!*'();:@&=+$,/?%#[]", kCFStringEncodingUTF8 ));
 }
 
 -(void) cancelQueries:(NSString*)method path:(NSString*)path
@@ -52,7 +53,7 @@
     NSMutableURLRequest *request = [httpRequestOperationManager.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:path relativeToURL:httpRequestOperationManager.baseURL] absoluteString]  parameters:body error:nil];
     
     AFHTTPRequestOperation *operation = [httpRequestOperationManager HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id JSON) {
-        if (operation.response.statusCode == 200) {
+        if (operation.response.statusCode == 200 || operation.response.statusCode == 201) {
             success(JSON);
         } else if (operation.response.statusCode == 403) {
             failure(@"Invalid Application-ID or API-Key");
@@ -78,6 +79,5 @@
         }
     }];
     [httpRequestOperationManager.operationQueue addOperation:operation];
-
 }
 @end
