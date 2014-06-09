@@ -50,6 +50,8 @@
         self.insideBoundingBox = nil;
         self.aroundLatLong = nil;
         self.queryType = nil;
+        self.typoTolerance = YES;
+        self.typosOnNumericTokens = YES;
     }
     return self;
 }
@@ -183,6 +185,16 @@
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:@"getRankingInfo=1"];
+    }
+    if (!self.typosOnNumericTokens) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"allowTyposOnNumericTokens=false"];
+    }
+    if (!self.typoTolerance) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"typoTolerance=false"];
     }
     if (self.distinct) {
         if ([stringBuilder length] > 0)
