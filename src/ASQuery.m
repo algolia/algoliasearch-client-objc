@@ -262,4 +262,6 @@
 @synthesize facetFilters;
 @synthesize facets;
 @synthesize optionalWords;
+@synthesize typoTolerance;
+@synthesize typosOnNumericTokens;
 @end
