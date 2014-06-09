@@ -75,6 +75,8 @@
         self.insideBoundingBox = nil;
         self.aroundLatLong = nil;
         self.queryType = nil;
+        self.typoTolerance = YES;
+        self.typosOnNumericTokens = YES;
     }
     return self;
 }
