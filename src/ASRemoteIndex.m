@@ -219,7 +219,7 @@
              success:(void(^)(ASRemoteIndex *index, NSString *objectID, NSDictionary *result))success
              failure:(void(^)(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage))failure
 {
-    if (objectID == nil || [objectID length]) {
+    if (objectID == nil || [objectID length] == 0) {
         failure(self, objectID, @"empty objectID is not allowed");
         return;
     }
