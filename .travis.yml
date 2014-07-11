@@ -1,0 +1,3 @@
+language: objective-c
+xcode_workspace: algoliasearch-client-objc.xcworkspace 
+xcode_scheme: algoliasearch-cient-objc-ios
