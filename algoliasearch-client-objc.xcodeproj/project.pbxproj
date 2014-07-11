@@ -10,14 +10,12 @@
 		590677CA18E4E38B00D2B893 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 591C934418E265C3001F1A0F /* XCTest.framework */; };
 		590677D018E4E38B00D2B893 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 590677CE18E4E38B00D2B893 /* InfoPlist.strings */; };
 		590677D218E4E38B00D2B893 /* test.m in Sources */ = {isa = PBXBuildFile; fileRef = 590677D118E4E38B00D2B893 /* test.m */; };
-		5909D62118E3FD9B00F1DFA9 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 591C934418E265C3001F1A0F /* XCTest.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		591C933718E265C3001F1A0F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 591C933618E265C3001F1A0F /* Foundation.framework */; };
 		591C936518E267B5001F1A0F /* ASAPIClient+Network.m in Sources */ = {isa = PBXBuildFile; fileRef = 591C935E18E267B5001F1A0F /* ASAPIClient+Network.m */; };
 		591C936618E267B5001F1A0F /* ASAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 591C936018E267B5001F1A0F /* ASAPIClient.m */; };
 		591C936718E267B5001F1A0F /* ASQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 591C936218E267B5001F1A0F /* ASQuery.m */; };
 		591C936818E267B5001F1A0F /* ASRemoteIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 591C936418E267B5001F1A0F /* ASRemoteIndex.m */; };
 		592EEA9118E4F14200891427 /* libalgoliasearch-client-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 591C933318E265C3001F1A0F /* libalgoliasearch-client-objc.a */; };
-		6CC3294DCF7B4391AE66E8C4 /* libPods-test.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7642FB9CB04E4F33A3AFBBB8 /* libPods-test.a */; };
 		88FF96774A8D4C439B606454 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 454533AE49614E8FA1210C4D /* libPods.a */; settings = {ATTRIBUTES = (Required, ); }; };
 /* End PBXBuildFile section */
 
@@ -73,7 +71,6 @@
 			files = (
 				592EEA9118E4F14200891427 /* libalgoliasearch-client-objc.a in Frameworks */,
 				590677CA18E4E38B00D2B893 /* XCTest.framework in Frameworks */,
-				6CC3294DCF7B4391AE66E8C4 /* libPods-test.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,7 +78,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5909D62118E3FD9B00F1DFA9 /* XCTest.framework in Frameworks */,
 				591C933718E265C3001F1A0F /* Foundation.framework in Frameworks */,
 				88FF96774A8D4C439B606454 /* libPods.a in Frameworks */,
 			);
@@ -363,6 +359,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "test/test-Info.plist";
+				LINK_WITH_STANDARD_LIBRARIES = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = xctest;
@@ -383,6 +380,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = "test/test-Info.plist";
+				LINK_WITH_STANDARD_LIBRARIES = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = xctest;
