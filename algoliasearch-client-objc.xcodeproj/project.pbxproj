@@ -342,7 +342,7 @@
 /* Begin XCBuildConfiguration section */
 		590677D718E4E38C00D2B893 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 60449FA12A7D42C2A81571B4 /* Pods-test.xcconfig */;
+			baseConfigurationReference = CB86A9131FB346CE978D7EDC /* Pods.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -366,7 +366,7 @@
 		};
 		590677D818E4E38C00D2B893 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 60449FA12A7D42C2A81571B4 /* Pods-test.xcconfig */;
+			baseConfigurationReference = CB86A9131FB346CE978D7EDC /* Pods.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
