@@ -1,6 +1,6 @@
 language: objective-c
 xcode_workspace: algoliasearch-client-objc.xcworkspace
-xcode_scheme: algoliasearch-cient-objc-ios
+xcode_scheme: algoliasearch-client-objc-ios
 env:
   global:
   - secure: MunrRyHY+5Q8Z8j5BjcMtd3XRz2d10I0hDa5yKzk7tCuicy0zaXbJd2NHKMHec0vRY6p+TOBnAgNSyuNcR+uzHXUImUW1d6fgLMzsBPt4L4M0dd12L0/Gwdpo4/wEuskDAJ9eY64/nvZF//z/tuPxUYiXBuMAibgP8KgAeLFcx0=
