@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		590677CA18E4E38B00D2B893 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 591C934418E265C3001F1A0F /* XCTest.framework */; };
+		590677CA18E4E38B00D2B893 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 591C934418E265C3001F1A0F /* XCTest.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		590677D018E4E38B00D2B893 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 590677CE18E4E38B00D2B893 /* InfoPlist.strings */; };
 		590677D218E4E38B00D2B893 /* test.m in Sources */ = {isa = PBXBuildFile; fileRef = 590677D118E4E38B00D2B893 /* test.m */; };
 		591C933718E265C3001F1A0F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 591C933618E265C3001F1A0F /* Foundation.framework */; };
@@ -15,7 +15,7 @@
 		591C936618E267B5001F1A0F /* ASAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 591C936018E267B5001F1A0F /* ASAPIClient.m */; };
 		591C936718E267B5001F1A0F /* ASQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 591C936218E267B5001F1A0F /* ASQuery.m */; };
 		591C936818E267B5001F1A0F /* ASRemoteIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 591C936418E267B5001F1A0F /* ASRemoteIndex.m */; };
-		592EEA9118E4F14200891427 /* libalgoliasearch-client-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 591C933318E265C3001F1A0F /* libalgoliasearch-client-objc.a */; };
+		592EEA9118E4F14200891427 /* libalgoliasearch-client-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 591C933318E265C3001F1A0F /* libalgoliasearch-client-objc.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		88FF96774A8D4C439B606454 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 454533AE49614E8FA1210C4D /* libPods.a */; settings = {ATTRIBUTES = (Required, ); }; };
 /* End PBXBuildFile section */
 
@@ -60,7 +60,6 @@
 		591C936318E267B5001F1A0F /* ASRemoteIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASRemoteIndex.h; sourceTree = "<group>"; };
 		591C936418E267B5001F1A0F /* ASRemoteIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASRemoteIndex.m; sourceTree = "<group>"; };
 		60449FA12A7D42C2A81571B4 /* Pods-test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-test.xcconfig"; path = "Pods/Pods-test.xcconfig"; sourceTree = "<group>"; };
-		7642FB9CB04E4F33A3AFBBB8 /* libPods-test.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-test.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB86A9131FB346CE978D7EDC /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -132,7 +131,6 @@
 				591C933618E265C3001F1A0F /* Foundation.framework */,
 				591C934418E265C3001F1A0F /* XCTest.framework */,
 				454533AE49614E8FA1210C4D /* libPods.a */,
-				7642FB9CB04E4F33A3AFBBB8 /* libPods-test.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
