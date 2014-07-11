@@ -22,8 +22,6 @@
     [super setUp];
     NSString* appID = [[[NSProcessInfo processInfo] environment] objectForKey:@"ALGOLIA_APPLICATION_ID"];
     NSString* apiKey = [[[NSProcessInfo processInfo] environment] objectForKey:@"ALGOLIA_API_KEY"];
-    appID = @"YLGNV73XLW";
-    apiKey = @"b20d7c433688cc377fdc12ca1ec96a12";
     self.client = [[ASAPIClient alloc] initWithApplicationID:appID apiKey:apiKey];
     self.index = [self.client getIndex:@"algol?à-objc"];
     self.httpRequestOperationManager = [self.client.operationManagers objectAtIndex:0];
@@ -67,12 +65,15 @@
                 done = 1;
             } failure:^(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage) {
                 XCTFail("@Error during search: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -94,15 +95,17 @@
                 NSMutableString *city = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"city"]];
                 XCTAssertEqualObjects(@"San Francisco", city, "Get object return a bad object");
                 done = 1;
-            }
-                          failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
-                              XCTFail("@Error during getObject: %@", errorMessage);
-                          }];
+            } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
+                XCTFail("@Error during getObject: %@", errorMessage);
+                done = 1;
+            }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString* objectID, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -128,15 +131,19 @@
                     done = 1;
                 } failure:^(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage) {
                     XCTFail("@Error during search: %@", errorMessage);
+                    done = 1;
                 }];
             } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
                 XCTFail("@Error during waitTask: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
             XCTFail("@Error during deleteObject: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -162,12 +169,15 @@
             }
             failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
                 XCTFail("@Error during getObject: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -229,15 +239,19 @@
                 }
                 failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
                     XCTFail("@Error during getObject: %@", errorMessage);
+                    done = 1;
                 }];
             } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
                 XCTFail("@Error during waitTask: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSDictionary *partialObject, NSString *objectID, NSString *errorMessage) {
             XCTFail("@Error during partialUpdateObject: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -261,18 +275,21 @@
                     XCTAssertEqualObjects(@"Los Angeles", city, "Save object is not applied");
                     XCTAssertTrue([result objectForKey:@"initial"] == nil, "Save object failed");
                     done = 1;
-                }
-                              failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
-                                  XCTFail("@Error during getObject: %@", errorMessage);
-                              }];
+                } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
+                    XCTFail("@Error during getObject: %@", errorMessage);
+                    done = 1;
+                }];
             } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
                 XCTFail("@Error during waitTask: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSDictionary *partialObject, NSString *objectID, NSString *errorMessage) {
             XCTFail("@Error during partialUpdateObject: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -298,15 +315,19 @@
                     done = 1;
                 } failure:^(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage) {
                     XCTFail("@Error during search: %@", errorMessage);
+                    done = 1;
                 }];
             } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
                 XCTFail("@Error during waitTask: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *errorMessage) {
             XCTFail("@Error during clearIndex: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -327,12 +348,15 @@
                 done = 1;
             } failure:^(ASRemoteIndex *index, NSString *errorMessage) {
                 XCTFail("@Error during getSettings: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *settings, NSString *errorMessage) {
         XCTFail("@Error during setSettings: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -371,21 +395,27 @@
                             done = 1;
                         } failure:^(ASRemoteIndex *index, NSString *errorMessage) {
                             XCTFail("@Error during listUserKeys: %@", errorMessage);
+                            done = 1;
                         }];
                     } failure:^(ASRemoteIndex *index, NSString *key, NSString *errorMessage) {
                         XCTFail("@Error during deleteUserKey: %@", errorMessage);
+                        done = 1;
                     }];
                 } failure:^(ASRemoteIndex *index, NSString *key, NSString *errorMessage) {
                     XCTFail("@Error during getUserKeyACL: %@", errorMessage);
+                    done = 1;
                 }];
             } failure:^(ASRemoteIndex *index, NSArray *acls, NSString *errorMessage) {
                 XCTFail("@Error during addUserKey: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
  
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -426,21 +456,27 @@
                             done = 1;
                         } failure:^(ASRemoteIndex *index, NSString *errorMessage) {
                             XCTFail("@Error during listUserKeys: %@", errorMessage);
+                            done = 1;
                         }];
                     } failure:^(ASRemoteIndex *index, NSString *key, NSString *errorMessage) {
                         XCTFail("@Error during deleteUserKey: %@", errorMessage);
+                        done = 1;
                     }];
                 } failure:^(ASRemoteIndex *index, NSString *key, NSString *errorMessage) {
                     XCTFail("@Error during getUserKeyACL: %@", errorMessage);
+                    done = 1;
                 }];
             } failure:^(ASRemoteIndex *index, NSArray *acls, NSString *errorMessage) {
                 XCTFail("@Error during addUserKey: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -463,12 +499,15 @@
                 done = 1;
             } failure:^(ASRemoteIndex *index, NSUInteger page, NSString *errorMessage) {
                 XCTFail("@Error during browse: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -491,12 +530,15 @@
                 done = 1;
             } failure:^(ASRemoteIndex *index, NSUInteger page, NSUInteger hitsPerPage, NSString *errorMessage) {
                 XCTFail("@Error during browse: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -528,12 +570,15 @@
                 done = 1;
             } failure:^(ASAPIClient *client, NSString *errorMessage) {
                 XCTFail("@Error during listIndexes: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -560,18 +605,23 @@
                         done = 1;
                     } failure:^(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage) {
                         XCTFail("@Error during search: %@", errorMessage);
+                        done = 1;
                     }];
                 } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
                     XCTFail("@Error during waitTask: %@", errorMessage);
+                    done = 1;
                 }];
             } failure:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage) {
                 XCTFail("@Error during moveIndex: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -613,21 +663,27 @@
                             done = 1;
                         } failure:^(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage) {
                             XCTFail("@Error during search: %@", errorMessage);
+                            done = 1;
                         }];
                     } failure:^(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage) {
                         XCTFail("@Error during search: %@", errorMessage);
+                        done = 1;
                     }];
                 } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
                     XCTFail("@Error during waitTask: %@", errorMessage);
+                    done = 1;
                 }];
             } failure:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage) {
                 XCTFail("@Error during moveIndex: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -659,12 +715,15 @@
                 done = 1;
             } failure:^(ASAPIClient *client, NSString *errorMessage) {
                 XCTFail("@Error during getLogs: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -686,12 +745,15 @@
                 done = 1;
             } failure:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString *errorMessage) {
                 XCTFail("@Error during getLogs: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -730,21 +792,27 @@
                             done = 1;
                         } failure:^(ASAPIClient *client, NSString *errorMessage) {
                             XCTFail("@Error during listUserKeys: %@", errorMessage);
+                            done = 1;
                         }];
                     } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
                         XCTFail("@Error during deleteUserKey: %@", errorMessage);
+                        done = 1;
                     }];
                 } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
                     XCTFail("@Error during getUserKeyACL: %@", errorMessage);
+                    done = 1;
                 }];
             } failure:^(ASAPIClient *client, NSArray *acls, NSString *errorMessage) {
                 XCTFail("@Error during addUserKey: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -785,21 +853,27 @@
                             done = 1;
                         } failure:^(ASAPIClient *client, NSString *errorMessage) {
                             XCTFail("@Error during listUserKeys: %@", errorMessage);
+                            done = 1;
                         }];
                     } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
                         XCTFail("@Error during deleteUserKey: %@", errorMessage);
+                        done = 1;
                     }];
                 } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
                     XCTFail("@Error during getUserKeyACL: %@", errorMessage);
+                    done = 1;
                 }];
             } failure:^(ASAPIClient *client, NSArray *acls, NSArray *indexes, NSString *errorMessage) {
                 XCTFail("@Error during addUserKey: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -840,21 +914,27 @@
                             done = 1;
                         } failure:^(ASAPIClient *client, NSString *errorMessage) {
                             XCTFail("@Error during listUserKeys: %@", errorMessage);
+                            done = 1;
                         }];
                     } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
                         XCTFail("@Error during deleteUserKey: %@", errorMessage);
+                        done = 1;
                     }];
                 } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
                     XCTFail("@Error during getUserKeyACL: %@", errorMessage);
+                    done = 1;
                 }];
             } failure:^(ASAPIClient *client, NSArray *acls, NSString *errorMessage) {
                 XCTFail("@Error during addUserKey: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -880,15 +960,19 @@
                     done = 1;
                 } failure:^(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage) {
                     XCTFail("@Error during search: %@", errorMessage);
+                    done = 1;
                 }];
             } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
                 XCTFail("@Error during waitTask: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
-                        XCTFail("@Error during deleteObjects: %@", errorMessage);
+            XCTFail("@Error during deleteObjects: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
         XCTFail("@Error during addObjects: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -916,18 +1000,23 @@
                         done = 1;
                     } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
                         XCTFail("@Error during getObject n°2: %@", errorMessage);
+                        done = 1;
                     }];
                 } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
                     XCTFail("@Error during getObject: %@", errorMessage);
+                    done = 1;
                 }];
             } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
                 XCTFail("@Error during waitTask: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
             XCTFail("@Error during deleteObject: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -959,18 +1048,23 @@
                         done = 1;
                     } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
                         XCTFail("@Error during getObject n°2: %@", errorMessage);
+                        done = 1;
                     }];
                 } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
                     XCTFail("@Error during getObject: %@", errorMessage);
+                    done = 1;
                 }];
             } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
                 XCTFail("@Error during waitTask: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
             XCTFail("@Error during deleteObject: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -995,12 +1089,15 @@
                 done = 1;
             } failure:^(ASAPIClient *client, NSArray *queries, NSString *errorMessage) {
                 XCTFail("@Error during multipleQueries: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
@@ -1025,13 +1122,16 @@
                 XCTAssertEqualObjects(city2, @"Los Angeles", @"GetObject return the wrong object");
                 done = 1;
             } failure:^(ASRemoteIndex *index, NSArray *objectIDs, NSString *errorMessage) {
-            XCTFail("@Error during getObjects: %@", errorMessage);
+                XCTFail("@Error during getObjects: %@", errorMessage);
+                done = 1;
             }];
         } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
             XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
         }];
     } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
         XCTFail("@Error during addObjects: %@", errorMessage);
+        done = 1;
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
