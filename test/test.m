@@ -862,22 +862,148 @@
 
 - (void)testDeleteObjects
 {
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+    __block int done = 0;
+    NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
+    NSDictionary *obj2 = @{@"city": @"Los Angeles", @"objectID": @"à/go/?à"};
+    NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
+    [self.index addObjects:@[obj, obj2] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
+        [index deleteObjects:@[@"a/go/?à", @"à/go/?à"] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
+            [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+                ASQuery *query = [[ASQuery alloc] initWithFullTextQuery:@""];
+                [self.index search:query success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
+                    NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"nbHits"]];
+                    XCTAssertEqualObjects(nbHits, @"0", @"Wrong number of object in the index");
+                    done = 1;
+                } failure:^(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage) {
+                    XCTFail("@Error during search: %@", errorMessage);
+                }];
+            } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
+                XCTFail("@Error during waitTask: %@", errorMessage);
+            }];
+        } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
+                        XCTFail("@Error during deleteObjects: %@", errorMessage);
+        }];
+    } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
+        XCTFail("@Error during addObjects: %@", errorMessage);
+    }];
+    
+    [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
+    while (done == 0) {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate date]];
+    }
 }
 
 - (void)testSaveObjects
 {
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+    __block int done = 0;
+    NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
+    NSDictionary *obj2 = @{@"city": @"Los Angeles", @"objectID": @"à/go/?à"};
+    NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
+    [self.index addObjects:@[obj, obj2] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
+        [index saveObjects:@[@{@"city": @"Los Angeles", @"objectID": @"a/go/?à"}, @{@"city": @"San Francisco", @"objectID": @"à/go/?à"}] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
+            [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+                [index getObject:@"à/go/?à" success:^(ASRemoteIndex *index, NSString *objectID, NSDictionary *result) {
+                    NSMutableString *city = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"city"]];
+                    XCTAssertEqualObjects(city, @"San Francisco", @"saveObjects failed");
+                    [index getObject:@"a/go/?à" success:^(ASRemoteIndex *index, NSString *objectID, NSDictionary *result) {
+                        NSMutableString *city = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"city"]];
+                        XCTAssertEqualObjects(city, @"Los Angeles", @"saveObjects failed");
+                        done = 1;
+                    } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
+                        XCTFail("@Error during getObject n°2: %@", errorMessage);
+                    }];
+                } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
+                    XCTFail("@Error during getObject: %@", errorMessage);
+                }];
+            } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
+                XCTFail("@Error during waitTask: %@", errorMessage);
+            }];
+        } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
+            XCTFail("@Error during deleteObject: %@", errorMessage);
+        }];
+    } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
+        XCTFail("@Error during addObject: %@", errorMessage);
+    }];
+    
+    [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
+    while (done == 0) {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate date]];
+    }
 }
 
 - (void)testPartialUpdateObjects
 {
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+    __block int done = 0;
+    NSDictionary *obj = @{@"city": @"San Francisco", @"initial": @"SF", @"objectID": @"a/go/?à"};
+    NSDictionary *obj2 = @{@"city": @"Los Angeles", @"initial": @"LA", @"objectID": @"à/go/?à"};
+    NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
+    [self.index addObjects:@[obj, obj2] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
+        [index partialUpdateObjects:@[@{@"city": @"Los Angeles", @"objectID": @"a/go/?à"}, @{@"city": @"San Francisco", @"objectID": @"à/go/?à"}] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
+            [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+                [index getObject:@"à/go/?à" success:^(ASRemoteIndex *index, NSString *objectID, NSDictionary *result) {
+                    NSMutableString *city = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"city"]];
+                    NSMutableString *initial = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"initial"]];
+                    XCTAssertEqualObjects(city, @"San Francisco", @"partialUpdateObjects failed");
+                    XCTAssertEqualObjects(initial, @"LA", @"saveObjects failed");
+                    [index getObject:@"a/go/?à" success:^(ASRemoteIndex *index, NSString *objectID, NSDictionary *result) {
+                        NSMutableString *city = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"city"]];
+                        NSMutableString *initial = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"initial"]];
+                        XCTAssertEqualObjects(city, @"Los Angeles", @"partialUpdateObjects failed");
+                        XCTAssertEqualObjects(initial, @"SF", @"saveObjects failed");
+                        done = 1;
+                    } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
+                        XCTFail("@Error during getObject n°2: %@", errorMessage);
+                    }];
+                } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
+                    XCTFail("@Error during getObject: %@", errorMessage);
+                }];
+            } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
+                XCTFail("@Error during waitTask: %@", errorMessage);
+            }];
+        } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
+            XCTFail("@Error during deleteObject: %@", errorMessage);
+        }];
+    } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
+        XCTFail("@Error during addObject: %@", errorMessage);
+    }];
+    
+    [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
+    while (done == 0) {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate date]];
+    }
 }
 
 - (void)testMultipleQueries
 {
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+    __block int done = 0;
+    NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
+    NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
+    [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
+        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+            XCTAssertEqualObjects([result objectForKey:@"status"], @"published", "Wait task failed");
+            ASQuery *query = [[ASQuery alloc] initWithFullTextQuery:@""];
+            [_client multipleQueries:@[@{@"indexName":@"algol?à-objc", @"query": query}] success:^(ASAPIClient *client, NSArray *queries, NSDictionary *result) {
+                NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",[[[result objectForKey:@"results"] objectAtIndex:0] objectForKey:@"nbHits"]];
+                XCTAssertEqualObjects(nbHits, @"1", @"Wrong number of object in the index");
+                done = 1;
+            } failure:^(ASAPIClient *client, NSArray *queries, NSString *errorMessage) {
+                XCTFail("@Error during multipleQueries: %@", errorMessage);
+            }];
+        } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
+            XCTFail("@Error during waitTask: %@", errorMessage);
+        }];
+    } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
+        XCTFail("@Error during addObject: %@", errorMessage);
+    }];
+    
+    [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
+    while (done == 0) {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate date]];
+    }
 }
 
 @end
