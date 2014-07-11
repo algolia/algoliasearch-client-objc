@@ -5,3 +5,6 @@ env:
   global:
   - secure: MunrRyHY+5Q8Z8j5BjcMtd3XRz2d10I0hDa5yKzk7tCuicy0zaXbJd2NHKMHec0vRY6p+TOBnAgNSyuNcR+uzHXUImUW1d6fgLMzsBPt4L4M0dd12L0/Gwdpo4/wEuskDAJ9eY64/nvZF//z/tuPxUYiXBuMAibgP8KgAeLFcx0=
   - secure: sFcAv6AKR0S/z5vvchQyaw1w2zcH70j4ZEbrhKc1YfJU+y4QV/EtckMir9ht1v4yOqbJocNIqnTosg+858CPnu89pvGF3IZh1QW73/u9tzE6Zbu8pP3Dma+U8HrmravTOg0lyzbOjBzw7OZ47HpvajczUi8P4gJrCpNNTkdDRnM=
+
+before_install:
+  - gem install cocoapods
