@@ -376,6 +376,15 @@ You can easily retrieve an object using its `objectID` and optionnaly a list of 
 } failure:nil];
 ```
 
+You can also retrieve a set of objects:
+
+```objc
+[index getObjects:[NSArray arrayWithObjects:@"myObj1", @"myObj2", nil]
+  success:^(ASRemoteIndex *index, NSArray *objectIDs, NSDictionary *result) {
+
+} failure:nil];
+```
+
 Delete an object
 -------------
 
