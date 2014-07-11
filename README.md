@@ -124,7 +124,7 @@ NSDictionary *settings = [NSDictionary dictionaryWithObjectsAndKeys:customRankin
 
 You can also configure the list of attributes you want to index by order of importance (first = most important):
 ```objc
-NSArray *customRanking = [NSArray arrayWithObjects:@"lastname", "firstname", "company", "email", "city", "address", nil];
+NSArray *customRanking = [NSArray arrayWithObjects:@"lastname", @"firstname", @"company", @"email", @"city", @"address", nil];
 NSDictionary *settings = [NSDictionary dictionaryWithObjectsAndKeys:customRanking, @"attributesToIndex", nil];
 [index setSettings:settings success:nil
   failure:^(ASRemoteIndex *index, NSDictionary *settings, NSString *errorMessage) {
