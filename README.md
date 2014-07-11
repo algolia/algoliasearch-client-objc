@@ -20,7 +20,7 @@ Algolia’s Search API makes it easy to deliver a great search experience in you
 This Objective-C client let you easily use the Algolia Search API from your application (iOS & OS X). It wraps [Algolia's REST API](http://www.algolia.com/doc/rest_api).
 
 
-
+[![Build Status](https://travis-ci.org/algolia/algoliasearch-client-objc.svg?branch=master)](https://travis-ci.org/algolia/algoliasearch-client-objc)
 
 
 
