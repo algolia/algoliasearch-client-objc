@@ -17,6 +17,7 @@
 		591C936718E267B5001F1A0F /* ASQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 591C936218E267B5001F1A0F /* ASQuery.m */; };
 		591C936818E267B5001F1A0F /* ASRemoteIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 591C936418E267B5001F1A0F /* ASRemoteIndex.m */; };
 		592EEA9118E4F14200891427 /* libalgoliasearch-client-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 591C933318E265C3001F1A0F /* libalgoliasearch-client-objc.a */; };
+		6CC3294DCF7B4391AE66E8C4 /* libPods-test.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7642FB9CB04E4F33A3AFBBB8 /* libPods-test.a */; };
 		88FF96774A8D4C439B606454 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 454533AE49614E8FA1210C4D /* libPods.a */; settings = {ATTRIBUTES = (Required, ); }; };
 /* End PBXBuildFile section */
 
@@ -49,10 +50,6 @@
 		590677CF18E4E38B00D2B893 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		590677D118E4E38B00D2B893 /* test.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = test.m; sourceTree = "<group>"; };
 		590677D318E4E38C00D2B893 /* test-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "test-Prefix.pch"; sourceTree = "<group>"; };
-		5909D64218E3FE8100F1DFA9 /* test-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "test-Info.plist"; sourceTree = "<group>"; };
-		5909D64418E3FE8100F1DFA9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		5909D64618E3FE8100F1DFA9 /* test.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = test.m; sourceTree = "<group>"; };
-		5909D64818E3FE8100F1DFA9 /* test-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "test-Prefix.pch"; sourceTree = "<group>"; };
 		591C933318E265C3001F1A0F /* libalgoliasearch-client-objc.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libalgoliasearch-client-objc.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		591C933618E265C3001F1A0F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		591C934418E265C3001F1A0F /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -76,6 +73,7 @@
 			files = (
 				592EEA9118E4F14200891427 /* libalgoliasearch-client-objc.a in Frameworks */,
 				590677CA18E4E38B00D2B893 /* XCTest.framework in Frameworks */,
+				6CC3294DCF7B4391AE66E8C4 /* libPods-test.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,31 +109,10 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		5909D64018E3FE8100F1DFA9 /* test */ = {
-			isa = PBXGroup;
-			children = (
-				5909D64618E3FE8100F1DFA9 /* test.m */,
-				5909D64118E3FE8100F1DFA9 /* Supporting Files */,
-			);
-			path = test;
-			sourceTree = "<group>";
-		};
-		5909D64118E3FE8100F1DFA9 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				5909D64218E3FE8100F1DFA9 /* test-Info.plist */,
-				5909D64318E3FE8100F1DFA9 /* InfoPlist.strings */,
-				5909D64818E3FE8100F1DFA9 /* test-Prefix.pch */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		591C932A18E265C3001F1A0F = {
 			isa = PBXGroup;
 			children = (
-				593EE2FA18E3F75000CBCBDC /* test */,
 				591C935C18E267B5001F1A0F /* src */,
-				5909D64018E3FE8100F1DFA9 /* test */,
 				590677CB18E4E38B00D2B893 /* test */,
 				591C933518E265C3001F1A0F /* Frameworks */,
 				591C933418E265C3001F1A0F /* Products */,
@@ -177,13 +154,6 @@
 				591C936418E267B5001F1A0F /* ASRemoteIndex.m */,
 			);
 			path = src;
-			sourceTree = "<group>";
-		};
-		593EE2FA18E3F75000CBCBDC /* test */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = test;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -369,14 +339,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				590677CF18E4E38B00D2B893 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		5909D64318E3FE8100F1DFA9 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				5909D64418E3FE8100F1DFA9 /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";

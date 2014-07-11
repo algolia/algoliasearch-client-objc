@@ -1,4 +1,8 @@
 .DS_Store
+*.pbxuser
+!default.pbxuser
+*.xcworkspace
+!default.xcworkspace
 xcuserdata
 Pods
 Podfile.lock
