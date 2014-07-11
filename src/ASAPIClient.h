@@ -123,7 +123,7 @@
 /**
  * Query multiple indexes with one API call
  *
- * @param
+ * @param query contains an array of queries with the associated index (NSArray of NSDictionary object @{"indexName":@"targettedIndex", @"query": @"theASQuery" }).
  */
 -(void) multipleQueries:(NSArray*)query
                         success:(void(^)(ASAPIClient *client, NSArray *queries, NSDictionary *result))success
