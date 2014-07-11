@@ -103,6 +103,15 @@
           failure:(void(^)(ASRemoteIndex *index, NSString *objectID, NSArray *attributesToRetrieve, NSString *errorMessage))failure;
 
 /**
+ * Get several objects from this index
+ *
+ * @param objectIDs the array of unique identifier of objects to retrieve
+ */
+-(void) getObjects:(NSArray*)objectIDs
+           success:(void(^)(ASRemoteIndex *index, NSArray *objectIDs, NSDictionary *result))success
+           failure:(void(^)(ASRemoteIndex *index, NSArray *objectIDs, NSString *errorMessage))failure;
+
+/**
  * Update partially an object (only update attributes passed in argument)
  *
  * @param partialObject contains the object attributes to override, the

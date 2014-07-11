@@ -22,6 +22,8 @@
     [super setUp];
     NSString* appID = [[[NSProcessInfo processInfo] environment] objectForKey:@"ALGOLIA_APPLICATION_ID"];
     NSString* apiKey = [[[NSProcessInfo processInfo] environment] objectForKey:@"ALGOLIA_API_KEY"];
+    appID = @"YLGNV73XLW";
+    apiKey = @"b20d7c433688cc377fdc12ca1ec96a12";
     self.client = [[ASAPIClient alloc] initWithApplicationID:appID apiKey:apiKey];
     self.index = [self.client getIndex:@"algol?à-objc"];
     self.httpRequestOperationManager = [self.client.operationManagers objectAtIndex:0];
@@ -50,7 +52,9 @@
 
 - (void)testAdd
 {
+    
     __block int done = 0;
+
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
@@ -997,6 +1001,37 @@
         }];
     } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
         XCTFail("@Error during addObject: %@", errorMessage);
+    }];
+    
+    [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
+    while (done == 0) {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate date]];
+    }
+}
+
+- (void)testGetObjects
+{
+    __block int done = 0;
+    NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
+    NSDictionary *obj2 = @{@"city": @"Los Angeles", @"objectID": @"à/go/?à"};
+    NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
+    [self.index addObjects:@[obj, obj2] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
+        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+            [index getObjects:@[@"a/go/?à", @"à/go/?à"] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
+                NSMutableString *city1 = [NSMutableString stringWithFormat:@"%@",[[[result objectForKey:@"results"] objectAtIndex:0] objectForKey:@"city"]];
+                NSMutableString *city2 = [NSMutableString stringWithFormat:@"%@",[[[result objectForKey:@"results"] objectAtIndex:1] objectForKey:@"city"]];
+                XCTAssertEqualObjects(city1, @"San Francisco", @"GetObject return the wrong object");
+                XCTAssertEqualObjects(city2, @"Los Angeles", @"GetObject return the wrong object");
+                done = 1;
+            } failure:^(ASRemoteIndex *index, NSArray *objectIDs, NSString *errorMessage) {
+            XCTFail("@Error during getObjects: %@", errorMessage);
+            }];
+        } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
+            XCTFail("@Error during waitTask: %@", errorMessage);
+        }];
+    } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
+        XCTFail("@Error during addObjects: %@", errorMessage);
     }];
     
     [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
