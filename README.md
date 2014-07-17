@@ -20,7 +20,7 @@ Algolia’s Search API makes it easy to deliver a great search experience in you
 This Objective-C client let you easily use the Algolia Search API from your application (iOS & OS X). It wraps [Algolia's REST API](http://www.algolia.com/doc/rest_api).
 
 
-
+[![Build Status](https://travis-ci.org/algolia/algoliasearch-client-objc.svg?branch=master)](https://travis-ci.org/algolia/algoliasearch-client-objc)
 
 
 
@@ -124,7 +124,7 @@ NSDictionary *settings = [NSDictionary dictionaryWithObjectsAndKeys:customRankin
 
 You can also configure the list of attributes you want to index by order of importance (first = most important):
 ```objc
-NSArray *customRanking = [NSArray arrayWithObjects:@"lastname", "firstname", "company", "email", "city", "address", nil];
+NSArray *customRanking = [NSArray arrayWithObjects:@"lastname", @"firstname", @"company", @"email", @"city", @"address", nil];
 NSDictionary *settings = [NSDictionary dictionaryWithObjectsAndKeys:customRanking, @"attributesToIndex", nil];
 [index setSettings:settings success:nil
   failure:^(ASRemoteIndex *index, NSDictionary *settings, NSString *errorMessage) {
@@ -376,6 +376,15 @@ You can easily retrieve an object using its `objectID` and optionnaly a list of 
 } failure:nil];
 ```
 
+You can also retrieve a set of objects:
+
+```objc
+[index getObjects:[NSArray arrayWithObjects:@"myObj1", @"myObj2", nil]
+  success:^(ASRemoteIndex *index, NSArray *objectIDs, NSDictionary *result) {
+
+} failure:nil];
+```
+
 Delete an object
 -------------
 
@@ -395,6 +404,8 @@ You can retrieve all settings using the `getSettings` function. The result will 
  * **attributesToIndex**: (array of strings) the list of fields you want to index.<br/>If set to null, all textual and numerical attributes of your objects are indexed, but you should update it to get optimal results.<br/>This parameter has two important uses:
   * *Limit the attributes to index*.<br/>For example if you store a binary image in base64, you want to store it and be able to retrieve it but you don't want to search in the base64 string.
   * *Control part of the ranking*.<br/>(see the ranking parameter for full explanation) Matches in attributes at the beginning of the list will be considered more important than matches in attributes further down the list. In one attribute, matching text at the beginning of the attribute will be considered more important than text after, you can disable this behavior if you add your attribute inside `unordered(AttributeName)`, for example `attributesToIndex: ["title", "unordered(text)"]`.
+**Notes**: All numerical attributes are automatically indexed as numerical filters. If you don't need filtering on some of your numerical attributes, please consider sending them as strings to speed up the indexing.<br/>
+You can decide to have the same priority for two attributes by passing them in the same string using comma as separator. For example `title` and `alternative_title` have the same priority in this example, which is different than text priority: `attributesToIndex:["title,alternative_title", "text"]`
  * **attributesForFaceting**: (array of strings) The list of fields you want to use for faceting. All strings in the attribute selected for faceting are extracted and added as a facet. If set to null, no attribute is used for faceting.
  * **attributeForDistinct**: The attribute name used for the `Distinct` feature. This feature is similar to the SQL "distinct" keyword: when enabled in query with the `distinct=1` parameter, all hits containing a duplicate value for this attribute are removed from results. For example, if the chosen attribute is `show_name` and several hits have the same value for `show_name`, then only the best one is kept and others are removed. **Note**: This feature is disabled if the query string is empty and there isn't any `tagFilters`, nor any `facetFilters`, nor any `numericFilters` parameters.
  * **ranking**: (array of strings) controls the way results are sorted.<br/>We have nine available criteria: 
