@@ -145,6 +145,27 @@
     }];
 }
 
+-(void) getObjects:(NSArray*)objectIDs
+          success:(void(^)(ASRemoteIndex *index, NSArray *objectIDs, NSDictionary *result))success
+          failure:(void(^)(ASRemoteIndex *index, NSArray *objectIDs, NSString *errorMessage))failure
+{
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/*/objects"];
+    
+    NSMutableArray *requests = [[NSMutableArray alloc] initWithCapacity:[objectIDs count]];
+    for (NSString *id in objectIDs) {
+        [requests addObject:@{@"indexName": self.indexName, @"objectID": id}];
+    }
+
+    
+    [self.apiClient performHTTPQuery:path method:@"POST" body:@{@"requests": requests} index:0 success:^(id JSON) {
+        if (success != nil)
+            success(self, objectIDs, JSON);
+    } failure:^(NSString *errorMessage) {
+        if (failure != nil)
+            failure(self, objectIDs, errorMessage);
+    }];
+}
+
 -(void) partialUpdateObject:(NSDictionary*)partialObject objectID:(NSString*)objectID
                     success:(void(^)(ASRemoteIndex *index, NSDictionary *partialObject, NSString *objectID, NSDictionary *result))success
                     failure:(void(^)(ASRemoteIndex *index, NSDictionary *partialObject, NSString *objectID, NSString *errorMessage))failure
@@ -219,7 +240,7 @@
              success:(void(^)(ASRemoteIndex *index, NSString *objectID, NSDictionary *result))success
              failure:(void(^)(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage))failure
 {
-    if (objectID == nil || [objectID length]) {
+    if (objectID == nil || [objectID length] == 0) {
         failure(self, objectID, @"empty objectID is not allowed");
         return;
     }

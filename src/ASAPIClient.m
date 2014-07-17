@@ -129,12 +129,12 @@
 {
     NSMutableArray *queriesTab =[[NSMutableArray alloc] initWithCapacity:[queries count]];
     int i = 0;
-    for (ASQuery *query in queries) {
-        NSString *queryParams = [query buildURL];
-        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:queryParams forKey:@"params"];
-        queriesTab[i++] = dict;
+    for (NSDictionary *query in queries) {
+        NSString *queryParams = [[query objectForKey:@"query"] buildURL];
+        //NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:queryParams forKey:@"params"];
+        queriesTab[i++] = @{@"params": queryParams, @"indexName": [query objectForKey:@"indexName"]};
     }
-    NSString *path = [NSString stringWithFormat:@"/1/indexes/*/query"];
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/*/queries"];
     NSMutableDictionary *request = [NSMutableDictionary dictionaryWithObject:queriesTab forKey:@"requests"];
     [self performHTTPQuery:path method:@"POST" body:request index:0 success:^(id JSON) {
         if (success != nil)
