@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'AlgoliaSearch-Client'
-  s.version  = '3.1.9'
+  s.version  = '3.1.10'
   s.license  = 'MIT'
   s.summary  = 'Algolia Search API Client for iOS & OS X.'
   s.homepage = 'https://github.com/algolia/algoliasearch-client-objc'
@@ -15,5 +15,5 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = '10.8'
   s.osx.frameworks = 'CoreServices', 'SystemConfiguration', 'Security'
 
-  s.dependency 'AFNetworking', '~> 2.0'
+  s.dependency 'AFNetworking', '~> 2.2'
 end
