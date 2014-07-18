@@ -141,6 +141,18 @@
  *  If set to false, disable typo-tolerance on numeric tokens. Default to true.
  */
 @property BOOL                                     typosOnNumericTokens;
+/**
+ * If set to false, disable this query won't appear in the analytics. Default to true.
+ */
+@property BOOL                                      analytics;
+/**
+ * If set to false, this query will not use synonyms defined in configuration. Default to true.
+ */
+@property BOOL                                      synonyms;
+/**
+ * If set to false, words matched via synonyms expansion will not be replaced by the matched synonym in highlight result. Default to true.
+ */
+@property BOOL                                      replaceSynonyms;
 
 /**
  *

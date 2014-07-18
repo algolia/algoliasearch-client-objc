@@ -52,6 +52,9 @@
         self.queryType = nil;
         self.typoTolerance = YES;
         self.typosOnNumericTokens = YES;
+        self.analytics = YES;
+        self.synonyms = YES;
+        self.replaceSynonyms = YES;
     }
     return self;
 }
@@ -77,6 +80,9 @@
         self.queryType = nil;
         self.typoTolerance = YES;
         self.typosOnNumericTokens = YES;
+        self.analytics = YES;
+        self.synonyms = YES;
+        self.replaceSynonyms = YES;
     }
     return self;
 }
@@ -203,6 +209,21 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:@"distinct=1"];
     }
+    if (!self.analytics) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"analytics=0"];
+    }
+    if (!self.synonyms) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"synonyms=0"];
+    }
+    if (!self.replaceSynonyms) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"replaceSynonymsInHighlight=0"];
+    }
     if (self.page > 0) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
@@ -249,6 +270,9 @@
 @synthesize attributesToHighlight;
 @synthesize attributesToSnippet;
 @synthesize tagFilters;
+@synthesize analytics;
+@synthesize synonyms;
+@synthesize replaceSynonyms;
 @synthesize numericFilters;
 @synthesize insideBoundingBox;
 @synthesize aroundLatLong;
