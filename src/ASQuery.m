@@ -263,6 +263,11 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"query=%@", [ASAPIClient urlEncode:self.fullTextQuery]];
     }
+    if (self.restrictSearchableAttributes != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"restrictSearchableAttributes=%@", [ASAPIClient urlEncode:self.restrictSearchableAttributes]];
+    }
     return stringBuilder;
 }
 
@@ -288,4 +293,5 @@
 @synthesize optionalWords;
 @synthesize typoTolerance;
 @synthesize typosOnNumericTokens;
+@synthesize restrictSearchableAttributes;
 @end

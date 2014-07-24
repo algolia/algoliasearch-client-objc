@@ -188,6 +188,14 @@
  * Only attributes that have been added in **attributesForFaceting** index setting can be used in this parameter. 
  * You can also use `*` to perform faceting on all attributes specified in **attributesForFaceting**.
  */
- @property (strong, nonatomic) NSArray             *facets;
-   
+@property (strong, nonatomic) NSArray             *facets;
+
+/**
+ * List of object attributes you want to use for textual search (must be a subset of the attributesToIndex 
+ * index setting). Attributes are separated with a comma (for example @"name,address").
+ * You can also use a JSON string array encoding (for example encodeURIComponent("[\"name\",\"address\"]")).
+ * By default, all attributes specified in attributesToIndex settings are used to search.
+ */
+@property (strong, nonatomic) NSString            *restrictSearchableAttributes;
+
 @end
