@@ -48,6 +48,8 @@
     if (self) {
         self.applicationID = papplicationID;
         self.apiKey = papiKey;
+        self.tagFilters = nil;
+        self.userToken = nil;
         
         NSMutableArray *array = [NSMutableArray arrayWithObjects:
                                  [NSString stringWithFormat:@"%@-1.algolia.io", papplicationID],
@@ -90,6 +92,9 @@
     if (self) {
         self.applicationID = papplicationID;
         self.apiKey = papiKey;
+        self.tagFilters = nil;
+        self.userToken = nil;
+
         if (phostnames == nil)
             @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"List of hosts must be set" userInfo:nil];
         NSMutableArray *array = [NSMutableArray arrayWithArray:phostnames];
@@ -116,11 +121,27 @@
             httpRequestOperationManager.requestSerializer = [AFJSONRequestSerializer serializer];
             [httpRequestOperationManager.requestSerializer setValue:self.apiKey forHTTPHeaderField:@"X-Algolia-API-Key"];
             [httpRequestOperationManager.requestSerializer setValue:self.applicationID forHTTPHeaderField:@"X-Algolia-Application-Id"];
+            if (self.tagFilters != nil) {
+                [httpRequestOperationManager.requestSerializer setValue:self.tagFilters forHTTPHeaderField:@"X-Algolia-TagFilters"];
+            }
+            if (self.userToken != nil) {
+                [httpRequestOperationManager.requestSerializer setValue:self.userToken forHTTPHeaderField:@"X-Algolia-UserToken"];
+            }
             [httpRequestOperationManagers addObject:httpRequestOperationManager];
         }
         operationManagers = httpRequestOperationManagers;
     }
     return self;
+}
+
+-(void) setSecurityTags:(NSString*)tags
+{
+    self.tagFilters = tags;
+}
+
+-(void) setUserToken:(NSString*)token
+{
+    self.userToken = token;
 }
 
 -(void) multipleQueries:(NSArray*)queries
@@ -314,4 +335,6 @@
 @synthesize apiKey;
 @synthesize hostnames;
 @synthesize operationManagers;
+@synthesize tagFilters;
+@synthesize userToken;
 @end
