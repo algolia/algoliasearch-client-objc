@@ -134,16 +134,6 @@
     return self;
 }
 
--(void) setSecurityTags:(NSString*)tags
-{
-    self.tagFilters = tags;
-}
-
--(void) setUserToken:(NSString*)token
-{
-    self.userToken = token;
-}
-
 -(void) multipleQueries:(NSArray*)queries
                 success:(void(^)(ASAPIClient *client, NSArray *queries, NSDictionary *result))success
                 failure: (void(^)(ASAPIClient *client, NSArray *queries, NSString *errorMessage))failure
