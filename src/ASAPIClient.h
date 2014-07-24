@@ -63,16 +63,6 @@
 -(id) initWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames;
 
 /**
- * Add security tag header (see http://www.algolia.com/doc/guides/objc#SecurityUser for more details)
- */
--(void) setSecurityTags:(NSString*)tags;
-
-/**
- * Add user-token header (see http://www.algolia.com/doc/guides/objc#SecurityUser for more details)
- */
--(void) setUserToken:(NSString*)token;
-
-/**
  * List all existing indexes
  * return an JSON Object in the success block in the form:
  * { "items": [ {"name": "contacts", "createdAt": "2013-01-18T15:33:13.556Z"},
@@ -216,6 +206,15 @@
 @property (strong, nonatomic) NSString *apiKey;
 @property (strong, nonatomic) NSArray  *hostnames;
 @property (strong, nonatomic) NSArray  *operationManagers;
+
+/**
+ * Add security tag header (see http://www.algolia.com/doc/guides/objc#SecurityUser for more details)
+ */
 @property (strong, nonatomic) NSString *tagFilters;
+
+/**
+ * Add user-token header (see http://www.algolia.com/doc/guides/objc#SecurityUser for more details)
+ */
 @property (strong, nonatomic) NSString *userToken;
+
 @end
