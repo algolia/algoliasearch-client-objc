@@ -3,8 +3,7 @@ xcode_workspace: algoliasearch-client-objc.xcworkspace
 xcode_scheme: travis-test
 env:
   global:
-  - secure: MunrRyHY+5Q8Z8j5BjcMtd3XRz2d10I0hDa5yKzk7tCuicy0zaXbJd2NHKMHec0vRY6p+TOBnAgNSyuNcR+uzHXUImUW1d6fgLMzsBPt4L4M0dd12L0/Gwdpo4/wEuskDAJ9eY64/nvZF//z/tuPxUYiXBuMAibgP8KgAeLFcx0=
-  - secure: sFcAv6AKR0S/z5vvchQyaw1w2zcH70j4ZEbrhKc1YfJU+y4QV/EtckMir9ht1v4yOqbJocNIqnTosg+858CPnu89pvGF3IZh1QW73/u9tzE6Zbu8pP3Dma+U8HrmravTOg0lyzbOjBzw7OZ47HpvajczUi8P4gJrCpNNTkdDRnM=
-
+  - secure: UiyDncG6TxTG1MLIBqAwN6K7OQZL5jI78SHJ/CQS6FydkGV8OWYEoV5l2adPx3Eq4BRdanq3FaMmX1sVzqQkCbKhUF3JU9+Dgpvo/IpYVLmKEwfDBTQv2KQacRB52KeBK9DBrhDiydjCQpzNoNeKffK5zLULaqEsq0uZnoVmfxg=
+  - secure: SFCFdybtrtBsosLvUoEcbYmNBAihPwsXsN4hHnUoUsjxBJJXyvFurDLcnZjQJAHa3pMLeG4Gj1ELqSVHYxmN1x5sAmmObS/NpWjeTwmSSOksyKBvAHVOY/a0EWira4HvjKP6OsbOcLVkQxBuaJKmtJCGXX59pGgJXLUxNVV8dIw=
 before_install:
-  - gem install cocoapods
+- gem install cocoapods
