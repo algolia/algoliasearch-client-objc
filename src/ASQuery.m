@@ -158,8 +158,7 @@
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:@"facetFilters="];
-        NSString *jsonString = [[NSString alloc] initWithData:data encoding:self.facetFiltersRaw];
-        [stringBuilder appendString:[ASAPIClient urlEncode:jsonString]];
+        [stringBuilder appendString:[ASAPIClient urlEncode:facetFiltersRaw]];
     }
 
     if (self.facets != nil) {
