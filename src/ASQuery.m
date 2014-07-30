@@ -154,7 +154,14 @@
         } else {
             @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"Invalid facetFilters (should be an array of string)" userInfo:nil];
         }
+    } else if (self.facetFiltersRaw != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"facetFilters="];
+        NSString *jsonString = [[NSString alloc] initWithData:data encoding:self.facetFiltersRaw];
+        [stringBuilder appendString:[ASAPIClient urlEncode:jsonString]];
     }
+
     if (self.facets != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
@@ -289,6 +296,7 @@
 @synthesize getRankingInfo;
 @synthesize queryType;
 @synthesize facetFilters;
+@synthesize facetFiltersRaw;
 @synthesize facets;
 @synthesize optionalWords;
 @synthesize typoTolerance;

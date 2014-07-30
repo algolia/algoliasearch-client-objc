@@ -184,6 +184,11 @@
 @property (strong, nonatomic) NSArray              *facetFilters;
 
 /**
+ * Filter the query by a list of facets encoded as one string by example "(category:Book,author:John)"
+ */
+@property (strong, nonatomic) NSString             *facetFiltersRaw;
+
+/**
  * List of object attributes that you want to use for faceting. <br/>
  * Only attributes that have been added in **attributesForFaceting** index setting can be used in this parameter. 
  * You can also use `*` to perform faceting on all attributes specified in **attributesForFaceting**.
