@@ -63,7 +63,7 @@
  *  @param maxDist set the maximum distance in meters.
  *  Note: at indexing, geoloc of an object should be set with _geoloc attribute containing lat and lng attributes (for example {"_geoloc":{"lat":48.853409, "lng":2.348800}})
  */
--(ASQuery*) searchAroundLatitudeLongitudeViaIP::(NSUInteger)maxDist;
+-(ASQuery*) searchAroundLatitudeLongitudeViaIP:(NSUInteger)maxDist;
 
 /**
  *  Search for entries around a given latitude/longitude (using IP geolocation)

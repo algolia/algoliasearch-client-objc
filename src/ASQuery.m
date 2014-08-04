@@ -101,7 +101,7 @@
     return self;
 }
 
--(ASQuery*) searchAroundLatitudeLongitudeViaIP::(NSUInteger)maxDist
+-(ASQuery*) searchAroundLatitudeLongitudeViaIP:(NSUInteger)maxDist
 {
     self.aroundLatLong = [NSString stringWithFormat:@"aroundRadius=%zd", maxDist];
     self.aroundLatLongViaIP = YES;
