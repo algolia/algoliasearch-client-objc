@@ -49,6 +49,7 @@
         self.fullTextQuery = nil;
         self.insideBoundingBox = nil;
         self.aroundLatLong = nil;
+	self.AroundLatLongViaIP = NO;
         self.queryType = nil;
         self.typoTolerance = YES;
         self.typosOnNumericTokens = YES;
@@ -77,6 +78,7 @@
         self.numericFilters = nil;
         self.insideBoundingBox = nil;
         self.aroundLatLong = nil;
+	self.aroundLatLongViaIP = NO;
         self.queryType = nil;
         self.typoTolerance = YES;
         self.typosOnNumericTokens = YES;
@@ -98,6 +100,22 @@
     self.aroundLatLong = [NSString stringWithFormat:@"aroundLatLng=%f,%f&aroundRadius=%zd&aroundPrecision=%zd", latitude, longitude, maxDist, precision];
     return self;
 }
+
+-(ASQuery*) searchAroundLatitudeLongitudeViaIP::(NSUInteger)maxDist
+{
+    self.aroundLatLong = [NSString stringWithFormat:@"aroundRadius=%zd", maxDist];
+    self.aroundLatLongViaIP = YES;
+    return self;
+}
+
+
+-(ASQuery*) searchAroundLatitudeLongitudeViaIP:(NSUInteger)maxDist precision:(NSUInteger)precision
+{
+    self.aroundLatLong = [NSString stringWithFormat:@"aroundRadius=%zd&aroundPrecision=%zd", maxDist, precision];
+    self.aroundLatLongViaIP = YES;
+    return self;
+}
+
 
 -(ASQuery*) searchInsideBoundingBoxWithLatitudeP1:(float)latitudeP1 longitudeP1:(float)longitudeP1 latitudeP2:(float)latitudeP2 longitudeP2:(float)longitudeP2
 {
@@ -263,6 +281,11 @@
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:self.aroundLatLong];
+    }
+    if (self.aroundLatLongViaIP != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"aroundLatLngViaIP=true"];      
     }
     if (self.fullTextQuery != nil) {
         if ([stringBuilder length] > 0)
