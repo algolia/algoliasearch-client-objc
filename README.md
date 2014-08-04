@@ -284,6 +284,12 @@ You can use the following optional arguments on ASQuery class:
  * **searchAroundLatitude:longitude:maxDist**: search for entries around a given latitude/longitude.<br/>You specify the maximum distance in meters with the **maxDist** parameter (in meters).<br/>At indexing, you should specify geoloc of an object with the `_geoloc` attribute (in the form ` {"_geoloc":{"lat":48.853409, "lng":2.348800}} `)
  * **searchAroundLatitude:longitude:maxDist:precision**: search for entries around a given latitude/longitude with a given precision for ranking (for example if you set precision=100, two objects that are distant of less than 100m will be considered as identical for "geo" ranking parameter).
 
+
+ * **searchAroundLatitudeLongitude:**: search for entries around latitude/longitude (automatically computed from user IP address).<br/>You specify the maximum distance in meters with the **maxDist** parameter (in meters).<br/>At indexing, you should specify geoloc of an object with the `_geoloc` attribute (in the form ` {"_geoloc":{"lat":48.853409, "lng":2.348800}} `)
+ * **searchAroundLatitudeLlongitude:precision**: search for entries around a latitude/longitude (automatically computed from user IP address) with a given precision for ranking (for example if you set precision=100, two objects that are distant of less than 100m will be considered as identical for "geo" ranking parameter).
+
+
+
  * **searchInsideBoundingBoxWithLatitudeP1:longitudeP1:latitudeP2:longitudeP2**: search entries inside a given area defined by the two extreme points of a rectangle (defined by 4 floats: p1Lat,p1Lng,p2Lat,p2Lng).<br/>For example `searchInsideBoundingBoxWithLatitudeP1(47.3165, 4.9665, 47.3424, 5.0201)`).<br/>At indexing, you should specify geoloc of an object with the _geoloc attribute (in the form `{"_geoloc":{"lat":48.853409, "lng":2.348800}}`)
 
 #### Parameters to control results content
