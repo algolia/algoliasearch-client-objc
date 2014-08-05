@@ -272,7 +272,7 @@ You can use the following optional arguments on ASQuery class:
  * **analytics**: If set to false, this query will not be taken into account in analytics feature. Default to true.
  * **synonyms**: If set to false, this query will not use synonyms defined in configuration. Default to true.
  * **replaceSynonymsInHighlight**: If set to false, words matched via synonyms expansion will not be replaced by the matched synonym in highlight result. Default to true.
- * **optionalWords**: a string that contains the list of words that should be considered as optional when found in the query. The list of words is comma separated.
+ * **optionalWords**: an array of strings that contains the list of words that should be considered as optional when found in the query.
 
 #### Pagination parameters
 
