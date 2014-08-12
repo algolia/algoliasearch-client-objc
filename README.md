@@ -157,17 +157,18 @@ Since the engine is designed to suggest results as you type, you'll generally se
 Documentation
 ================
 
-Check our [online documentation](http://www.algolia.com/doc/objc):
- * [Initial Import](http://www.algolia.com/doc/objc#InitialImport)
- * [Ranking &amp; Relevance](http://www.algolia.com/doc/objc#RankingRelevance)
- * [Indexing](http://www.algolia.com/doc/objc#Indexing)
- * [Search](http://www.algolia.com/doc/objc#Search)
- * [Sorting](http://www.algolia.com/doc/objc#Sorting)
- * [Filtering](http://www.algolia.com/doc/objc#Filtering)
- * [Faceting](http://www.algolia.com/doc/objc#Faceting)
- * [Geo-Search](http://www.algolia.com/doc/objc#Geo-Search)
- * [Security](http://www.algolia.com/doc/objc#Security)
+Check our [online documentation](http://www.algolia.com/doc/guides/objc):
+ * [Initial Import](http://www.algolia.com/doc/guides/objc#InitialImport)
+ * [Ranking &amp; Relevance](http://www.algolia.com/doc/guides/objc#RankingRelevance)
+ * [Indexing](http://www.algolia.com/doc/guides/objc#Indexing)
+ * [Search](http://www.algolia.com/doc/guides/objc#Search)
+ * [Sorting](http://www.algolia.com/doc/guides/objc#Sorting)
+ * [Filtering](http://www.algolia.com/doc/guides/objc#Filtering)
+ * [Faceting](http://www.algolia.com/doc/guides/objc#Faceting)
+ * [Geo-Search](http://www.algolia.com/doc/guides/objc#Geo-Search)
+ * [Security](http://www.algolia.com/doc/guides/objc#Security)
  * [REST API](http://www.algolia.com/doc/rest)
+
 
 Tutorials
 ================
