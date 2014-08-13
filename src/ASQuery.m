@@ -51,6 +51,7 @@
         self.aroundLatLong = nil;
 	self.AroundLatLongViaIP = NO;
         self.queryType = nil;
+        self.removeWordsIfNoResult = nil;
         self.typoTolerance = YES;
         self.typosOnNumericTokens = YES;
         self.analytics = YES;
@@ -80,6 +81,7 @@
         self.aroundLatLong = nil;
 	self.aroundLatLongViaIP = NO;
         self.queryType = nil;
+        self.removeWordsIfNoResult = nil;
         self.typoTolerance = YES;
         self.typosOnNumericTokens = YES;
         self.analytics = YES;
@@ -262,6 +264,11 @@
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"queryType=%@", [ASAPIClient urlEncode:self.queryType]];
+    }
+    if (self.removeWordsIfNoResult != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"removeWordsIfNoResult=%@", [ASAPIClient urlEncode:self.removeWordsIfNoResult]];
     }
     if (self.tagFilters != nil) {
         if ([stringBuilder length] > 0)

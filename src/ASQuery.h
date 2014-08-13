@@ -94,6 +94,14 @@
 @property (strong, nonatomic) NSString            *queryType;
 
 /**
+ * Select the strategy to avoid having an empty result page.
+ * "None": No specific processing is done when a query does not return any result,
+ * "LastWords": when a query does not return any result, the final word will be removed until there is results,
+ * "FirstWords": when a query does not return any result, the first word will be removed until there is results.
+ */
+@property (strong, nonatomic) NSString              *removeWordsIfNoResult;
+
+/**
  * Specify the list of attribute names to retrieve.
  * By default all attributes are retrieved.
  */
