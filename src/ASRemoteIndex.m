@@ -287,7 +287,7 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
             if (success != nil)
                 success(self, taskID, JSON);
         } else {
-            sleep(1);
+            [NSThread sleepForTimeInterval:0.1f];
             [self waitTask:taskID success:success failure:failure];
         }
     } failure:^(NSString *errorMessage) {
