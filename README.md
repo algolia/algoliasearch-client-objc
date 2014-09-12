@@ -696,6 +696,19 @@ You can also create an API Key with advanced restrictions:
 } failure:nil];
 ```
 
+Update the rights of an existing key:
+```objc
+// Update an existing global API key that is valid for 300 seconds
+[apiClient updateUserKey:@"myAPIKey", withACL:[NSArray arrayWithObject:@"search"] withValidity:300 maxQueriesPerIPPerHour:0 maxHitsPerQuery:0
+  success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result) {
+    NSLog(@"API Key:%@", [result objectForKey:@"key"]);
+} failure:nil];
+// Update an existing index specific API key valid for 300 seconds, with a rate limit of 100 calls per hour per IP and a maximum of 20 hits
+[index updateUserKey:@"myAPIKey" withACL:[NSArray arrayWithObject:@"search"] withValidity:300 maxQueriesPerIPPerHour:100 maxHitsPerQuery:20
+  success:^(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result) {
+    NSLog(@"API Key:%@", [result objectForKey:@"key"]);
+} failure:nil];
+```
 Get the rights of a given key:
 ```objc
 // Gets the rights of a global key
