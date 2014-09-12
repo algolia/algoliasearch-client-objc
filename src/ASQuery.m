@@ -289,7 +289,7 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:self.aroundLatLong];
     }
-    if (self.aroundLatLongViaIP != nil) {
+    if (self.aroundLatLongViaIP) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:@"aroundLatLngViaIP=true"];      
