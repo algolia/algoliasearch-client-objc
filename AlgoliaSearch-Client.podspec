@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.summary  = 'Algolia Search API Client for iOS & OS X.'
   s.homepage = 'https://github.com/algolia/algoliasearch-client-objc'
   s.author   = { 'Algolia' => 'contact@algolia.com' }
-  s.source   = { :git => 'https://github.com/algolia/algoliasearch-client-objc.git', :tag => '3.1.17' }
+  s.source   = { :git => 'https://github.com/algolia/algoliasearch-client-objc.git', :tag => '3.1.18' }
   s.source_files = 'src'
   s.requires_arc = true
 
