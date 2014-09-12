@@ -316,6 +316,59 @@
     }];
 }
 
+-(void) updateUserKey:(NSString*)key withACL:(NSArray*)acls success:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result))success
+           failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSString *errorMessage))failure
+{
+    NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:acls forKey:@"acl"];
+    [self performHTTPQuery:path method:@"PUT" body:dict index:0 success:^(id JSON) {
+        if (success != nil)
+            success(self, key, acls, JSON);
+    } failure:^(NSString *errorMessage) {
+        if (failure != nil)
+            failure(self, key, acls, errorMessage);
+    }];
+}
+
+-(void) updateUserKey:(NSString*)key withACL:(NSArray*)acls withValidity:(NSUInteger)validity maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
+           success:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result))success
+           failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSString *errorMessage))failure
+{
+    NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl",
+                                 [NSNumber numberWithUnsignedInteger:validity], @"validity",
+                                 [NSNumber numberWithUnsignedInteger:maxQueriesPerIPPerHour], @"maxQueriesPerIPPerHour",
+                                 [NSNumber numberWithUnsignedInteger:maxHitsPerQuery], @"maxHitsPerQuery",
+                                 nil];
+    [self performHTTPQuery:path method:@"PUT" body:dict index:0 success:^(id JSON) {
+        if (success != nil)
+            success(self, key, acls, JSON);
+    } failure:^(NSString *errorMessage) {
+        if (failure != nil)
+            failure(self, key, acls, errorMessage);
+    }];
+}
+
+-(void) updateUserKey:(NSString*)key withACL:(NSArray*)acls withIndexes:(NSArray*)indexes withValidity:(NSUInteger)validity maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
+           success:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSDictionary *result))success
+           failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSString *errorMessage))failure
+{
+    NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl", indexes, @"indexes",
+                                 [NSNumber numberWithUnsignedInteger:validity], @"validity",
+                                 [NSNumber numberWithUnsignedInteger:maxQueriesPerIPPerHour], @"maxQueriesPerIPPerHour",
+                                 [NSNumber numberWithUnsignedInteger:maxHitsPerQuery], @"maxHitsPerQuery",
+                                 nil];
+    [self performHTTPQuery:path method:@"PUT" body:dict index:0 success:^(id JSON) {
+        if (success != nil)
+            success(self, key, acls, indexes, JSON);
+    } failure:^(NSString *errorMessage) {
+        if (failure != nil)
+            failure(self, key, acls, indexes, errorMessage);
+    }];
+}
+
+
 -(ASRemoteIndex*) getIndex:(NSString*)indexName
 {
     return [ASRemoteIndex remoteIndexWithAPIClient:self indexName:indexName];

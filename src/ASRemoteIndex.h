@@ -290,6 +290,40 @@
            failure:(void(^)(ASRemoteIndex *index, NSArray *acls, NSString *errorMessage))failure;
 
 /**
+ * Update a user key associated to this index
+ *
+ * @param acls the list of ACL for this key. Defined by an array of NSString that
+ * can contains the following values:
+ *   - search: allow to search (https and http)
+ *   - addObject: allows to add/update an object in the index (https only)
+ *   - deleteObject : allows to delete an existing object (https only)
+ *   - deleteIndex : allows to delete index content (https only)
+ *   - settings : allows to get index settings (https only)
+ *   - editSettings : allows to change index settings (https only)
+ */
+-(void) updateUserKey:(NSString*) key withACL:(NSArray*)acls success:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result))success
+              failure:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSString *errorMessage))failure;
+
+/**
+ * Create a new user key associated to this index
+ *
+ * @param acls the list of ACL for this key. Defined by an array of NSString that
+ * can contains the following values:
+ *   - search: allow to search (https and http)
+ *   - addObject: allows to add/update an object in the index (https only)
+ *   - deleteObject : allows to delete an existing object (https only)
+ *   - deleteIndex : allows to delete index content (https only)
+ *   - settings : allows to get index settings (https only)
+ *   - editSettings : allows to change index settings (https only)
+ * @param validity the number of seconds after which the key will be automatically removed (0 means no time limit for this key)
+ * @param maxQueriesPerIPPerHour Specify the maximum number of API calls allowed from an IP address per hour.  Defaults to 0 (no rate limit).
+ * @param maxHitsPerQuery Specify the maximum number of hits this API key can retrieve in one call. Defaults to 0 (unlimited)
+ */
+-(void) updateUserKey:(NSString*) key withACL:(NSArray*)acls withValidity:(NSUInteger)validity maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
+              success:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result))success
+              failure:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSString *errorMessage))failure;
+
+/**
  * Browse all index content
  *
  * @param page Pagination parameter used to select the page to retrieve.

@@ -378,27 +378,40 @@
                 [index getUserKeyACL:[result objectForKey:@"key"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
                     NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
                     XCTAssertEqualObjects(acl, @"search", @"add user key failed");
-                    [index deleteUserKey:[result objectForKey:@"value"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
+                    [index updateUserKey:[result objectForKey:@"value"] withACL:@[@"addObject"] success:^(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result) {
                         [NSThread sleepForTimeInterval:3.0]; // wait the backend
-                        [index listUserKeys:^(ASRemoteIndex *index, NSDictionary *result) {
-                            NSArray *keys = [result objectForKey:@"keys"];
-                            BOOL found = false;
-                            for (int i = 0; i < [keys count]; i++) {
-                                if ([key isEqualToString:[[keys objectAtIndex:i] objectForKey:@"value"]]) {
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if (found) {
-                                XCTFail("DeleteUserKey failed");
-                            }
-                            done = 1;
-                        } failure:^(ASRemoteIndex *index, NSString *errorMessage) {
-                            XCTFail("@Error during listUserKeys: %@", errorMessage);
+                        [index getUserKeyACL:[result objectForKey:@"key"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
+                            NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
+                            XCTAssertEqualObjects(acl, @"addObject", @"add user key failed");
+                            [index deleteUserKey:[result objectForKey:@"value"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
+                                [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                                [index listUserKeys:^(ASRemoteIndex *index, NSDictionary *result) {
+                                    NSArray *keys = [result objectForKey:@"keys"];
+                                    BOOL found = false;
+                                    for (int i = 0; i < [keys count]; i++) {
+                                        if ([key isEqualToString:[[keys objectAtIndex:i] objectForKey:@"value"]]) {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                    if (found) {
+                                        XCTFail("DeleteUserKey failed");
+                                    }
+                                    done = 1;
+                                } failure:^(ASRemoteIndex *index, NSString *errorMessage) {
+                                    XCTFail("@Error during listUserKeys: %@", errorMessage);
+                                    done = 1;
+                                }];
+                            } failure:^(ASRemoteIndex *index, NSString *key, NSString *errorMessage) {
+                                XCTFail("@Error during deleteUserKey: %@", errorMessage);
+                                done = 1;
+                            }];
+                        } failure:^(ASRemoteIndex *index, NSString *key, NSString *errorMessage) {
+                            XCTFail("@Error during getUserKeyACL: %@", errorMessage);
                             done = 1;
                         }];
-                    } failure:^(ASRemoteIndex *index, NSString *key, NSString *errorMessage) {
-                        XCTFail("@Error during deleteUserKey: %@", errorMessage);
+                    } failure:^(ASRemoteIndex *index, NSString *key, NSArray *acls, NSString *errorMessage) {
+                        XCTFail("@Error during updateUserKeyACL: %@", errorMessage);
                         done = 1;
                     }];
                 } failure:^(ASRemoteIndex *index, NSString *key, NSString *errorMessage) {
@@ -439,27 +452,40 @@
                     NSMutableString *validity = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"validity"]];
                     XCTAssertEqualObjects(acl, @"search", @"add user key failed");
                     XCTAssertNotEqualObjects(validity, @"0", @"add user key failed");
-                    [index deleteUserKey:[result objectForKey:@"value"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
+                    [index updateUserKey:[result objectForKey:@"value"] withACL:@[@"addObject"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result) {
                         [NSThread sleepForTimeInterval:3.0]; // wait the backend
-                        [index listUserKeys:^(ASRemoteIndex *index, NSDictionary *result) {
-                            NSArray *keys = [result objectForKey:@"keys"];
-                            BOOL found = false;
-                            for (int i = 0; i < [keys count]; i++) {
-                                if ([key isEqualToString:[[keys objectAtIndex:i] objectForKey:@"value"]]) {
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if (found) {
-                                XCTFail("DeleteUserKey failed");
-                            }
-                            done = 1;
-                        } failure:^(ASRemoteIndex *index, NSString *errorMessage) {
-                            XCTFail("@Error during listUserKeys: %@", errorMessage);
+                        [index getUserKeyACL:[result objectForKey:@"key"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
+                            NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
+                            XCTAssertEqualObjects(acl, @"addObject", @"add user key failed");
+                            [index deleteUserKey:[result objectForKey:@"value"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
+                                [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                                [index listUserKeys:^(ASRemoteIndex *index, NSDictionary *result) {
+                                    NSArray *keys = [result objectForKey:@"keys"];
+                                    BOOL found = false;
+                                    for (int i = 0; i < [keys count]; i++) {
+                                        if ([key isEqualToString:[[keys objectAtIndex:i] objectForKey:@"value"]]) {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                    if (found) {
+                                        XCTFail("DeleteUserKey failed");
+                                    }
+                                    done = 1;
+                                } failure:^(ASRemoteIndex *index, NSString *errorMessage) {
+                                    XCTFail("@Error during listUserKeys: %@", errorMessage);
+                                    done = 1;
+                                }];
+                            } failure:^(ASRemoteIndex *index, NSString *key, NSString *errorMessage) {
+                                XCTFail("@Error during deleteUserKey: %@", errorMessage);
+                                done = 1;
+                            }];
+                        } failure:^(ASRemoteIndex *index, NSString *key, NSString *errorMessage) {
+                            XCTFail("@Error during getUserKeyACL: %@", errorMessage);
                             done = 1;
                         }];
-                    } failure:^(ASRemoteIndex *index, NSString *key, NSString *errorMessage) {
-                        XCTFail("@Error during deleteUserKey: %@", errorMessage);
+                    } failure:^(ASRemoteIndex *index, NSString *key, NSArray *acls, NSString *errorMessage) {
+                        XCTFail("@Error during updateUserKeyACL: %@", errorMessage);
                         done = 1;
                     }];
                 } failure:^(ASRemoteIndex *index, NSString *key, NSString *errorMessage) {
@@ -775,27 +801,40 @@
                 [client getUserKeyACL:[result objectForKey:@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
                     NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
                     XCTAssertEqualObjects(acl, @"search", @"add user key failed");
-                    [client deleteUserKey:[result objectForKey:@"value"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                    [_client updateUserKey:[result objectForKey:@"value"] withACL:@[@"addObject"] success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result) {
                         [NSThread sleepForTimeInterval:3.0]; // wait the backend
-                        [client listUserKeys:^(ASAPIClient *client, NSDictionary *result) {
-                            NSArray *keys = [result objectForKey:@"keys"];
-                            BOOL found = false;
-                            for (int i = 0; i < [keys count]; i++) {
-                                if ([key isEqualToString:[[keys objectAtIndex:i] objectForKey:@"value"]]) {
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if (found) {
-                                XCTFail("DeleteUserKey failed");
-                            }
-                            done = 1;
+                        [client getUserKeyACL:[result objectForKey:@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                            NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
+                            XCTAssertEqualObjects(acl, @"addObject", @"add user key failed");
+                            [client deleteUserKey:[result objectForKey:@"value"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                                [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                                [client listUserKeys:^(ASAPIClient *client, NSDictionary *result) {
+                                    NSArray *keys = [result objectForKey:@"keys"];
+                                    BOOL found = false;
+                                    for (int i = 0; i < [keys count]; i++) {
+                                        if ([key isEqualToString:[[keys objectAtIndex:i] objectForKey:@"value"]]) {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                    if (found) {
+                                        XCTFail("DeleteUserKey failed");
+                                    }
+                                    done = 1;
                         } failure:^(ASAPIClient *client, NSString *errorMessage) {
                             XCTFail("@Error during listUserKeys: %@", errorMessage);
                             done = 1;
                         }];
                     } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
                         XCTFail("@Error during deleteUserKey: %@", errorMessage);
+                        done = 1;
+                    }];
+                        } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
+                            XCTFail("@Error during getUserKeyACL: %@", errorMessage);
+                            done = 1;
+                        }];
+                    } failure:^(ASAPIClient *client, NSString* key, NSArray *acls, NSString *errorMessage) {
+                        XCTFail("@Error during updateUserKey: %@", errorMessage);
                         done = 1;
                     }];
                 } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
@@ -836,27 +875,40 @@
                     NSMutableString *validity = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"validity"]];
                     XCTAssertEqualObjects(acl, @"search", @"add user key failed");
                     XCTAssertNotEqualObjects(validity, @"0", @"add user key failed");
-                    [client deleteUserKey:[result objectForKey:@"value"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                    [_client updateUserKey:[result objectForKey:@"value"] withACL:@[@"addObject"] withIndexes:@[@"algol?à-objc"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSDictionary *result) {
                         [NSThread sleepForTimeInterval:3.0]; // wait the backend
-                        [client listUserKeys:^(ASAPIClient *client, NSDictionary *result) {
-                            NSArray *keys = [result objectForKey:@"keys"];
-                            BOOL found = false;
-                            for (int i = 0; i < [keys count]; i++) {
-                                if ([key isEqualToString:[[keys objectAtIndex:i] objectForKey:@"value"]]) {
-                                    found = true;
-                                    break;
+                        [client getUserKeyACL:[result objectForKey:@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                            NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
+                            XCTAssertEqualObjects(acl, @"addObject", @"add user key failed");
+                            [client deleteUserKey:[result objectForKey:@"value"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                                [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                                [client listUserKeys:^(ASAPIClient *client, NSDictionary *result) {
+                                    NSArray *keys = [result objectForKey:@"keys"];
+                                    BOOL found = false;
+                                    for (int i = 0; i < [keys count]; i++) {
+                                        if ([key isEqualToString:[[keys objectAtIndex:i] objectForKey:@"value"]]) {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                    if (found) {
+                                    XCTFail("DeleteUserKey failed");
                                 }
-                            }
-                            if (found) {
-                                XCTFail("DeleteUserKey failed");
-                            }
-                            done = 1;
-                        } failure:^(ASAPIClient *client, NSString *errorMessage) {
-                            XCTFail("@Error during listUserKeys: %@", errorMessage);
+                                    done = 1;
+                                } failure:^(ASAPIClient *client, NSString *errorMessage) {
+                                XCTFail("@Error during listUserKeys: %@", errorMessage);
+                                done = 1;
+                                }];
+                            } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
+                                XCTFail("@Error during deleteUserKey: %@", errorMessage);
+                                done = 1;
+                            }];
+                        } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
+                            XCTFail("@Error during getUserKeyACL: %@", errorMessage);
                             done = 1;
                         }];
-                    } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
-                        XCTFail("@Error during deleteUserKey: %@", errorMessage);
+                    } failure:^(ASAPIClient *client, NSString* key, NSArray *acls, NSArray *indexes, NSString *errorMessage) {
+                        XCTFail("@Error during updateUserKey: %@", errorMessage);
                         done = 1;
                     }];
                 } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
@@ -897,27 +949,40 @@
                     NSMutableString *validity = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"validity"]];
                     XCTAssertEqualObjects(acl, @"search", @"add user key failed");
                     XCTAssertNotEqualObjects(validity, @"0", @"add user key failed");
-                    [client deleteUserKey:[result objectForKey:@"value"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                    [_client updateUserKey:[result objectForKey:@"value"] withACL:@[@"addObject"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result) {
                         [NSThread sleepForTimeInterval:3.0]; // wait the backend
-                        [client listUserKeys:^(ASAPIClient *client, NSDictionary *result) {
-                            NSArray *keys = [result objectForKey:@"keys"];
-                            BOOL found = false;
-                            for (int i = 0; i < [keys count]; i++) {
-                                if ([key isEqualToString:[[keys objectAtIndex:i] objectForKey:@"value"]]) {
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if (found) {
-                                XCTFail("DeleteUserKey failed");
-                            }
-                            done = 1;
-                        } failure:^(ASAPIClient *client, NSString *errorMessage) {
-                            XCTFail("@Error during listUserKeys: %@", errorMessage);
+                        [client getUserKeyACL:[result objectForKey:@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                            NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
+                            XCTAssertEqualObjects(acl, @"addObject", @"add user key failed");
+                            [client deleteUserKey:[result objectForKey:@"value"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                                [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                                [client listUserKeys:^(ASAPIClient *client, NSDictionary *result) {
+                                    NSArray *keys = [result objectForKey:@"keys"];
+                                    BOOL found = false;
+                                    for (int i = 0; i < [keys count]; i++) {
+                                        if ([key isEqualToString:[[keys objectAtIndex:i] objectForKey:@"value"]]) {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                    if (found) {
+                                        XCTFail("DeleteUserKey failed");
+                                    }
+                                    done = 1;
+                                } failure:^(ASAPIClient *client, NSString *errorMessage) {
+                                    XCTFail("@Error during listUserKeys: %@", errorMessage);
+                                    done = 1;
+                                }];
+                            } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
+                                XCTFail("@Error during deleteUserKey: %@", errorMessage);
+                                done = 1;
+                            }];
+                        } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
+                            XCTFail("@Error during getUserKeyACL: %@", errorMessage);
                             done = 1;
                         }];
-                    } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
-                        XCTFail("@Error during deleteUserKey: %@", errorMessage);
+                    } failure:^(ASAPIClient *client, NSString* key, NSArray *acls, NSString *errorMessage) {
+                        XCTFail("@Error during updateUserKey: %@", errorMessage);
                         done = 1;
                     }];
                 } failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {

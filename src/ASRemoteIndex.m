@@ -436,4 +436,37 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
     }];    
 }
 
+-(void) updateUserKey:(NSString*) key withACL:(NSArray*)acls success:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result))success
+           failure:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSString *errorMessage))failure
+{
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/keys/%@", self.urlEncodedIndexName, key];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:acls forKey:@"acl"];
+    [self.apiClient performHTTPQuery:path method:@"PUT" body:dict index:0 success:^(id JSON) {
+        if (success != nil)
+            success(self, key, acls, JSON);
+    } failure:^(NSString *errorMessage) {
+        if (failure != nil)
+            failure(self, key, acls, errorMessage);
+    }];
+}
+
+-(void) updateUserKey:(NSString*) key withACL:(NSArray*)acls withValidity:(NSUInteger)validity maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
+           success:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result))success
+           failure:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSString *errorMessage))failure;
+{
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/keys/%@", self.urlEncodedIndexName, key];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl",
+                                 [NSNumber numberWithUnsignedInteger:validity], @"validity",
+                                 [NSNumber numberWithUnsignedInteger:maxQueriesPerIPPerHour], @"maxQueriesPerIPPerHour",
+                                 [NSNumber numberWithUnsignedInteger:maxHitsPerQuery], @"maxHitsPerQuery",
+                                 nil];
+    [self.apiClient performHTTPQuery:path method:@"PUT" body:dict index:0 success:^(id JSON) {
+        if (success != nil)
+            success(self, key, acls, JSON);
+    } failure:^(NSString *errorMessage) {
+        if (failure != nil)
+            failure(self, key, acls, errorMessage);
+    }];
+}
+
 @end
