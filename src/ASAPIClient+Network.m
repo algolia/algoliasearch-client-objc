@@ -50,6 +50,7 @@
 {
     assert(index < [self.operationManagers count]);
     AFHTTPRequestOperationManager *httpRequestOperationManager = [self.operationManagers objectAtIndex:index];
+    [self updateHeaders:httpRequestOperationManager];
     NSMutableURLRequest *request = [httpRequestOperationManager.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:path relativeToURL:httpRequestOperationManager.baseURL] absoluteString]  parameters:body error:nil];
     
     AFHTTPRequestOperation *operation = [httpRequestOperationManager HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id JSON) {

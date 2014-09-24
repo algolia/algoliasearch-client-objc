@@ -271,4 +271,8 @@
  */
 @property (strong, nonatomic) NSString *userToken;
 
+
+
+-(void) updateHeaders:(AFHTTPRequestOperationManager *)httpRequestOperationManager;
+
 @end

@@ -119,14 +119,7 @@
             AFHTTPRequestOperationManager *httpRequestOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:url];
             httpRequestOperationManager.responseSerializer = [AFJSONResponseSerializer serializer];
             httpRequestOperationManager.requestSerializer = [AFJSONRequestSerializer serializer];
-            [httpRequestOperationManager.requestSerializer setValue:self.apiKey forHTTPHeaderField:@"X-Algolia-API-Key"];
-            [httpRequestOperationManager.requestSerializer setValue:self.applicationID forHTTPHeaderField:@"X-Algolia-Application-Id"];
-            if (self.tagFilters != nil) {
-                [httpRequestOperationManager.requestSerializer setValue:self.tagFilters forHTTPHeaderField:@"X-Algolia-TagFilters"];
-            }
-            if (self.userToken != nil) {
-                [httpRequestOperationManager.requestSerializer setValue:self.userToken forHTTPHeaderField:@"X-Algolia-UserToken"];
-            }
+            [self updateHeaders:httpRequestOperationManager];
             [httpRequestOperationManagers addObject:httpRequestOperationManager];
         }
         operationManagers = httpRequestOperationManagers;
@@ -134,6 +127,17 @@
     return self;
 }
 
+-(void) updateHeaders:(AFHTTPRequestOperationManager *)httpRequestOperationManager{
+    [httpRequestOperationManager.requestSerializer setValue:self.apiKey forHTTPHeaderField:@"X-Algolia-API-Key"];
+    [httpRequestOperationManager.requestSerializer setValue:self.applicationID forHTTPHeaderField:@"X-Algolia-Application-Id"];
+    if (self.tagFilters != nil) {
+        [httpRequestOperationManager.requestSerializer setValue:self.tagFilters forHTTPHeaderField:@"X-Algolia-TagFilters"];
+    }
+    if (self.userToken != nil) {
+        [httpRequestOperationManager.requestSerializer setValue:self.userToken forHTTPHeaderField:@"X-Algolia-UserToken"];
+    }
+
+}
 -(void) multipleQueries:(NSArray*)queries
                 success:(void(^)(ASAPIClient *client, NSArray *queries, NSDictionary *result))success
                 failure: (void(^)(ASAPIClient *client, NSArray *queries, NSString *errorMessage))failure
