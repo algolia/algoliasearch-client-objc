@@ -72,6 +72,7 @@
         if ([self.hostnames count] == 0)
             @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"List of hosts must be set" userInfo:nil];
         NSMutableArray *httpRequestOperationManagers = [[NSMutableArray alloc] init];
+        //NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]; TODO nil
         for (NSString *host in self.hostnames) {
             NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@", host]];
             AFHTTPRequestOperationManager *httpRequestOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:url];
@@ -79,6 +80,7 @@
             httpRequestOperationManager.requestSerializer = [AFJSONRequestSerializer serializer];
             [httpRequestOperationManager.requestSerializer setValue:self.apiKey forHTTPHeaderField:@"X-Algolia-API-Key"];
             [httpRequestOperationManager.requestSerializer setValue:self.applicationID forHTTPHeaderField:@"X-Algolia-Application-Id"];
+            [httpRequestOperationManager.requestSerializer setValue:[NSString stringWithFormat:@"Algolia for objc %@", @"3.1.19"] forHTTPHeaderField:@"User-Agent"];
             [httpRequestOperationManagers addObject:httpRequestOperationManager];
         }
         operationManagers = httpRequestOperationManagers;
@@ -132,6 +134,13 @@
         operationManagers = httpRequestOperationManagers;
     }
     return self;
+}
+
+-(void) setExtraHeader:(NSString*)value forHeaderField:key
+{
+    for (AFHTTPRequestOperationManager *manager in operationManagers) {
+        [manager.requestSerializer setValue:value forHTTPHeaderField:key];
+    }
 }
 
 -(void) multipleQueries:(NSArray*)queries

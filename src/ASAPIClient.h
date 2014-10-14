@@ -121,6 +121,13 @@
 -(ASRemoteIndex*) getIndex:(NSString*)indexName;
 
 /**
+ * Allow to set custom extra header
+ * @param value of the header
+ * @param key of the header
+ */
+-(void) setExtraHeader:(NSString*)value forHeaderField:key;
+
+/**
  * Query multiple indexes with one API call
  *
  * @param query contains an array of queries with the associated index (NSArray of NSDictionary object @{"indexName":@"targettedIndex", @"query": @"theASQuery" }).
@@ -256,10 +263,10 @@
               success:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSDictionary *result))success
               failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSString *errorMessage))failure;
 
-@property (strong, nonatomic) NSString *applicationID;
-@property (strong, nonatomic) NSString *apiKey;
-@property (strong, nonatomic) NSArray  *hostnames;
-@property (strong, nonatomic) NSArray  *operationManagers;
+@property (strong, nonatomic) NSString     *applicationID;
+@property (strong, nonatomic) NSString     *apiKey;
+@property (strong, nonatomic) NSArray      *hostnames;
+@property (strong, nonatomic) NSArray      *operationManagers;
 
 /**
  * Add security tag header (see http://www.algolia.com/doc/guides/objc#SecurityUser for more details)
