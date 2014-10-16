@@ -156,6 +156,10 @@
  * if set, the result hits will contain ranking information in _rankingInfo attribute.
  */
 @property BOOL                                     getRankingInfo;
+/**
+ * If set to YES, plural won't be considered as a typo (for example car/cars will be considered as equals). Default to NO.
+ */
+@property BOOL                                     ignorePlural;
 
 /**
  * If set to false, disable typo-tolerance. Default to true.

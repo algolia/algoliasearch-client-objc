@@ -38,6 +38,7 @@
         self.minWordSizeForApprox1 = 3;
         self.minWordSizeForApprox2 = 7;
         self.getRankingInfo = NO;
+        self.ignorePlural = NO;
         self.distinct = NO;
         self.page = 0;
         self.hitsPerPage = 20;
@@ -68,6 +69,7 @@
         self.minWordSizeForApprox1 = 3;
         self.minWordSizeForApprox2 = 7;
         self.getRankingInfo = NO;
+        self.ignorePlural = NO;
         self.distinct = NO;
         self.page = 0;
         self.hitsPerPage = 20;
@@ -215,6 +217,11 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"minWordSizefor2Typos=%zd", self.minWordSizeForApprox2];
     }
+    if (self.ignorePlural) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"ignorePlural=true"];
+    }
     if (self.getRankingInfo) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
@@ -323,6 +330,7 @@
 @synthesize page;
 @synthesize hitsPerPage;
 @synthesize getRankingInfo;
+@synthesize ignorePlural;
 @synthesize queryType;
 @synthesize facetFilters;
 @synthesize facetFiltersRaw;
