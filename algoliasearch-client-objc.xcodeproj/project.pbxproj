@@ -10,15 +10,18 @@
 		590677CA18E4E38B00D2B893 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 591C934418E265C3001F1A0F /* XCTest.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		590677D018E4E38B00D2B893 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 590677CE18E4E38B00D2B893 /* InfoPlist.strings */; };
 		590677D218E4E38B00D2B893 /* test.m in Sources */ = {isa = PBXBuildFile; fileRef = 590677D118E4E38B00D2B893 /* test.m */; };
+		5909919819EFB7CC003DA269 /* libPods-AFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 599EA22119ED5E9A00FEF7E7 /* libPods-AFNetworking.a */; };
+		5909919919EFB7FA003DA269 /* ASAPIClient+Network.m in Sources */ = {isa = PBXBuildFile; fileRef = 591C935E18E267B5001F1A0F /* ASAPIClient+Network.m */; };
+		5909919A19EFB7FE003DA269 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 599EA22619ED664700FEF7E7 /* AppKit.framework */; };
+		5909919B19EFB823003DA269 /* libPods-AFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 599EA22119ED5E9A00FEF7E7 /* libPods-AFNetworking.a */; };
+		5909919C19EFB827003DA269 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 454533AE49614E8FA1210C4D /* libPods.a */; };
 		591C933718E265C3001F1A0F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 591C933618E265C3001F1A0F /* Foundation.framework */; };
 		591C936518E267B5001F1A0F /* ASAPIClient+Network.m in Sources */ = {isa = PBXBuildFile; fileRef = 591C935E18E267B5001F1A0F /* ASAPIClient+Network.m */; };
 		591C936618E267B5001F1A0F /* ASAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 591C936018E267B5001F1A0F /* ASAPIClient.m */; };
 		591C936718E267B5001F1A0F /* ASQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 591C936218E267B5001F1A0F /* ASQuery.m */; };
 		591C936818E267B5001F1A0F /* ASRemoteIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 591C936418E267B5001F1A0F /* ASRemoteIndex.m */; };
 		592EEA9118E4F14200891427 /* libalgoliasearch-client-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 591C933318E265C3001F1A0F /* libalgoliasearch-client-objc.a */; settings = {ATTRIBUTES = (Required, ); }; };
-		599EA22919ED669000FEF7E7 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 599EA22619ED664700FEF7E7 /* AppKit.framework */; };
-		599EA22A19ED688500FEF7E7 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 454533AE49614E8FA1210C4D /* libPods.a */; };
-		599EA22B19ED689500FEF7E7 /* libPods-AFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 599EA22119ED5E9A00FEF7E7 /* libPods-AFNetworking.a */; };
+		599EA22D19EFB2D700FEF7E7 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 599EA22619ED664700FEF7E7 /* AppKit.framework */; };
 		88FF96774A8D4C439B606454 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 454533AE49614E8FA1210C4D /* libPods.a */; settings = {ATTRIBUTES = (Required, ); }; };
 /* End PBXBuildFile section */
 
@@ -73,9 +76,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				599EA22B19ED689500FEF7E7 /* libPods-AFNetworking.a in Frameworks */,
-				599EA22A19ED688500FEF7E7 /* libPods.a in Frameworks */,
-				599EA22919ED669000FEF7E7 /* AppKit.framework in Frameworks */,
+				5909919C19EFB827003DA269 /* libPods.a in Frameworks */,
+				5909919B19EFB823003DA269 /* libPods-AFNetworking.a in Frameworks */,
+				5909919A19EFB7FE003DA269 /* AppKit.framework in Frameworks */,
 				592EEA9118E4F14200891427 /* libalgoliasearch-client-objc.a in Frameworks */,
 				590677CA18E4E38B00D2B893 /* XCTest.framework in Frameworks */,
 			);
@@ -85,8 +88,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				591C933718E265C3001F1A0F /* Foundation.framework in Frameworks */,
+				5909919819EFB7CC003DA269 /* libPods-AFNetworking.a in Frameworks */,
 				88FF96774A8D4C439B606454 /* libPods.a in Frameworks */,
+				599EA22D19EFB2D700FEF7E7 /* AppKit.framework in Frameworks */,
+				591C933718E265C3001F1A0F /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -320,6 +325,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5909919919EFB7FA003DA269 /* ASAPIClient+Network.m in Sources */,
 				590677D218E4E38B00D2B893 /* test.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -502,12 +508,17 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/algoliasearch-client-objc-ezaqtrvmayymwwavbcfvoeuiphpx/Build/Products/Debug",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Debug;
 		};
@@ -522,12 +533,17 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/algoliasearch-client-objc-ezaqtrvmayymwwavbcfvoeuiphpx/Build/Products/Debug",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
 		};
