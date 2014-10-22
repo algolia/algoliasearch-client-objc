@@ -55,6 +55,8 @@
     AFHTTPRequestOperation *operation = [httpRequestOperationManager HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id JSON) {
         if (operation.response.statusCode == 200 || operation.response.statusCode == 201) {
             success(JSON);
+        } else if (operation.response.statusCode == 400) {
+            failure(@"Bad request argument");
         } else if (operation.response.statusCode == 403) {
             failure(@"Invalid Application-ID or API-Key");
         } else if(operation.response.statusCode == 404) {
