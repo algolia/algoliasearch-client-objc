@@ -1,0 +1,4 @@
+CHANGELOG
+
+2014-10-27  3.1.22
+  * Add extra optionalWordsMinimumMatched query parameter
