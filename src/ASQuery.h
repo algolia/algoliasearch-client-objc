@@ -208,6 +208,10 @@
   * Set the list of words that should be considered as optional when found in the query (array of NSString).
   */
 @property (strong, nonatomic) NSArray              *optionalWords;
+/**
+ *  Set the minimum number of optional words that need to match
+ */
+@property NSUInteger                               optionalWordsMinimumMatched;
 
 /**
  * Filter the query by a list of facets. Each facet is encoded as `attributeName:value`. For example: ["category:Book","author:John%20Doe"].

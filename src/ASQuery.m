@@ -50,7 +50,7 @@
         self.fullTextQuery = nil;
         self.insideBoundingBox = nil;
         self.aroundLatLong = nil;
-	self.AroundLatLongViaIP = NO;
+        self.AroundLatLongViaIP = NO;
         self.queryType = nil;
         self.removeWordsIfNoResult = nil;
         self.typoTolerance = YES;
@@ -58,6 +58,7 @@
         self.analytics = YES;
         self.synonyms = YES;
         self.replaceSynonyms = YES;
+        self.optionalWordsMinimumMatched = 0;
     }
     return self;
 }
@@ -81,7 +82,7 @@
         self.numericFilters = nil;
         self.insideBoundingBox = nil;
         self.aroundLatLong = nil;
-	self.aroundLatLongViaIP = NO;
+        self.aroundLatLongViaIP = NO;
         self.queryType = nil;
         self.removeWordsIfNoResult = nil;
         self.typoTolerance = YES;
@@ -89,6 +90,7 @@
         self.analytics = YES;
         self.synonyms = YES;
         self.replaceSynonyms = YES;
+        self.optionalWordsMinimumMatched = 0;
     }
     return self;
 }
@@ -206,6 +208,11 @@
             [stringBuilder appendString:[ASAPIClient urlEncode:word]];
             first = NO;
         }
+    }
+    if (self.optionalWordsMinimumMatched > 0) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"optionalWordsMinimumMatched=%zd", self.optionalWordsMinimumMatched];
     }
     if (self.minWordSizeForApprox1 != 3) {
         if ([stringBuilder length] > 0)
@@ -339,4 +346,5 @@
 @synthesize typoTolerance;
 @synthesize typosOnNumericTokens;
 @synthesize restrictSearchableAttributes;
+@synthesize optionalWordsMinimumMatched;
 @end
