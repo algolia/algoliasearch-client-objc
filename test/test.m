@@ -22,7 +22,7 @@
     [super setUp];
     NSString* appID = [[[NSProcessInfo processInfo] environment] objectForKey:@"ALGOLIA_APPLICATION_ID"];
     NSString* apiKey = [[[NSProcessInfo processInfo] environment] objectForKey:@"ALGOLIA_API_KEY"];
-    self.client = [[ASAPIClient alloc] initWithApplicationID:appID apiKey:apiKey];
+    self.client = [ASAPIClient apiClientWithApplicationID :appID apiKey:apiKey];
     self.index = [self.client getIndex:@"algol?à-objc"];
     self.httpRequestOperationManager = [self.client.operationManagers objectAtIndex:0];
     __block int done = 0;

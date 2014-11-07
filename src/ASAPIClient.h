@@ -52,15 +52,26 @@
  * @param applicationID the application ID you have in your admin interface
  * @param apiKey a valid API key for the service
  */
--(id) initWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey;
++(id) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey;
+
+/**
+ * Algolia Search initialization
+ * @param applicationID the application ID you have in your admin interface
+ * @param apiKey a valid API key for the service
+ * @param hotsnames the list of hosts that you have received for the service
+ * @param dsnHost override the automatic computation of dsn hostname
+ */
++(id) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames dsnHost:(NSString*)dsnHost;
 
 /**
  * Algolia Search initialization
  * @param applicationID the application ID you have in your admin interface
  * @param apiKey a valid API key for the service
  * @param hostnames the list of hosts that you have received for the service
+ * @param dsn set to true if your account has the Distributed Search Option
+ * @param dsnHost override the automatic computation of dsn hostname
  */
--(id) initWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames;
+-(id) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey hostnames:(NSArray*)phostnames dsn:(Boolean)dsn dsnHost:(NSString*)dsnHost;
 
 /**
  * List all existing indexes

@@ -34,15 +34,15 @@
 
 +(id) apiClientWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames
 {
-    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:hostnames];
+    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:hostnames dsn:false dsnHost:nil];
 }
 
 +(id) apiClientWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey
 {
-    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey];
+    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:nil dsn:false dsnHost:nil];
 }
 
--(id) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey
+-(id) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey hostnames:(NSArray*)phostnames dsn:(Boolean)dsn dsnHost:(NSString*)dsnHost
 {
     self = [super init];
     if (self) {
@@ -51,20 +51,44 @@
         self.tagFilters = nil;
         self.userToken = nil;
         
-        NSMutableArray *array = [NSMutableArray arrayWithObjects:
-                                 [NSString stringWithFormat:@"%@-1.algolia.io", papplicationID],
-                                 [NSString stringWithFormat:@"%@-2.algolia.io", papplicationID],
-                                 [NSString stringWithFormat:@"%@-3.algolia.io", papplicationID],
-                                 nil];
-        srandom((unsigned int)time(NULL));
-        NSUInteger count = [array count];
-        for (NSUInteger i = 0; i < count; ++i) {
-            // Select a random element between i and end of array to swap with.
-            NSUInteger nElements = count - i;
-            NSUInteger n = (random() % nElements) + i;
-            [array exchangeObjectAtIndex:i withObjectAtIndex:n];
+        NSMutableArray *array = nil;
+        if (phostnames == nil) {
+             array = [NSMutableArray arrayWithObjects:
+                                     [NSString stringWithFormat:@"%@-1.algolia.io", papplicationID],
+                                     [NSString stringWithFormat:@"%@-2.algolia.io", papplicationID],
+                                     [NSString stringWithFormat:@"%@-3.algolia.io", papplicationID],
+                                     nil];
+            srandom((unsigned int)time(NULL));
+            NSUInteger count = [array count];
+            for (NSUInteger i = 0; i < count; ++i) {
+                // Select a random element between i and end of array to swap with.
+                NSUInteger nElements = count - i;
+                NSUInteger n = (random() % nElements) + i;
+                [array exchangeObjectAtIndex:i withObjectAtIndex:n];
+            }
+            if (dsn || dsnHost != nil) {
+                
+            }
+        } else {
+            array = [NSMutableArray arrayWithArray:phostnames];
+            srandom((unsigned int)time(NULL));
+            NSUInteger count = [array count];
+            for (NSUInteger i = 0; i < count; ++i) {
+                // Select a random element between i and end of array to swap with.
+                NSUInteger nElements = count - i;
+                NSUInteger n = (random() % nElements) + i;
+                [array exchangeObjectAtIndex:i withObjectAtIndex:n];
+            }
+            if (dsn || dsnHost != nil) {
+                if (dsnHost != nil) {
+                    [array insertObject:dsnHost atIndex:0];
+                } else {
+                    [array insertObject:[NSString stringWithFormat:@"%@-dsn.algolia.io", papplicationID] atIndex:0];
+                }
+            }
         }
         self.hostnames = array;
+
         if (self.applicationID == nil || [self.applicationID length] == 0)
             @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"Application ID must be set" userInfo:nil];
         if (self.apiKey == nil || [self.apiKey length] == 0)
@@ -81,48 +105,6 @@
             [httpRequestOperationManager.requestSerializer setValue:self.apiKey forHTTPHeaderField:@"X-Algolia-API-Key"];
             [httpRequestOperationManager.requestSerializer setValue:self.applicationID forHTTPHeaderField:@"X-Algolia-Application-Id"];
             [httpRequestOperationManager.requestSerializer setValue:[NSString stringWithFormat:@"Algolia for objc %@", @"3.1.19"] forHTTPHeaderField:@"User-Agent"];
-            [httpRequestOperationManagers addObject:httpRequestOperationManager];
-        }
-        operationManagers = httpRequestOperationManagers;
-    }
-    return self;
-}
-
--(id) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey hostnames:(NSArray*)phostnames
-{
-    self = [super init];
-    if (self) {
-        self.applicationID = papplicationID;
-        self.apiKey = papiKey;
-        self.tagFilters = nil;
-        self.userToken = nil;
-
-        if (phostnames == nil)
-            @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"List of hosts must be set" userInfo:nil];
-        NSMutableArray *array = [NSMutableArray arrayWithArray:phostnames];
-        srandom((unsigned int)time(NULL));
-        NSUInteger count = [array count];
-        for (NSUInteger i = 0; i < count; ++i) {
-            // Select a random element between i and end of array to swap with.
-            NSUInteger nElements = count - i;
-            NSUInteger n = (random() % nElements) + i;
-            [array exchangeObjectAtIndex:i withObjectAtIndex:n];
-        }
-        self.hostnames = array;
-        if (self.applicationID == nil || [self.applicationID length] == 0)
-            @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"Application ID must be set" userInfo:nil];
-        if (self.apiKey == nil || [self.apiKey length] == 0)
-            @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"APIKey must be set" userInfo:nil];
-        if ([self.hostnames count] == 0)
-            @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"List of hosts must be set" userInfo:nil];
-        NSMutableArray *httpRequestOperationManagers = [[NSMutableArray alloc] init];
-        for (NSString *host in self.hostnames) {
-            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@", host]];
-            AFHTTPRequestOperationManager *httpRequestOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:url];
-            httpRequestOperationManager.responseSerializer = [AFJSONResponseSerializer serializer];
-            httpRequestOperationManager.requestSerializer = [AFJSONRequestSerializer serializer];
-            [httpRequestOperationManager.requestSerializer setValue:self.apiKey forHTTPHeaderField:@"X-Algolia-API-Key"];
-            [httpRequestOperationManager.requestSerializer setValue:self.applicationID forHTTPHeaderField:@"X-Algolia-Application-Id"];
             if (self.tagFilters != nil) {
                 [httpRequestOperationManager.requestSerializer setValue:self.tagFilters forHTTPHeaderField:@"X-Algolia-TagFilters"];
             }
@@ -135,6 +117,17 @@
     }
     return self;
 }
+
++(id) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey {
+    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:nil dsn:true dsnHost:nil];
+}
+
++(id) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames dsnHost:(NSString*)dsnHost
+{
+    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:hostnames dsn:true dsnHost:dsnHost];
+}
+
+
 
 -(void) setExtraHeader:(NSString*)value forHeaderField:key
 {
