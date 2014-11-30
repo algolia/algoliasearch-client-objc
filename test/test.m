@@ -374,17 +374,17 @@
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
         [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [index addUserKey:@[@"search"] success:^(ASRemoteIndex *index, NSArray *acls, NSDictionary *result) {
-                [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                [NSThread sleepForTimeInterval:5.0]; // wait the backend
                 [index getUserKeyACL:[result objectForKey:@"key"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
                     NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
                     XCTAssertEqualObjects(acl, @"search", @"add user key failed");
                     [index updateUserKey:[result objectForKey:@"value"] withACL:@[@"addObject"] success:^(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result) {
-                        [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                        [NSThread sleepForTimeInterval:5.0]; // wait the backend
                         [index getUserKeyACL:[result objectForKey:@"key"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
                             NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
                             XCTAssertEqualObjects(acl, @"addObject", @"add user key failed");
                             [index deleteUserKey:[result objectForKey:@"value"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
-                                [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                                [NSThread sleepForTimeInterval:5.0]; // wait the backend
                                 [index listUserKeys:^(ASRemoteIndex *index, NSDictionary *result) {
                                     NSArray *keys = [result objectForKey:@"keys"];
                                     BOOL found = false;
@@ -446,19 +446,19 @@
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
         [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [index addUserKey:@[@"search"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASRemoteIndex *index, NSArray *acls, NSDictionary *result) {
-                [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                [NSThread sleepForTimeInterval:5.0]; // wait the backend
                 [index getUserKeyACL:[result objectForKey:@"key"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
                     NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
                     NSMutableString *validity = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"validity"]];
                     XCTAssertEqualObjects(acl, @"search", @"add user key failed");
                     XCTAssertNotEqualObjects(validity, @"0", @"add user key failed");
                     [index updateUserKey:[result objectForKey:@"value"] withACL:@[@"addObject"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result) {
-                        [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                        [NSThread sleepForTimeInterval:5.0]; // wait the backend
                         [index getUserKeyACL:[result objectForKey:@"key"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
                             NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
                             XCTAssertEqualObjects(acl, @"addObject", @"add user key failed");
                             [index deleteUserKey:[result objectForKey:@"value"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
-                                [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                                [NSThread sleepForTimeInterval:5.0]; // wait the backend
                                 [index listUserKeys:^(ASRemoteIndex *index, NSDictionary *result) {
                                     NSArray *keys = [result objectForKey:@"keys"];
                                     BOOL found = false;
@@ -797,17 +797,17 @@
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
         [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [_client addUserKey:@[@"search"] success:^(ASAPIClient *client, NSArray *acls, NSDictionary *result) {
-                [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                [NSThread sleepForTimeInterval:5.0]; // wait the backend
                 [client getUserKeyACL:[result objectForKey:@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
                     NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
                     XCTAssertEqualObjects(acl, @"search", @"add user key failed");
                     [_client updateUserKey:[result objectForKey:@"value"] withACL:@[@"addObject"] success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result) {
-                        [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                        [NSThread sleepForTimeInterval:5.0]; // wait the backend
                         [client getUserKeyACL:[result objectForKey:@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
                             NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
                             XCTAssertEqualObjects(acl, @"addObject", @"add user key failed");
                             [client deleteUserKey:[result objectForKey:@"value"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
-                                [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                                [NSThread sleepForTimeInterval:5.0]; // wait the backend
                                 [client listUserKeys:^(ASAPIClient *client, NSDictionary *result) {
                                     NSArray *keys = [result objectForKey:@"keys"];
                                     BOOL found = false;
@@ -869,19 +869,19 @@
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
         [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [_client addUserKey:@[@"search"] withIndexes:@[@"algol?à-objc"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASAPIClient *client, NSArray *acls, NSArray *indexes, NSDictionary *result) {
-                [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                [NSThread sleepForTimeInterval:5.0]; // wait the backend
                 [client getUserKeyACL:[result objectForKey:@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
                     NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
                     NSMutableString *validity = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"validity"]];
                     XCTAssertEqualObjects(acl, @"search", @"add user key failed");
                     XCTAssertNotEqualObjects(validity, @"0", @"add user key failed");
                     [_client updateUserKey:[result objectForKey:@"value"] withACL:@[@"addObject"] withIndexes:@[@"algol?à-objc"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSDictionary *result) {
-                        [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                        [NSThread sleepForTimeInterval:5.0]; // wait the backend
                         [client getUserKeyACL:[result objectForKey:@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
                             NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
                             XCTAssertEqualObjects(acl, @"addObject", @"add user key failed");
                             [client deleteUserKey:[result objectForKey:@"value"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
-                                [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                                [NSThread sleepForTimeInterval:5.0]; // wait the backend
                                 [client listUserKeys:^(ASAPIClient *client, NSDictionary *result) {
                                     NSArray *keys = [result objectForKey:@"keys"];
                                     BOOL found = false;
@@ -943,19 +943,19 @@
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
         [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [_client addUserKey:@[@"search"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASAPIClient *client, NSArray *acls, NSDictionary *result) {
-                [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                [NSThread sleepForTimeInterval:5.0]; // wait the backend
                 [client getUserKeyACL:[result objectForKey:@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
                     NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
                     NSMutableString *validity = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"validity"]];
                     XCTAssertEqualObjects(acl, @"search", @"add user key failed");
                     XCTAssertNotEqualObjects(validity, @"0", @"add user key failed");
                     [_client updateUserKey:[result objectForKey:@"value"] withACL:@[@"addObject"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result) {
-                        [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                        [NSThread sleepForTimeInterval:5.0]; // wait the backend
                         [client getUserKeyACL:[result objectForKey:@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
                             NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
                             XCTAssertEqualObjects(acl, @"addObject", @"add user key failed");
                             [client deleteUserKey:[result objectForKey:@"value"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
-                                [NSThread sleepForTimeInterval:3.0]; // wait the backend
+                                [NSThread sleepForTimeInterval:5.0]; // wait the backend
                                 [client listUserKeys:^(ASAPIClient *client, NSDictionary *result) {
                                     NSArray *keys = [result objectForKey:@"keys"];
                                     BOOL found = false;
