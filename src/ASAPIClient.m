@@ -54,9 +54,9 @@
         NSMutableArray *array = nil;
         if (phostnames == nil) {
              array = [NSMutableArray arrayWithObjects:
-                                     [NSString stringWithFormat:@"%@-1.algolia.io", papplicationID],
-                                     [NSString stringWithFormat:@"%@-2.algolia.io", papplicationID],
-                                     [NSString stringWithFormat:@"%@-3.algolia.io", papplicationID],
+                                     [NSString stringWithFormat:@"%@-1.algolia.net", papplicationID],
+                                     [NSString stringWithFormat:@"%@-2.algolia.net", papplicationID],
+                                     [NSString stringWithFormat:@"%@-3.algolia.net", papplicationID],
                                      nil];
             srandom((unsigned int)time(NULL));
             NSUInteger count = [array count];
@@ -83,7 +83,7 @@
                 if (dsnHost != nil) {
                     [array insertObject:dsnHost atIndex:0];
                 } else {
-                    [array insertObject:[NSString stringWithFormat:@"%@-dsn.algolia.io", papplicationID] atIndex:0];
+                    [array insertObject:[NSString stringWithFormat:@"%@-dsn.algolia.net", papplicationID] atIndex:0];
                 }
             }
         }
