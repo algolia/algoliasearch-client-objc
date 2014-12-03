@@ -1,4 +1,10 @@
 CHANGELOG
 
+2014-11-30 3.2.0
+  * Switch .io to .net
+
+2014-11-07 3.1.23
+  * Add DSN flag
+
 2014-10-27  3.1.22
   * Add extra optionalWordsMinimumMatched query parameter
