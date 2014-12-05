@@ -162,9 +162,9 @@
 @property BOOL                                     ignorePlural;
 
 /**
- * If set to false, disable typo-tolerance. Default to true.
+ * This option allow to control the number of typo in the results set.
  */
-@property BOOL                                     typoTolerance;
+@property (strong, nonatomic) NSString             *typoTolerance;
 /**
  *  If set to false, disable typo-tolerance on numeric tokens. Default to true.
  */

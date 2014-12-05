@@ -53,7 +53,7 @@
         self.AroundLatLongViaIP = NO;
         self.queryType = nil;
         self.removeWordsIfNoResult = nil;
-        self.typoTolerance = YES;
+        self.typoTolerance = nil;
         self.typosOnNumericTokens = YES;
         self.analytics = YES;
         self.synonyms = YES;
@@ -85,7 +85,7 @@
         self.aroundLatLongViaIP = NO;
         self.queryType = nil;
         self.removeWordsIfNoResult = nil;
-        self.typoTolerance = YES;
+        self.typoTolerance = nil;
         self.typosOnNumericTokens = YES;
         self.analytics = YES;
         self.synonyms = YES;
@@ -239,10 +239,11 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:@"allowTyposOnNumericTokens=false"];
     }
-    if (!self.typoTolerance) {
+    if (self.typoTolerance  != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:@"typoTolerance=false"];
+        [stringBuilder appendString:@"typoTolerance="];
+        [stringBuilder appendString:typoTolerance];
     }
     if (self.distinct) {
         if ([stringBuilder length] > 0)
