@@ -789,6 +789,36 @@
     }
 }
 
+-(void)testGetLogsWithType
+{
+    __block int done = 0;
+    NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
+    NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
+    [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
+        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+            [_client getLogsWithType:0 length:1 type:@"error" success:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSDictionary *result) {
+                XCTAssertEqual(1, [[result objectForKey:@"logs"] count], "Get logs failed");
+                done = 1;
+            } failure:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSString *errorMessage) {
+                XCTFail("@Error during getLogs: %@", errorMessage);
+                done = 1;
+            }];
+        } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
+            XCTFail("@Error during waitTask: %@", errorMessage);
+            done = 1;
+        }];
+    } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
+        XCTFail("@Error during addObject: %@", errorMessage);
+        done = 1;
+    }];
+    
+    [self.httpRequestOperationManager.operationQueue waitUntilAllOperationsAreFinished];
+    while (done == 0) {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate date]];
+    }
+}
+
 - (void)testClientACL
 {
     __block int done = 0;

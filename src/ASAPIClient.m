@@ -219,6 +219,18 @@
     }];
 }
 
+-(void) getLogsWithType:(NSUInteger)offset length:(NSUInteger)length type:(NSString*)type
+                success:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSDictionary *result))success
+                failure:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSString *errorMessage))failure
+{
+    NSString *url = [NSString stringWithFormat:@"/1/logs?offset=%zd&length=%zd&type=%@", offset, length, type];
+    [self performHTTPQuery:url method:@"GET" body:nil index:0 success:^(id JSON) {
+        success(self, offset, length, type, JSON);
+    } failure:^(NSString *errorMessage) {
+        failure(self, offset, length, type, errorMessage);
+    }];
+}
+
 -(void) deleteIndex:(NSString*)indexName success:(void(^)(ASAPIClient *client, NSString *indexName, NSDictionary *result))success
             failure:(void(^)(ASAPIClient *client, NSString *indexName, NSString *errorMessage))failure
 {

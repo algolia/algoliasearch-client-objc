@@ -125,6 +125,15 @@
         failure:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString *errorMessage))failure;
 
 /**
+ * Return last logs entries.
+ * @param offset Specify the first entry to retrieve (0-based, 0 is the most recent log entry).
+ * @param length Specify the maximum number of entries to retrieve starting at offset. Maximum allowed value: 1000.
+ */
+-(void) getLogsWithType:(NSUInteger)offset length:(NSUInteger)length type:(NSString*)type
+                  success:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSDictionary *result))success
+                  failure:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSString *errorMessage))failure;
+
+/**
  * Get the index object initialized (no server call needed for initialization)
  *
  * @param indexName the name of index
