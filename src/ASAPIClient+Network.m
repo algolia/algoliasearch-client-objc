@@ -63,7 +63,7 @@
             failure(@"Resource does not exist");
         } else {
             if ((index + 1) < [self.operationManagers count]) {
-                [self performHTTPQuery:path method:method body:body index:(index + 1) success:success failure:failure];
+                [self performHTTPQuery:path method:method body:body index:(index + 1) timeout:timeout success:success failure:failure];
             } else {
                 if (JSON != nil) {
                     NSDictionary *json = (NSDictionary*)JSON;
@@ -75,7 +75,7 @@
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if ((index + 1) < [self.operationManagers count]) {
-            [self performHTTPQuery:path method:method body:body index:(index + 1) success:success failure:failure];
+            [self performHTTPQuery:path method:method body:body index:(index + 1) timeout:timeout success:success failure:failure];
         } else {
             failure(error.localizedDescription);
         }

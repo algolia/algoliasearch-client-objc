@@ -285,7 +285,7 @@
 
 @property (strong, nonatomic) NSString          *applicationID;
 @property (strong, nonatomic) NSString          *apiKey;
-@property (strong, nonatomic) NSTimeInterval    timeout;
+@property                     NSTimeInterval    timeout;
 @property (strong, nonatomic) NSArray           *hostnames;
 @property (strong, nonatomic) NSArray           *operationManagers;
 
