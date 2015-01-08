@@ -50,6 +50,7 @@
         self.apiKey = papiKey;
         self.tagFilters = nil;
         self.userToken = nil;
+        self.timeout = 30;
         
         NSMutableArray *array = nil;
         if (phostnames == nil) {
@@ -149,7 +150,7 @@
     }
     NSString *path = [NSString stringWithFormat:@"/1/indexes/*/queries"];
     NSMutableDictionary *request = [NSMutableDictionary dictionaryWithObject:queriesTab forKey:@"requests"];
-    [self performHTTPQuery:path method:@"POST" body:request index:0 success:^(id JSON) {
+    [self performHTTPQuery:path method:@"POST" body:request index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, queries, JSON);
     } failure:^(NSString *errorMessage) {
@@ -160,7 +161,7 @@
 
 -(void) listIndexes:(void(^)(ASAPIClient *client, NSDictionary* result))success failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure
 {
-    [self performHTTPQuery:@"/1/indexes" method:@"GET" body:nil index:0 success:^(id JSON) {
+    [self performHTTPQuery:@"/1/indexes" method:@"GET" body:nil index:0 timeout:self.timeout success:^(id JSON) {
         success(self, JSON);
     } failure:^(NSString *errorMessage) {
         failure(self, errorMessage);
@@ -173,7 +174,7 @@
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/operation", [ASAPIClient urlEncode:srcIndexName]];
     NSDictionary *request = [NSDictionary dictionaryWithObjectsAndKeys:dstIndexName, @"destination", @"move", @"operation", nil];
-    [self performHTTPQuery:path method:@"POST" body:request index:0 success:^(id JSON) {
+    [self performHTTPQuery:path method:@"POST" body:request index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, srcIndexName, dstIndexName, JSON);
     } failure:^(NSString *errorMessage) {
@@ -188,7 +189,7 @@
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/operation", [ASAPIClient urlEncode:srcIndexName]];
     NSDictionary *request = [NSDictionary dictionaryWithObjectsAndKeys:dstIndexName, @"destination", @"copy", @"operation", nil];
-    [self performHTTPQuery:path method:@"POST" body:request index:0 success:^(id JSON) {
+    [self performHTTPQuery:path method:@"POST" body:request index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, srcIndexName, dstIndexName, JSON);
     } failure:^(NSString *errorMessage) {
@@ -200,7 +201,7 @@
 -(void) getLogs:(void(^)(ASAPIClient *client, NSDictionary *result))success
         failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure
 {
-    [self performHTTPQuery:@"/1/logs" method:@"GET" body:nil index:0 success:^(id JSON) {
+    [self performHTTPQuery:@"/1/logs" method:@"GET" body:nil index:0 timeout:self.timeout success:^(id JSON) {
         success(self, JSON);
     } failure:^(NSString *errorMessage) {
         failure(self, errorMessage);
@@ -212,7 +213,7 @@
                   failure:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString *errorMessage))failure
 {
     NSString *url = [NSString stringWithFormat:@"/1/logs?offset=%zd&length=%zd", offset, length];
-    [self performHTTPQuery:url method:@"GET" body:nil index:0 success:^(id JSON) {
+    [self performHTTPQuery:url method:@"GET" body:nil index:0 timeout:self.timeout success:^(id JSON) {
         success(self, offset, length, JSON);
     } failure:^(NSString *errorMessage) {
         failure(self, offset, length, errorMessage);
@@ -224,7 +225,7 @@
                 failure:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSString *errorMessage))failure
 {
     NSString *url = [NSString stringWithFormat:@"/1/logs?offset=%zd&length=%zd&type=%@", offset, length, type];
-    [self performHTTPQuery:url method:@"GET" body:nil index:0 success:^(id JSON) {
+    [self performHTTPQuery:url method:@"GET" body:nil index:0 timeout:self.timeout success:^(id JSON) {
         success(self, offset, length, type, JSON);
     } failure:^(NSString *errorMessage) {
         failure(self, offset, length, type, errorMessage);
@@ -236,7 +237,7 @@
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@", [ASAPIClient urlEncode:indexName]];
     
-    [self performHTTPQuery:path method:@"DELETE" body:nil index:0 success:^(id JSON) {
+    [self performHTTPQuery:path method:@"DELETE" body:nil index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, indexName, JSON);
     } failure:^(NSString *errorMessage) {
@@ -248,7 +249,7 @@
 -(void) listUserKeys:(void(^)(ASAPIClient *client, NSDictionary* result))success
                      failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure
 {
-    [self performHTTPQuery:@"/1/keys" method:@"GET" body:nil index:0 success:^(id JSON) {
+    [self performHTTPQuery:@"/1/keys" method:@"GET" body:nil index:0 timeout:self.timeout success:^(id JSON) {
         success(self, JSON);
     } failure:^(NSString *errorMessage) {
         failure(self, errorMessage);
@@ -259,7 +260,7 @@
                       failure:(void(^)(ASAPIClient *client, NSString *key, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
-    [self performHTTPQuery:path method:@"GET" body:nil index:0 success:^(id JSON) {
+    [self performHTTPQuery:path method:@"GET" body:nil index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, key, JSON);
     } failure:^(NSString *errorMessage) {
@@ -272,7 +273,7 @@
                        failure:(void(^)(ASAPIClient *client, NSString *key, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
-    [self performHTTPQuery:path method:@"DELETE" body:nil index:0 success:^(id JSON) {
+    [self performHTTPQuery:path method:@"DELETE" body:nil index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, key, JSON);
     } failure:^(NSString *errorMessage) {
@@ -285,7 +286,7 @@
            failure:(void(^)(ASAPIClient *client, NSArray *acls, NSString *errorMessage))failure
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:acls forKey:@"acl"];
-    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict index:0 success:^(id JSON) {
+    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, acls, JSON);
     } failure:^(NSString *errorMessage) {
@@ -303,7 +304,7 @@
                                 [NSNumber numberWithUnsignedInteger:maxQueriesPerIPPerHour], @"maxQueriesPerIPPerHour", 
                                 [NSNumber numberWithUnsignedInteger:maxHitsPerQuery], @"maxHitsPerQuery", 
                                 nil];
-    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict index:0 success:^(id JSON) {
+    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, acls, JSON);
     } failure:^(NSString *errorMessage) {
@@ -321,7 +322,7 @@
                                  [NSNumber numberWithUnsignedInteger:maxQueriesPerIPPerHour], @"maxQueriesPerIPPerHour",
                                  [NSNumber numberWithUnsignedInteger:maxHitsPerQuery], @"maxHitsPerQuery",
                                  nil];
-    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict index:0 success:^(id JSON) {
+    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, acls, indexes, JSON);
     } failure:^(NSString *errorMessage) {
@@ -335,7 +336,7 @@
 {
     NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:acls forKey:@"acl"];
-    [self performHTTPQuery:path method:@"PUT" body:dict index:0 success:^(id JSON) {
+    [self performHTTPQuery:path method:@"PUT" body:dict index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, key, acls, JSON);
     } failure:^(NSString *errorMessage) {
@@ -354,7 +355,7 @@
                                  [NSNumber numberWithUnsignedInteger:maxQueriesPerIPPerHour], @"maxQueriesPerIPPerHour",
                                  [NSNumber numberWithUnsignedInteger:maxHitsPerQuery], @"maxHitsPerQuery",
                                  nil];
-    [self performHTTPQuery:path method:@"PUT" body:dict index:0 success:^(id JSON) {
+    [self performHTTPQuery:path method:@"PUT" body:dict index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, key, acls, JSON);
     } failure:^(NSString *errorMessage) {
@@ -373,7 +374,7 @@
                                  [NSNumber numberWithUnsignedInteger:maxQueriesPerIPPerHour], @"maxQueriesPerIPPerHour",
                                  [NSNumber numberWithUnsignedInteger:maxHitsPerQuery], @"maxHitsPerQuery",
                                  nil];
-    [self performHTTPQuery:path method:@"PUT" body:dict index:0 success:^(id JSON) {
+    [self performHTTPQuery:path method:@"PUT" body:dict index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, key, acls, indexes, JSON);
     } failure:^(NSString *errorMessage) {

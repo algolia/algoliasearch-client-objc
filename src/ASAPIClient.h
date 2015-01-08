@@ -283,10 +283,11 @@
               success:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSDictionary *result))success
               failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSString *errorMessage))failure;
 
-@property (strong, nonatomic) NSString     *applicationID;
-@property (strong, nonatomic) NSString     *apiKey;
-@property (strong, nonatomic) NSArray      *hostnames;
-@property (strong, nonatomic) NSArray      *operationManagers;
+@property (strong, nonatomic) NSString          *applicationID;
+@property (strong, nonatomic) NSString          *apiKey;
+@property (strong, nonatomic) NSTimeInterval    timeout;
+@property (strong, nonatomic) NSArray           *hostnames;
+@property (strong, nonatomic) NSArray           *operationManagers;
 
 /**
  * Add security tag header (see http://www.algolia.com/doc/guides/objc#SecurityUser for more details)

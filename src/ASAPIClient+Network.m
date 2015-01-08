@@ -45,13 +45,13 @@
     }
 }
 
--(void) performHTTPQuery:(NSString*)path method:(NSString*)method body:(NSDictionary*)body index:(NSUInteger)index
+-(void) performHTTPQuery:(NSString*)path method:(NSString*)method body:(NSDictionary*)body index:(NSUInteger)index timeout:(NSTimeInterval)timeout
                  success:(void(^)(id JSON))success failure:(void(^)(NSString *errorMessage))failure
 {
     assert(index < [self.operationManagers count]);
     AFHTTPRequestOperationManager *httpRequestOperationManager = [self.operationManagers objectAtIndex:index];
     NSMutableURLRequest *request = [httpRequestOperationManager.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:path relativeToURL:httpRequestOperationManager.baseURL] absoluteString]  parameters:body error:nil];
-    
+    [httpRequestOperationManager.requestSerializer setTimeoutInterval:timeout];
     AFHTTPRequestOperation *operation = [httpRequestOperationManager HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id JSON) {
         if (operation.response.statusCode == 200 || operation.response.statusCode == 201) {
             success(JSON);

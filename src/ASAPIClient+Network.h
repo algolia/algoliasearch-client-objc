@@ -34,7 +34,7 @@
 /**
  * Perform an http query
  */
--(void) performHTTPQuery:(NSString*)path method:(NSString*)method body:(NSDictionary*)body index:(NSUInteger)index
+-(void) performHTTPQuery:(NSString*)path method:(NSString*)method body:(NSDictionary*)body index:(NSUInteger)index timeout:(NSTimeInterval)timeout
                  success:(void(^)(id JSON))success failure:(void(^)(NSString *errorMessage))failure;
 
 -(void) cancelQueries:(NSString*)method path:(NSString*)path;
