@@ -34,22 +34,22 @@
 
 +(id) apiClientWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames
 {
-    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:hostnames dsn:false dsnHost:nil];
+    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:hostnames dsn:false dsnHost:nil tagFilters:nil userToken:nil];
 }
 
 +(id) apiClientWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey
 {
-    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:nil dsn:false dsnHost:nil];
+    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:nil dsn:false dsnHost:nil tagFilters:nil userToken:nil];
 }
 
--(id) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey hostnames:(NSArray*)phostnames dsn:(Boolean)dsn dsnHost:(NSString*)dsnHost
+-(id) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey hostnames:(NSArray*)phostnames dsn:(Boolean)dsn dsnHost:(NSString*)dsnHost tagFilters:(NSString*)tagFiltersHeader userToken:(NSString*)userTokenHeader
 {
     self = [super init];
     if (self) {
         self.applicationID = papplicationID;
         self.apiKey = papiKey;
-        self.tagFilters = nil;
-        self.userToken = nil;
+        self.tagFilters = tagFiltersHeader;
+        self.userToken = userTokenHeader;
         self.timeout = 30;
         
         NSMutableArray *array = nil;
@@ -120,12 +120,12 @@
 }
 
 +(id) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey {
-    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:nil dsn:true dsnHost:nil];
+    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:nil dsn:true dsnHost:nil tagFilters:nil userToken:nil];
 }
 
 +(id) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames dsnHost:(NSString*)dsnHost
 {
-    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:hostnames dsn:true dsnHost:dsnHost];
+    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:hostnames dsn:true dsnHost:dsnHost tagFilters:nil userToken:nil];
 }
 
 

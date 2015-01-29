@@ -70,8 +70,10 @@
  * @param hostnames the list of hosts that you have received for the service
  * @param dsn set to true if your account has the Distributed Search Option
  * @param dsnHost override the automatic computation of dsn hostname
+ * @param tagFilters value of the header X-Algolia-TagFilters
+ * @param userToken value of the header X-Algolia-UserToken
  */
--(id) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey hostnames:(NSArray*)phostnames dsn:(Boolean)dsn dsnHost:(NSString*)dsnHost;
+-(id) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey hostnames:(NSArray*)phostnames dsn:(Boolean)dsn dsnHost:(NSString*)dsnHost tagFilters:(NSString*)tagFiltersHeader userToken:(NSString*)userTokenHeader;
 
 /**
  * List all existing indexes
