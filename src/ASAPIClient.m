@@ -389,6 +389,42 @@
     return [ASRemoteIndex remoteIndexWithAPIClient:self indexName:indexName];
 }
 
+-(void) setTagFilters:(NSString *)tagFiltersHeader
+{
+    tagFilters = tagFiltersHeader;
+    
+    for (AFHTTPRequestOperationManager* manager in self.operationManagers) {
+        [manager.requestSerializer setValue:self.tagFilters forHTTPHeaderField:@"X-Algolia-TagFilters"];
+    }
+}
+
+-(void) setUserToken:(NSString *)userTokenHeader
+{
+    userToken = userTokenHeader;
+    
+    for (AFHTTPRequestOperationManager* manager in self.operationManagers) {
+        [manager.requestSerializer setValue:self.userToken forHTTPHeaderField:@"X-Algolia-UserToken"];
+    }
+}
+
+-(void) setApiKey:(NSString *)apiKeyHeader
+{
+    apiKey = apiKeyHeader;
+    
+    for (AFHTTPRequestOperationManager* manager in self.operationManagers) {
+        [manager.requestSerializer setValue:self.apiKey forHTTPHeaderField:@"X-Algolia-API-Key"];
+    }
+}
+
+-(void) setApplicationID:(NSString *)applicationIDHeader
+{
+    applicationID = applicationIDHeader;
+    
+    for (AFHTTPRequestOperationManager* manager in self.operationManagers) {
+        [manager.requestSerializer setValue:self.applicationID forHTTPHeaderField:@"X-Algolia-Application-Id"];
+    }
+}
+
 @synthesize applicationID;
 @synthesize apiKey;
 @synthesize hostnames;
