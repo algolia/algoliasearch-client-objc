@@ -98,6 +98,7 @@
  * "None": No specific processing is done when a query does not return any result,
  * "LastWords": when a query does not return any result, the final word will be removed until there is results,
  * "FirstWords": when a query does not return any result, the first word will be removed until there is results.
+ * "allOptional": When a query does not return any result, a second trial will be made with all words as optional (which is equivalent to transforming the AND operand between query terms in a OR operand)
  */
 @property (strong, nonatomic) NSString              *removeWordsIfNoResult;
 
