@@ -35,12 +35,12 @@
 /**
  * Index initialization
  */
-+(id) remoteIndexWithAPIClient:(ASAPIClient*)client indexName:(NSString*)indexName;
++(instancetype) remoteIndexWithAPIClient:(ASAPIClient*)client indexName:(NSString*)indexName;
 
 /**
  * Index initialization
  */
--(id) initWithAPIClient:(ASAPIClient*)client indexName:(NSString*)indexName;
+-(instancetype) initWithAPIClient:(ASAPIClient*)client indexName:(NSString*)indexName;
 
 
 /**

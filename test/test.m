@@ -20,11 +20,11 @@
 - (void)setUp
 {
     [super setUp];
-    NSString* appID = [[[NSProcessInfo processInfo] environment] objectForKey:@"ALGOLIA_APPLICATION_ID"];
-    NSString* apiKey = [[[NSProcessInfo processInfo] environment] objectForKey:@"ALGOLIA_API_KEY"];
+    NSString* appID = [[NSProcessInfo processInfo] environment][@"ALGOLIA_APPLICATION_ID"];
+    NSString* apiKey = [[NSProcessInfo processInfo] environment][@"ALGOLIA_API_KEY"];
     self.client = [ASAPIClient apiClientWithApplicationID :appID apiKey:apiKey];
     self.index = [self.client getIndex:@"algol?à-objc"];
-    self.httpRequestOperationManager = [self.client.operationManagers objectAtIndex:0];
+    self.httpRequestOperationManager = (self.client.operationManagers)[0];
     __block int done = 0;
     [self.client deleteIndex:@"algol?à-objc" success:^(ASAPIClient *client, NSString *indexName, NSDictionary *result) {
         done = 1;
@@ -56,11 +56,11 @@
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
-            XCTAssertEqualObjects([result objectForKey:@"status"], @"published", "Wait task failed");
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+            XCTAssertEqualObjects(result[@"status"], @"published", "Wait task failed");
             ASQuery *query = [[ASQuery alloc] initWithFullTextQuery:@""];
             [self.index search:query success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
-                NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"nbHits"]];
+                NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",result[@"nbHits"]];
                 XCTAssertEqualObjects(nbHits, @"1", @"Wrong number of object in the index");
                 done = 1;
             } failure:^(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage) {
@@ -89,10 +89,10 @@
     NSDictionary *obj = @{@"city": @"San Francisco"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj withObjectID:@"a/go/?à" success:^(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
-            XCTAssertEqualObjects([result objectForKey:@"status"], @"published", "Wait task failed");
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+            XCTAssertEqualObjects(result[@"status"], @"published", "Wait task failed");
             [self.index getObject:@"a/go/?à" success:^(ASRemoteIndex *index, NSString *objectID, NSDictionary *result) {
-                NSMutableString *city = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"city"]];
+                NSMutableString *city = [NSMutableString stringWithFormat:@"%@",result[@"city"]];
                 XCTAssertEqualObjects(@"San Francisco", city, "Get object return a bad object");
                 done = 1;
             } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
@@ -122,11 +122,11 @@
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
         [index deleteObject:@"a/go/?à" success:^(ASRemoteIndex *index, NSString *objectID, NSDictionary *result) {
-            [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
-                XCTAssertEqualObjects([result objectForKey:@"status"], @"published", "Wait task failed");
+            [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+                XCTAssertEqualObjects(result[@"status"], @"published", "Wait task failed");
                 ASQuery *query = [[ASQuery alloc] initWithFullTextQuery:@""];
                 [self.index search:query success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
-                    NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"nbHits"]];
+                    NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",result[@"nbHits"]];
                     XCTAssertEqualObjects(nbHits, @"0", @"Wrong number of object in the index");
                     done = 1;
                 } failure:^(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage) {
@@ -160,10 +160,10 @@
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
-            XCTAssertEqualObjects([result objectForKey:@"status"], @"published", "Wait task failed");
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+            XCTAssertEqualObjects(result[@"status"], @"published", "Wait task failed");
             [self.index getObject:@"a/go/?à" success:^(ASRemoteIndex *index, NSString *objectID, NSDictionary *result) {
-                NSMutableString *city = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"city"]];
+                NSMutableString *city = [NSMutableString stringWithFormat:@"%@",result[@"city"]];
                 XCTAssertEqualObjects(@"San Francisco", city, "Get object return a bad object");
                 done = 1;
             }
@@ -228,11 +228,11 @@
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
         [self.index partialUpdateObject:@{@"city": @"Los Angeles"} objectID:@"a/go/?à" success:^(ASRemoteIndex *index, NSDictionary *partialObject, NSString *objectID, NSDictionary *result) {
-            [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
-                XCTAssertEqualObjects([result objectForKey:@"status"], @"published", "Wait task failed");
+            [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+                XCTAssertEqualObjects(result[@"status"], @"published", "Wait task failed");
                 [self.index getObject:@"a/go/?à" success:^(ASRemoteIndex *index, NSString *objectID, NSDictionary *result) {
-                    NSMutableString *city = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"city"]];
-                    NSMutableString *initial = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"initial"]];
+                    NSMutableString *city = [NSMutableString stringWithFormat:@"%@",result[@"city"]];
+                    NSMutableString *initial = [NSMutableString stringWithFormat:@"%@",result[@"initial"]];
                     XCTAssertEqualObjects(@"Los Angeles", city, "Partial update is not applied");
                     XCTAssertEqualObjects(@"SF", initial, "Partial update failed");
                     done = 1;
@@ -268,12 +268,12 @@
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
         [self.index saveObject:@{@"city": @"Los Angeles"} objectID:@"a/go/?à" success:^(ASRemoteIndex *index, NSDictionary *partialObject, NSString *objectID, NSDictionary *result) {
-            [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
-                XCTAssertEqualObjects([result objectForKey:@"status"], @"published", "Wait task failed");
+            [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+                XCTAssertEqualObjects(result[@"status"], @"published", "Wait task failed");
                 [self.index getObject:@"a/go/?à" success:^(ASRemoteIndex *index, NSString *objectID, NSDictionary *result) {
-                    NSMutableString *city = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"city"]];
+                    NSMutableString *city = [NSMutableString stringWithFormat:@"%@",result[@"city"]];
                     XCTAssertEqualObjects(@"Los Angeles", city, "Save object is not applied");
-                    XCTAssertTrue([result objectForKey:@"initial"] == nil, "Save object failed");
+                    XCTAssertTrue(result[@"initial"] == nil, "Save object failed");
                     done = 1;
                 } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
                     XCTFail("@Error during getObject: %@", errorMessage);
@@ -306,11 +306,11 @@
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
         [self.index clearIndex:^(ASRemoteIndex *index, NSDictionary *result) {
-            [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
-                XCTAssertEqualObjects([result objectForKey:@"status"], @"published", "Wait task failed");
+            [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+                XCTAssertEqualObjects(result[@"status"], @"published", "Wait task failed");
                 ASQuery *query = [[ASQuery alloc] initWithFullTextQuery:@""];
                 [self.index search:query success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
-                    NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"nbHits"]];
+                    NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",result[@"nbHits"]];
                     XCTAssertEqualObjects(nbHits, @"0", @"Clear index failed");
                     done = 1;
                 } failure:^(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage) {
@@ -341,9 +341,9 @@
 {
     __block int done = 0;
     [self.index setSettings:@{@"attributesToRetrieve": @[@"name"]} success:^(ASRemoteIndex *index, NSDictionary *settings, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [self.index getSettings:^(ASRemoteIndex *index, NSDictionary *result) {
-                NSMutableString *attributesToRetrieve = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"attributesToRetrieve"] objectAtIndex:0]];
+                NSMutableString *attributesToRetrieve = [NSMutableString stringWithFormat:@"%@",result[@"attributesToRetrieve"][0]];
                 XCTAssertEqualObjects(attributesToRetrieve, @"name", @"set settings failed");
                 done = 1;
             } failure:^(ASRemoteIndex *index, NSString *errorMessage) {
@@ -372,24 +372,24 @@
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [index addUserKey:@[@"search"] success:^(ASRemoteIndex *index, NSArray *acls, NSDictionary *result) {
                 [NSThread sleepForTimeInterval:5.0]; // wait the backend
-                [index getUserKeyACL:[result objectForKey:@"key"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
-                    NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
+                [index getUserKeyACL:result[@"key"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
+                    NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",result[@"acl"][0]];
                     XCTAssertEqualObjects(acl, @"search", @"add user key failed");
-                    [index updateUserKey:[result objectForKey:@"value"] withACL:@[@"addObject"] success:^(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result) {
+                    [index updateUserKey:result[@"value"] withACL:@[@"addObject"] success:^(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result) {
                         [NSThread sleepForTimeInterval:5.0]; // wait the backend
-                        [index getUserKeyACL:[result objectForKey:@"key"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
-                            NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
+                        [index getUserKeyACL:result[@"key"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
+                            NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",result[@"acl"][0]];
                             XCTAssertEqualObjects(acl, @"addObject", @"add user key failed");
-                            [index deleteUserKey:[result objectForKey:@"value"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
+                            [index deleteUserKey:result[@"value"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
                                 [NSThread sleepForTimeInterval:5.0]; // wait the backend
                                 [index listUserKeys:^(ASRemoteIndex *index, NSDictionary *result) {
-                                    NSArray *keys = [result objectForKey:@"keys"];
+                                    NSArray *keys = result[@"keys"];
                                     BOOL found = false;
                                     for (int i = 0; i < [keys count]; i++) {
-                                        if ([key isEqualToString:[[keys objectAtIndex:i] objectForKey:@"value"]]) {
+                                        if ([key isEqualToString:keys[i][@"value"]]) {
                                             found = true;
                                             break;
                                         }
@@ -444,26 +444,26 @@
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [index addUserKey:@[@"search"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASRemoteIndex *index, NSArray *acls, NSDictionary *result) {
                 [NSThread sleepForTimeInterval:5.0]; // wait the backend
-                [index getUserKeyACL:[result objectForKey:@"key"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
-                    NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
-                    NSMutableString *validity = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"validity"]];
+                [index getUserKeyACL:result[@"key"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
+                    NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",result[@"acl"][0]];
+                    NSMutableString *validity = [NSMutableString stringWithFormat:@"%@",result[@"validity"]];
                     XCTAssertEqualObjects(acl, @"search", @"add user key failed");
                     XCTAssertNotEqualObjects(validity, @"0", @"add user key failed");
-                    [index updateUserKey:[result objectForKey:@"value"] withACL:@[@"addObject"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result) {
+                    [index updateUserKey:result[@"value"] withACL:@[@"addObject"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result) {
                         [NSThread sleepForTimeInterval:5.0]; // wait the backend
-                        [index getUserKeyACL:[result objectForKey:@"key"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
-                            NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
+                        [index getUserKeyACL:result[@"key"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
+                            NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",result[@"acl"][0]];
                             XCTAssertEqualObjects(acl, @"addObject", @"add user key failed");
-                            [index deleteUserKey:[result objectForKey:@"value"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
+                            [index deleteUserKey:result[@"value"] success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
                                 [NSThread sleepForTimeInterval:5.0]; // wait the backend
                                 [index listUserKeys:^(ASRemoteIndex *index, NSDictionary *result) {
-                                    NSArray *keys = [result objectForKey:@"keys"];
+                                    NSArray *keys = result[@"keys"];
                                     BOOL found = false;
                                     for (int i = 0; i < [keys count]; i++) {
-                                        if ([key isEqualToString:[[keys objectAtIndex:i] objectForKey:@"value"]]) {
+                                        if ([key isEqualToString:keys[i][@"value"]]) {
                                             found = true;
                                             break;
                                         }
@@ -518,9 +518,9 @@
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [index browse:0 success:^(ASRemoteIndex *index, NSUInteger page, NSDictionary *result) {
-                NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"nbHits"]];
+                NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",result[@"nbHits"]];
                 XCTAssertEqualObjects(nbHits, @"1", @"Wrong number of object in the index");
                 done = 1;
             } failure:^(ASRemoteIndex *index, NSUInteger page, NSString *errorMessage) {
@@ -549,9 +549,9 @@
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [index browse:0 hitsPerPage:1 success:^(ASRemoteIndex *index, NSUInteger page, NSUInteger hitsPerPage, NSDictionary *result) {
-                NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"nbHits"]];
+                NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",result[@"nbHits"]];
                 XCTAssertEqualObjects(nbHits, @"1", @"Wrong number of object in the index");
                 done = 1;
             } failure:^(ASRemoteIndex *index, NSUInteger page, NSUInteger hitsPerPage, NSString *errorMessage) {
@@ -580,12 +580,12 @@
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [_client listIndexes:^(ASAPIClient *client, NSDictionary *result) {
-                NSArray *indexes = [result objectForKey:@"items"];
+                NSArray *indexes = result[@"items"];
                 BOOL found = false;
                 for (int i = 0; i < [indexes count]; i++) {
-                    if ([index.indexName isEqualToString:[[indexes objectAtIndex:i] objectForKey:@"name"]]) {
+                    if ([index.indexName isEqualToString:indexes[i][@"name"]]) {
                         found = true;
                         break;
                     }
@@ -620,13 +620,13 @@
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [_client moveIndex:@"algol?à-objc" to:@"algol?à-objc2" success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
-                [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+                [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
                     ASRemoteIndex *index2 = [self.client getIndex:@"algol?à-objc2"];
                     ASQuery *query = [[ASQuery alloc] initWithFullTextQuery:@""];
                     [index2 search:query success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
-                        NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"nbHits"]];
+                        NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",result[@"nbHits"]];
                         XCTAssertEqualObjects(nbHits, @"1", @"Wrong number of object in the index");
                         done = 1;
                     } failure:^(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage) {
@@ -673,18 +673,18 @@
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [_client copyIndex:@"algol?à-objc" to:@"algol?à-objc2" success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
-                [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+                [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
                     ASRemoteIndex *index2 = [self.client getIndex:@"algol?à-objc2"];
                     ASQuery *query = [[ASQuery alloc] initWithFullTextQuery:@""];
                     [index2 search:query success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
-                        NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"nbHits"]];
+                        NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",result[@"nbHits"]];
                         XCTAssertEqualObjects(nbHits, @"1", @"Wrong number of object in the index");
                         ASRemoteIndex *indexOrigin = [self.client getIndex:@"algol?à-objc"];
                         query = [[ASQuery alloc] initWithFullTextQuery:@""];
                         [indexOrigin search:query success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
-                            NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"nbHits"]];
+                            NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",result[@"nbHits"]];
                             XCTAssertEqualObjects(nbHits, @"1", @"Wrong number of object in the index");
                             done = 1;
                         } failure:^(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage) {
@@ -735,9 +735,9 @@
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [_client getLogs:^(ASAPIClient *client, NSDictionary *result) {
-                XCTAssertNotEqual(0, [[result objectForKey:@"logs"] count], "Get logs failed");
+                XCTAssertNotEqual(0, [result[@"logs"] count], "Get logs failed");
                 done = 1;
             } failure:^(ASAPIClient *client, NSString *errorMessage) {
                 XCTFail("@Error during getLogs: %@", errorMessage);
@@ -765,9 +765,9 @@
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [_client getLogsWithOffset:0 length:1 success:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSDictionary *result) {
-                XCTAssertEqual(1, [[result objectForKey:@"logs"] count], "Get logs failed");
+                XCTAssertEqual(1, [result[@"logs"] count], "Get logs failed");
                 done = 1;
             } failure:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString *errorMessage) {
                 XCTFail("@Error during getLogs: %@", errorMessage);
@@ -795,9 +795,9 @@
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [_client getLogsWithType:0 length:1 type:@"error" success:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSDictionary *result) {
-                XCTAssertEqual(1, [[result objectForKey:@"logs"] count], "Get logs failed");
+                XCTAssertEqual(1, [result[@"logs"] count], "Get logs failed");
                 done = 1;
             } failure:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSString *errorMessage) {
                 XCTFail("@Error during getLogs: %@", errorMessage);
@@ -825,24 +825,24 @@
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [_client addUserKey:@[@"search"] success:^(ASAPIClient *client, NSArray *acls, NSDictionary *result) {
                 [NSThread sleepForTimeInterval:5.0]; // wait the backend
-                [client getUserKeyACL:[result objectForKey:@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
-                    NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
+                [client getUserKeyACL:result[@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                    NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",result[@"acl"][0]];
                     XCTAssertEqualObjects(acl, @"search", @"add user key failed");
-                    [_client updateUserKey:[result objectForKey:@"value"] withACL:@[@"addObject"] success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result) {
+                    [_client updateUserKey:result[@"value"] withACL:@[@"addObject"] success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result) {
                         [NSThread sleepForTimeInterval:5.0]; // wait the backend
-                        [client getUserKeyACL:[result objectForKey:@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
-                            NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
+                        [client getUserKeyACL:result[@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                            NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",result[@"acl"][0]];
                             XCTAssertEqualObjects(acl, @"addObject", @"add user key failed");
-                            [client deleteUserKey:[result objectForKey:@"value"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                            [client deleteUserKey:result[@"value"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
                                 [NSThread sleepForTimeInterval:5.0]; // wait the backend
                                 [client listUserKeys:^(ASAPIClient *client, NSDictionary *result) {
-                                    NSArray *keys = [result objectForKey:@"keys"];
+                                    NSArray *keys = result[@"keys"];
                                     BOOL found = false;
                                     for (int i = 0; i < [keys count]; i++) {
-                                        if ([key isEqualToString:[[keys objectAtIndex:i] objectForKey:@"value"]]) {
+                                        if ([key isEqualToString:keys[i][@"value"]]) {
                                             found = true;
                                             break;
                                         }
@@ -897,26 +897,26 @@
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [_client addUserKey:@[@"search"] withIndexes:@[@"algol?à-objc"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASAPIClient *client, NSArray *acls, NSArray *indexes, NSDictionary *result) {
                 [NSThread sleepForTimeInterval:5.0]; // wait the backend
-                [client getUserKeyACL:[result objectForKey:@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
-                    NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
-                    NSMutableString *validity = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"validity"]];
+                [client getUserKeyACL:result[@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                    NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",result[@"acl"][0]];
+                    NSMutableString *validity = [NSMutableString stringWithFormat:@"%@",result[@"validity"]];
                     XCTAssertEqualObjects(acl, @"search", @"add user key failed");
                     XCTAssertNotEqualObjects(validity, @"0", @"add user key failed");
-                    [_client updateUserKey:[result objectForKey:@"value"] withACL:@[@"addObject"] withIndexes:@[@"algol?à-objc"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSDictionary *result) {
+                    [_client updateUserKey:result[@"value"] withACL:@[@"addObject"] withIndexes:@[@"algol?à-objc"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSDictionary *result) {
                         [NSThread sleepForTimeInterval:5.0]; // wait the backend
-                        [client getUserKeyACL:[result objectForKey:@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
-                            NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
+                        [client getUserKeyACL:result[@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                            NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",result[@"acl"][0]];
                             XCTAssertEqualObjects(acl, @"addObject", @"add user key failed");
-                            [client deleteUserKey:[result objectForKey:@"value"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                            [client deleteUserKey:result[@"value"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
                                 [NSThread sleepForTimeInterval:5.0]; // wait the backend
                                 [client listUserKeys:^(ASAPIClient *client, NSDictionary *result) {
-                                    NSArray *keys = [result objectForKey:@"keys"];
+                                    NSArray *keys = result[@"keys"];
                                     BOOL found = false;
                                     for (int i = 0; i < [keys count]; i++) {
-                                        if ([key isEqualToString:[[keys objectAtIndex:i] objectForKey:@"value"]]) {
+                                        if ([key isEqualToString:keys[i][@"value"]]) {
                                             found = true;
                                             break;
                                         }
@@ -971,26 +971,26 @@
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [_client addUserKey:@[@"search"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASAPIClient *client, NSArray *acls, NSDictionary *result) {
                 [NSThread sleepForTimeInterval:5.0]; // wait the backend
-                [client getUserKeyACL:[result objectForKey:@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
-                    NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
-                    NSMutableString *validity = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"validity"]];
+                [client getUserKeyACL:result[@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                    NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",result[@"acl"][0]];
+                    NSMutableString *validity = [NSMutableString stringWithFormat:@"%@",result[@"validity"]];
                     XCTAssertEqualObjects(acl, @"search", @"add user key failed");
                     XCTAssertNotEqualObjects(validity, @"0", @"add user key failed");
-                    [_client updateUserKey:[result objectForKey:@"value"] withACL:@[@"addObject"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result) {
+                    [_client updateUserKey:result[@"value"] withACL:@[@"addObject"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result) {
                         [NSThread sleepForTimeInterval:5.0]; // wait the backend
-                        [client getUserKeyACL:[result objectForKey:@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
-                            NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",[[result objectForKey:@"acl"] objectAtIndex:0]];
+                        [client getUserKeyACL:result[@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                            NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",result[@"acl"][0]];
                             XCTAssertEqualObjects(acl, @"addObject", @"add user key failed");
-                            [client deleteUserKey:[result objectForKey:@"value"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
+                            [client deleteUserKey:result[@"value"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
                                 [NSThread sleepForTimeInterval:5.0]; // wait the backend
                                 [client listUserKeys:^(ASAPIClient *client, NSDictionary *result) {
-                                    NSArray *keys = [result objectForKey:@"keys"];
+                                    NSArray *keys = result[@"keys"];
                                     BOOL found = false;
                                     for (int i = 0; i < [keys count]; i++) {
-                                        if ([key isEqualToString:[[keys objectAtIndex:i] objectForKey:@"value"]]) {
+                                        if ([key isEqualToString:keys[i][@"value"]]) {
                                             found = true;
                                             break;
                                         }
@@ -1047,10 +1047,10 @@
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObjects:@[obj, obj2] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
         [index deleteObjects:@[@"a/go/?à", @"à/go/?à"] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
-            [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+            [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
                 ASQuery *query = [[ASQuery alloc] initWithFullTextQuery:@""];
                 [self.index search:query success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
-                    NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"nbHits"]];
+                    NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",result[@"nbHits"]];
                     XCTAssertEqualObjects(nbHits, @"0", @"Wrong number of object in the index");
                     done = 1;
                 } failure:^(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage) {
@@ -1085,12 +1085,12 @@
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObjects:@[obj, obj2] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
         [index saveObjects:@[@{@"city": @"Los Angeles", @"objectID": @"a/go/?à"}, @{@"city": @"San Francisco", @"objectID": @"à/go/?à"}] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
-            [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+            [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
                 [index getObject:@"à/go/?à" success:^(ASRemoteIndex *index, NSString *objectID, NSDictionary *result) {
-                    NSMutableString *city = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"city"]];
+                    NSMutableString *city = [NSMutableString stringWithFormat:@"%@",result[@"city"]];
                     XCTAssertEqualObjects(city, @"San Francisco", @"saveObjects failed");
                     [index getObject:@"a/go/?à" success:^(ASRemoteIndex *index, NSString *objectID, NSDictionary *result) {
-                        NSMutableString *city = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"city"]];
+                        NSMutableString *city = [NSMutableString stringWithFormat:@"%@",result[@"city"]];
                         XCTAssertEqualObjects(city, @"Los Angeles", @"saveObjects failed");
                         done = 1;
                     } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
@@ -1129,15 +1129,15 @@
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObjects:@[obj, obj2] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
         [index partialUpdateObjects:@[@{@"city": @"Los Angeles", @"objectID": @"a/go/?à"}, @{@"city": @"San Francisco", @"objectID": @"à/go/?à"}] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
-            [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+            [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
                 [index getObject:@"à/go/?à" success:^(ASRemoteIndex *index, NSString *objectID, NSDictionary *result) {
-                    NSMutableString *city = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"city"]];
-                    NSMutableString *initial = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"initial"]];
+                    NSMutableString *city = [NSMutableString stringWithFormat:@"%@",result[@"city"]];
+                    NSMutableString *initial = [NSMutableString stringWithFormat:@"%@",result[@"initial"]];
                     XCTAssertEqualObjects(city, @"San Francisco", @"partialUpdateObjects failed");
                     XCTAssertEqualObjects(initial, @"LA", @"saveObjects failed");
                     [index getObject:@"a/go/?à" success:^(ASRemoteIndex *index, NSString *objectID, NSDictionary *result) {
-                        NSMutableString *city = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"city"]];
-                        NSMutableString *initial = [NSMutableString stringWithFormat:@"%@",[result objectForKey:@"initial"]];
+                        NSMutableString *city = [NSMutableString stringWithFormat:@"%@",result[@"city"]];
+                        NSMutableString *initial = [NSMutableString stringWithFormat:@"%@",result[@"initial"]];
                         XCTAssertEqualObjects(city, @"Los Angeles", @"partialUpdateObjects failed");
                         XCTAssertEqualObjects(initial, @"SF", @"saveObjects failed");
                         done = 1;
@@ -1175,11 +1175,11 @@
     NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
-            XCTAssertEqualObjects([result objectForKey:@"status"], @"published", "Wait task failed");
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+            XCTAssertEqualObjects(result[@"status"], @"published", "Wait task failed");
             ASQuery *query = [[ASQuery alloc] initWithFullTextQuery:@""];
             [_client multipleQueries:@[@{@"indexName":@"algol?à-objc", @"query": query}] success:^(ASAPIClient *client, NSArray *queries, NSDictionary *result) {
-                NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",[[[result objectForKey:@"results"] objectAtIndex:0] objectForKey:@"nbHits"]];
+                NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",result[@"results"][0][@"nbHits"]];
                 XCTAssertEqualObjects(nbHits, @"1", @"Wrong number of object in the index");
                 done = 1;
             } failure:^(ASAPIClient *client, NSArray *queries, NSString *errorMessage) {
@@ -1209,10 +1209,10 @@
     NSDictionary *obj2 = @{@"city": @"Los Angeles", @"objectID": @"à/go/?à"};
     NSLog(@"%s doing test...", __PRETTY_FUNCTION__);
     [self.index addObjects:@[obj, obj2] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
-        [index waitTask:[result objectForKey:@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             [index getObjects:@[@"a/go/?à", @"à/go/?à"] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
-                NSMutableString *city1 = [NSMutableString stringWithFormat:@"%@",[[[result objectForKey:@"results"] objectAtIndex:0] objectForKey:@"city"]];
-                NSMutableString *city2 = [NSMutableString stringWithFormat:@"%@",[[[result objectForKey:@"results"] objectAtIndex:1] objectForKey:@"city"]];
+                NSMutableString *city1 = [NSMutableString stringWithFormat:@"%@",result[@"results"][0][@"city"]];
+                NSMutableString *city2 = [NSMutableString stringWithFormat:@"%@",result[@"results"][1][@"city"]];
                 XCTAssertEqualObjects(city1, @"San Francisco", @"GetObject return the wrong object");
                 XCTAssertEqualObjects(city2, @"Los Angeles", @"GetObject return the wrong object");
                 done = 1;

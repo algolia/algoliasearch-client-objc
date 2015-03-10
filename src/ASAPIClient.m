@@ -32,17 +32,17 @@
 
 @implementation ASAPIClient
 
-+(id) apiClientWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames
++(instancetype) apiClientWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames
 {
     return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:hostnames dsn:false dsnHost:nil tagFilters:nil userToken:nil];
 }
 
-+(id) apiClientWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey
++(instancetype) apiClientWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey
 {
     return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:nil dsn:false dsnHost:nil tagFilters:nil userToken:nil];
 }
 
--(id) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey hostnames:(NSArray*)phostnames dsn:(Boolean)dsn dsnHost:(NSString*)dsnHost tagFilters:(NSString*)tagFiltersHeader userToken:(NSString*)userTokenHeader
+-(instancetype) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey hostnames:(NSArray*)phostnames dsn:(Boolean)dsn dsnHost:(NSString*)dsnHost tagFilters:(NSString*)tagFiltersHeader userToken:(NSString*)userTokenHeader
 {
     self = [super init];
     if (self) {
@@ -119,11 +119,11 @@
     return self;
 }
 
-+(id) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey {
++(instancetype) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey {
     return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:nil dsn:true dsnHost:nil tagFilters:nil userToken:nil];
 }
 
-+(id) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames dsnHost:(NSString*)dsnHost
++(instancetype) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames dsnHost:(NSString*)dsnHost
 {
     return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:hostnames dsn:true dsnHost:dsnHost tagFilters:nil userToken:nil];
 }
@@ -144,9 +144,9 @@
     NSMutableArray *queriesTab =[[NSMutableArray alloc] initWithCapacity:[queries count]];
     int i = 0;
     for (NSDictionary *query in queries) {
-        NSString *queryParams = [[query objectForKey:@"query"] buildURL];
+        NSString *queryParams = [query[@"query"] buildURL];
         //NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:queryParams forKey:@"params"];
-        queriesTab[i++] = @{@"params": queryParams, @"indexName": [query objectForKey:@"indexName"]};
+        queriesTab[i++] = @{@"params": queryParams, @"indexName": query[@"indexName"]};
     }
     NSString *path = [NSString stringWithFormat:@"/1/indexes/*/queries"];
     NSMutableDictionary *request = [NSMutableDictionary dictionaryWithObject:queriesTab forKey:@"requests"];
@@ -173,7 +173,7 @@
           failure:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/operation", [ASAPIClient urlEncode:srcIndexName]];
-    NSDictionary *request = [NSDictionary dictionaryWithObjectsAndKeys:dstIndexName, @"destination", @"move", @"operation", nil];
+    NSDictionary *request = @{@"destination": dstIndexName, @"operation": @"move"};
     [self performHTTPQuery:path method:@"POST" body:request index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, srcIndexName, dstIndexName, JSON);
@@ -188,7 +188,7 @@
           failure:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/operation", [ASAPIClient urlEncode:srcIndexName]];
-    NSDictionary *request = [NSDictionary dictionaryWithObjectsAndKeys:dstIndexName, @"destination", @"copy", @"operation", nil];
+    NSDictionary *request = @{@"destination": dstIndexName, @"operation": @"copy"};
     [self performHTTPQuery:path method:@"POST" body:request index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, srcIndexName, dstIndexName, JSON);
@@ -300,9 +300,9 @@
            failure:(void(^)(ASAPIClient *client, NSArray *acls, NSString *errorMessage))failure
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl", 
-                                [NSNumber numberWithUnsignedInteger:validity], @"validity", 
-                                [NSNumber numberWithUnsignedInteger:maxQueriesPerIPPerHour], @"maxQueriesPerIPPerHour", 
-                                [NSNumber numberWithUnsignedInteger:maxHitsPerQuery], @"maxHitsPerQuery", 
+                                @(validity), @"validity", 
+                                @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour", 
+                                @(maxHitsPerQuery), @"maxHitsPerQuery", 
                                 nil];
     [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
@@ -318,9 +318,9 @@
            failure:(void(^)(ASAPIClient *client, NSArray *acls, NSArray *indexes, NSString *errorMessage))failure
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl", indexes, @"indexes",
-                                 [NSNumber numberWithUnsignedInteger:validity], @"validity",
-                                 [NSNumber numberWithUnsignedInteger:maxQueriesPerIPPerHour], @"maxQueriesPerIPPerHour",
-                                 [NSNumber numberWithUnsignedInteger:maxHitsPerQuery], @"maxHitsPerQuery",
+                                 @(validity), @"validity",
+                                 @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour",
+                                 @(maxHitsPerQuery), @"maxHitsPerQuery",
                                  nil];
     [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
@@ -351,9 +351,9 @@
 {
     NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl",
-                                 [NSNumber numberWithUnsignedInteger:validity], @"validity",
-                                 [NSNumber numberWithUnsignedInteger:maxQueriesPerIPPerHour], @"maxQueriesPerIPPerHour",
-                                 [NSNumber numberWithUnsignedInteger:maxHitsPerQuery], @"maxHitsPerQuery",
+                                 @(validity), @"validity",
+                                 @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour",
+                                 @(maxHitsPerQuery), @"maxHitsPerQuery",
                                  nil];
     [self performHTTPQuery:path method:@"PUT" body:dict index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
@@ -370,9 +370,9 @@
 {
     NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl", indexes, @"indexes",
-                                 [NSNumber numberWithUnsignedInteger:validity], @"validity",
-                                 [NSNumber numberWithUnsignedInteger:maxQueriesPerIPPerHour], @"maxQueriesPerIPPerHour",
-                                 [NSNumber numberWithUnsignedInteger:maxHitsPerQuery], @"maxHitsPerQuery",
+                                 @(validity), @"validity",
+                                 @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour",
+                                 @(maxHitsPerQuery), @"maxHitsPerQuery",
                                  nil];
     [self performHTTPQuery:path method:@"PUT" body:dict index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)

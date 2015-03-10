@@ -26,12 +26,12 @@
 
 @implementation ASQuery
 
-+(id) queryWithFullTextQuery:(NSString *)fullTextQuery
++(instancetype) queryWithFullTextQuery:(NSString *)fullTextQuery
 {
     return [[ASQuery alloc] initWithFullTextQuery:fullTextQuery];
 }
 
--(id) init
+-(instancetype) init
 {
     self = [super init];
     if (self) {
@@ -63,7 +63,7 @@
     return self;
 }
 
--(id) initWithFullTextQuery:(NSString *)pfullTextQuery
+-(instancetype) initWithFullTextQuery:(NSString *)pfullTextQuery
 {
     self = [super init];
     if (self) {

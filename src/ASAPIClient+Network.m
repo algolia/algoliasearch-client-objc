@@ -34,7 +34,7 @@
 {
     NSUInteger count = [self.operationManagers count];
     for (NSUInteger i = 0; i < count; ++i) {
-        AFHTTPRequestOperationManager *httpRequestOperationManager = [self.operationManagers objectAtIndex:i];
+        AFHTTPRequestOperationManager *httpRequestOperationManager = (self.operationManagers)[i];
         for (AFHTTPRequestOperation *operation in httpRequestOperationManager.operationQueue.operations) {
             if ([operation.request.URL.path isEqualToString:path]) {
                 if ([operation.request.HTTPMethod isEqualToString:method]) {
@@ -49,7 +49,7 @@
                  success:(void(^)(id JSON))success failure:(void(^)(NSString *errorMessage))failure
 {
     assert(index < [self.operationManagers count]);
-    AFHTTPRequestOperationManager *httpRequestOperationManager = [self.operationManagers objectAtIndex:index];
+    AFHTTPRequestOperationManager *httpRequestOperationManager = (self.operationManagers)[index];
     NSMutableURLRequest *request = [httpRequestOperationManager.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:path relativeToURL:httpRequestOperationManager.baseURL] absoluteString]  parameters:body error:nil];
     [httpRequestOperationManager.requestSerializer setTimeoutInterval:timeout];
     AFHTTPRequestOperation *operation = [httpRequestOperationManager HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id JSON) {
@@ -67,7 +67,7 @@
             } else {
                 if (JSON != nil) {
                     NSDictionary *json = (NSDictionary*)JSON;
-                    failure([json objectForKey:@"message"]);
+                    failure(json[@"message"]);
                 } else {
                     failure(@"No error message");
                 }

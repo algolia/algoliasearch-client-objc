@@ -26,12 +26,12 @@
 
 @implementation ASRemoteIndex
 
-+(id) remoteIndexWithAPIClient:(ASAPIClient*)client indexName:(NSString*)indexName
++(instancetype) remoteIndexWithAPIClient:(ASAPIClient*)client indexName:(NSString*)indexName
 {
     return [[ASRemoteIndex alloc] initWithAPIClient:client indexName:indexName];
 }
 
--(id) initWithAPIClient:(ASAPIClient*)client indexName:(NSString*)indexName
+-(instancetype) initWithAPIClient:(ASAPIClient*)client indexName:(NSString*)indexName
 {
     self = [super init];
     if (self) {
@@ -77,10 +77,10 @@
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/batch", self.urlEncodedIndexName];
     NSMutableArray *requests = [[NSMutableArray alloc] initWithCapacity:[objects count]];
     for (NSDictionary *object in objects) {
-        [requests addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"addObject", @"action",
-                             object, @"body", nil]];
+        [requests addObject:@{@"action": @"addObject",
+                             @"body": object}];
     }
-    NSDictionary *request = [NSDictionary dictionaryWithObjectsAndKeys:requests, @"requests", nil];
+    NSDictionary *request = @{@"requests": requests};
     [self.apiClient performHTTPQuery:path method:@"POST" body:request index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, objects, JSON);
@@ -97,10 +97,10 @@
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/batch", self.urlEncodedIndexName];
     NSMutableArray *requests = [[NSMutableArray alloc] initWithCapacity:[objects count]];
     for (NSString *object in objects) {
-        [requests addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"deleteObject", @"action",
-                             object, @"objectID", nil]];
+        [requests addObject:@{@"action": @"deleteObject",
+                             @"objectID": object}];
     }
-    NSDictionary *request = [NSDictionary dictionaryWithObjectsAndKeys:requests, @"requests", nil];
+    NSDictionary *request = @{@"requests": requests};
     [self.apiClient performHTTPQuery:path method:@"POST" body:request index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, objects, JSON);
@@ -187,11 +187,11 @@
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/batch", self.urlEncodedIndexName];
     NSMutableArray *requests = [[NSMutableArray alloc] initWithCapacity:[objects count]];
     for (NSDictionary *object in objects) {
-        [requests addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"partialUpdateObject", @"action",
-                             [object valueForKey:@"objectID"], @"objectID",
-                             object, @"body", nil]];
+        [requests addObject:@{@"action": @"partialUpdateObject",
+                             @"objectID": [object valueForKey:@"objectID"],
+                             @"body": object}];
     }
-    NSDictionary *request = [NSDictionary dictionaryWithObjectsAndKeys:requests, @"requests", nil];
+    NSDictionary *request = @{@"requests": requests};
     [self.apiClient performHTTPQuery:path method:@"POST" body:request index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, objects, JSON);
@@ -222,11 +222,11 @@
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/batch", self.urlEncodedIndexName];
     NSMutableArray *requests = [[NSMutableArray alloc] initWithCapacity:[objects count]];
     for (NSDictionary *object in objects) {
-        [requests addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"updateObject", @"action",
-                             [object valueForKey:@"objectID"], @"objectID",
-                             object, @"body", nil]];
+        [requests addObject:@{@"action": @"updateObject",
+                             @"objectID": [object valueForKey:@"objectID"],
+                             @"body": object}];
     }
-    NSDictionary *request = [NSDictionary dictionaryWithObjectsAndKeys:requests, @"requests", nil];
+    NSDictionary *request = @{@"requests": requests};
     [self.apiClient performHTTPQuery:path method:@"POST" body:request index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, objects, JSON);
@@ -423,9 +423,9 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/keys", self.urlEncodedIndexName];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl", 
-                                [NSNumber numberWithUnsignedInteger:validity], @"validity", 
-                                [NSNumber numberWithUnsignedInteger:maxQueriesPerIPPerHour], @"maxQueriesPerIPPerHour", 
-                                [NSNumber numberWithUnsignedInteger:maxHitsPerQuery], @"maxHitsPerQuery", 
+                                @(validity), @"validity", 
+                                @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour", 
+                                @(maxHitsPerQuery), @"maxHitsPerQuery", 
                                 nil];
     [self.apiClient performHTTPQuery:path method:@"POST" body:dict index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
@@ -456,9 +456,9 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/keys/%@", self.urlEncodedIndexName, key];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl",
-                                 [NSNumber numberWithUnsignedInteger:validity], @"validity",
-                                 [NSNumber numberWithUnsignedInteger:maxQueriesPerIPPerHour], @"maxQueriesPerIPPerHour",
-                                 [NSNumber numberWithUnsignedInteger:maxHitsPerQuery], @"maxHitsPerQuery",
+                                 @(validity), @"validity",
+                                 @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour",
+                                 @(maxHitsPerQuery), @"maxHitsPerQuery",
                                  nil];
     [self.apiClient performHTTPQuery:path method:@"PUT" body:dict index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)

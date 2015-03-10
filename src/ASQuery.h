@@ -31,17 +31,17 @@
 /**
  * Initialize query with a full text query string
  */
-+(id) queryWithFullTextQuery:(NSString*)fullTextQuery;
++(instancetype) queryWithFullTextQuery:(NSString*)fullTextQuery;
 
 /**
  * Initialize an empty query
  */
--(id) init;
+-(instancetype) init;
 
 /**
  * Initialize query with a full text query string
  */
--(id) initWithFullTextQuery:(NSString*)fullTextQuery;
+-(instancetype) initWithFullTextQuery:(NSString*)fullTextQuery;
 
 /**
  *  Search for entries around a given latitude/longitude.
