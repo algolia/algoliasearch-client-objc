@@ -1,25 +1,25 @@
-/*
- * Copyright (c) 2013 Algolia
- * http://www.algolia.com/
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+//
+//  Copyright (c) 2013 Algolia
+//  http://www.algolia.com/
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+//
 
 #import <Foundation/Foundation.h>
 #import "AFNetworking.h"
@@ -34,6 +34,7 @@
 
 /**
  * Algolia Search initialization
+ *
  * @param applicationID the application ID you have in your admin interface
  * @param apiKey a valid API key for the service
  */
@@ -41,6 +42,7 @@
 
 /**
  * Algolia Search initialization
+ *
  * @param applicationID the application ID you have in your admin interface
  * @param apiKey a valid API key for the service
  * @param hostnames the list of hosts that you have received for the service
@@ -49,6 +51,7 @@
 
 /**
  * Algolia Search initialization
+ *
  * @param applicationID the application ID you have in your admin interface
  * @param apiKey a valid API key for the service
  */
@@ -56,6 +59,7 @@
 
 /**
  * Algolia Search initialization
+ *
  * @param applicationID the application ID you have in your admin interface
  * @param apiKey a valid API key for the service
  * @param hotsnames the list of hosts that you have received for the service
@@ -65,6 +69,7 @@
 
 /**
  * Algolia Search initialization
+ *
  * @param applicationID the application ID you have in your admin interface
  * @param apiKey a valid API key for the service
  * @param hostnames the list of hosts that you have received for the service
@@ -96,14 +101,16 @@
 
 /**
  * Move an existing index.
+ *
  * @param srcIndexName the name of index to copy.
- * @param dstIndexName the new index name that will contains a copy of srcIndexName (destination will be overriten if it already exist).
+ * @param dstIndexName the new index name that will contains srcIndexName (destination will be overriten if it already exist).
  */
 -(void) moveIndex:(NSString*)srcIndexName to:(NSString*)dstIndexName
             success:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result))success
             failure:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage))failure;
 /**
  * Copy an existing index.
+ *
  * @param srcIndexName the name of index to copy.
  * @param dstIndexName the new index name that will contains a copy of srcIndexName (destination will be overriten if it already exist).
  */
@@ -119,6 +126,7 @@
 
 /**
  * Return last logs entries.
+ *
  * @param offset Specify the first entry to retrieve (0-based, 0 is the most recent log entry).
  * @param length Specify the maximum number of entries to retrieve starting at offset. Maximum allowed value: 1000.
  */
@@ -128,6 +136,7 @@
 
 /**
  * Return last logs entries.
+ *
  * @param offset Specify the first entry to retrieve (0-based, 0 is the most recent log entry).
  * @param length Specify the maximum number of entries to retrieve starting at offset. Maximum allowed value: 1000.
  */
@@ -144,6 +153,7 @@
 
 /**
  * Allow to set custom extra header
+ *
  * @param value of the header
  * @param key of the header
  */
@@ -152,7 +162,7 @@
 /**
  * Query multiple indexes with one API call
  *
- * @param query contains an array of queries with the associated index (NSArray of NSDictionary object @{"indexName":@"targettedIndex", @"query": @"theASQuery" }).
+ * @param query contains an array of queries with the associated index (NSArray of NSDictionary object @{"indexName":@"targettedIndex", @"query": theASQueryObject }).
  */
 -(void) multipleQueries:(NSArray*)query
                         success:(void(^)(ASAPIClient *client, NSArray *queries, NSDictionary *result))success

@@ -1,9 +1,12 @@
 language: objective-c
-xcode_workspace: algoliasearch-client-objc.xcworkspace
-xcode_scheme: travis-test
 env:
   global:
-  - secure: UiyDncG6TxTG1MLIBqAwN6K7OQZL5jI78SHJ/CQS6FydkGV8OWYEoV5l2adPx3Eq4BRdanq3FaMmX1sVzqQkCbKhUF3JU9+Dgpvo/IpYVLmKEwfDBTQv2KQacRB52KeBK9DBrhDiydjCQpzNoNeKffK5zLULaqEsq0uZnoVmfxg=
-  - secure: SFCFdybtrtBsosLvUoEcbYmNBAihPwsXsN4hHnUoUsjxBJJXyvFurDLcnZjQJAHa3pMLeG4Gj1ELqSVHYxmN1x5sAmmObS/NpWjeTwmSSOksyKBvAHVOY/a0EWira4HvjKP6OsbOcLVkQxBuaJKmtJCGXX59pGgJXLUxNVV8dIw=
+    - secure: UiyDncG6TxTG1MLIBqAwN6K7OQZL5jI78SHJ/CQS6FydkGV8OWYEoV5l2adPx3Eq4BRdanq3FaMmX1sVzqQkCbKhUF3JU9+Dgpvo/IpYVLmKEwfDBTQv2KQacRB52KeBK9DBrhDiydjCQpzNoNeKffK5zLULaqEsq0uZnoVmfxg=
+    - secure: SFCFdybtrtBsosLvUoEcbYmNBAihPwsXsN4hHnUoUsjxBJJXyvFurDLcnZjQJAHa3pMLeG4Gj1ELqSVHYxmN1x5sAmmObS/NpWjeTwmSSOksyKBvAHVOY/a0EWira4HvjKP6OsbOcLVkQxBuaJKmtJCGXX59pGgJXLUxNVV8dIw=
 before_install:
-- gem install cocoapods
+  - gem install cocoapods xcpretty -N
+install:
+  - pod install
+script:
+  - set -o pipefail
+  - xcodebuild -workspace algoliasearch-client-objc.xcworkspace -scheme travis-test -sdk macosx test | xcpretty -c

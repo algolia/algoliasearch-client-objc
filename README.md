@@ -465,11 +465,11 @@ You can send multiple queries with a single API call using a batch of queries:
 // perform 3 queries in a single API call:
 //  - 1st query targets index `categories`
 //  - 2nd and 3rd queries target index `products`
-[_client multipleQueries:@[@{@"indexName":@"categories", @"query": myQueryString, @"hitsPerPage": 3}
-  , @{@"indexName":@"products", @"query": myQueryString, @"hitsPerPage": 3, @"tagFilters": @"promotion"}
-  , @{@"indexName":@"products", @"query": myQueryString, @"hitsPerPage": 10}]
-     success:^(ASAPIClient *client, NSArray *queries, NSDictionary *result) {
-       NSLog(@"Result:%@", result);
+[_client multipleQueries:@[@{@"indexName":@"categories", @"query": anASQueryObject, @"hitsPerPage": 3}, 
+	@{@"indexName":@"products", @"query": anotherASQueryObject, @"hitsPerPage": 3, @"tagFilters": @"promotion"},
+	@{@"indexName":@"products", @"query": anotherASQueryObject, @"hitsPerPage": 10}] 
+	success:^(ASAPIClient *client, NSArray *queries, NSDictionary *result) {
+	 	NSLog(@"Result: %@", result);
      } failure:nil];
 ```
 

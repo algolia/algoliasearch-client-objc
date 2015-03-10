@@ -1,25 +1,25 @@
-/*
- * Copyright (c) 2013 Algolia
- * http://www.algolia.com/
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+//
+//  Copyright (c) 2013 Algolia
+//  http://www.algolia.com/
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+//
 
 #import <Foundation/Foundation.h>
 #import "ASQuery.h"
@@ -122,7 +122,7 @@
                     failure:(void(^)(ASRemoteIndex *index, NSDictionary *partialObject, NSString *objectID, NSString *errorMessage))failure;
 
 /**
- * Partially Override the content of several objects
+ * Partially override the content of several objects
  *
  * @param objects contains an array of NSDictionary to update (each NSDictionary must contains an objectID attribute)
  */
@@ -245,13 +245,15 @@
 /**
  * Get ACL of a user key associated to this index
  */
--(void) getUserKeyACL:(NSString*)key success:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *result))success
+-(void) getUserKeyACL:(NSString*)key
+            success:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *result))success
             failure:(void(^)(ASRemoteIndex *index, NSString *key, NSString *errorMessage))failure;
 
 /**
  * Delete an existing user key associated to this index
  */
--(void) deleteUserKey:(NSString*)key success:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *result))success
+-(void) deleteUserKey:(NSString*)key
+              success:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *result))success
               failure:(void(^)(ASRemoteIndex *index, NSString *key, NSString *errorMessage))failure;
 
 /**
@@ -301,11 +303,12 @@
  *   - settings : allows to get index settings (https only)
  *   - editSettings : allows to change index settings (https only)
  */
--(void) updateUserKey:(NSString*) key withACL:(NSArray*)acls success:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result))success
+-(void) updateUserKey:(NSString*) key withACL:(NSArray*)acls
+              success:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result))success
               failure:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSString *errorMessage))failure;
 
 /**
- * Create a new user key associated to this index
+ * Update a new user key associated to this index
  *
  * @param acls the list of ACL for this key. Defined by an array of NSString that
  * can contains the following values:
