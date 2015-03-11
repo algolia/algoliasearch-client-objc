@@ -231,7 +231,8 @@
     }];
 }
 
--(void) deleteIndex:(NSString*)indexName success:(void(^)(ASAPIClient *client, NSString *indexName, NSDictionary *result))success
+-(void) deleteIndex:(NSString*)indexName
+            success:(void(^)(ASAPIClient *client, NSString *indexName, NSDictionary *result))success
             failure:(void(^)(ASAPIClient *client, NSString *indexName, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@", [ASAPIClient urlEncode:indexName]];

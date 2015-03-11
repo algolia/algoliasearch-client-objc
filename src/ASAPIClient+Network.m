@@ -51,11 +51,18 @@
     AFHTTPRequestOperationManager *httpRequestOperationManager = (self.operationManagers)[index];
     NSMutableURLRequest *request = [httpRequestOperationManager.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:path relativeToURL:httpRequestOperationManager.baseURL] absoluteString]  parameters:body error:nil];
     [httpRequestOperationManager.requestSerializer setTimeoutInterval:timeout];
+    
     AFHTTPRequestOperation *operation = [httpRequestOperationManager HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id JSON) {
         if (operation.response.statusCode == 200 || operation.response.statusCode == 201) {
             success(JSON);
-        } else if (operation.response.statusCode == 400) {
-            failure(@"Bad request argument");
+        } else {
+            failure(@"No error message");
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (operation.response.statusCode == 400) {
+            NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+            NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData: errorData options:kNilOptions error:nil];
+            failure([NSString stringWithFormat:@"Bad request argument: %@", JSON[@"message"]]);
         } else if (operation.response.statusCode == 403) {
             failure(@"Invalid Application-ID or API-Key");
         } else if(operation.response.statusCode == 404) {
@@ -64,21 +71,19 @@
             if ((index + 1) < [self.operationManagers count]) {
                 [self performHTTPQuery:path method:method body:body index:(index + 1) timeout:timeout success:success failure:failure];
             } else {
-                if (JSON != nil) {
-                    NSDictionary *json = (NSDictionary*)JSON;
-                    failure(json[@"message"]);
+                NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+                NSError *error;
+                NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData: errorData options:kNilOptions error:&error];
+                
+                if (error != nil) {
+                    failure(JSON[@"message"]);
                 } else {
                     failure(@"No error message");
                 }
             }
         }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if ((index + 1) < [self.operationManagers count]) {
-            [self performHTTPQuery:path method:method body:body index:(index + 1) timeout:timeout success:success failure:failure];
-        } else {
-            failure(error.localizedDescription);
-        }
     }];
+    
     [httpRequestOperationManager.operationQueue addOperation:operation];
 }
 @end

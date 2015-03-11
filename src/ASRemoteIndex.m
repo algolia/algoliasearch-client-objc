@@ -223,8 +223,8 @@
     NSMutableArray *requests = [[NSMutableArray alloc] initWithCapacity:[objects count]];
     for (NSDictionary *object in objects) {
         [requests addObject:@{@"action": @"updateObject",
-                             @"objectID": [object valueForKey:@"objectID"],
-                             @"body": object}];
+                              @"objectID": [object valueForKey:@"objectID"],
+                              @"body": object}];
     }
     NSDictionary *request = @{@"requests": requests};
     [self.apiClient performHTTPQuery:path method:@"POST" body:request index:0 timeout:self.apiClient.timeout success:^(id JSON) {
