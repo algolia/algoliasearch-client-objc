@@ -10,29 +10,29 @@
 	<string>algoliasearch-client-objc</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>58E5A108-BF31-45D1-AEC3-DD30C9ECA013</key>
+		<key>95CE8D3CD2EE20AACCB7738888F7D91EE95C3393</key>
 		<string>https://github.com/algolia/algoliasearch-client-objc.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>algoliasearch-client-objc.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>58E5A108-BF31-45D1-AEC3-DD30C9ECA013</key>
+		<key>95CE8D3CD2EE20AACCB7738888F7D91EE95C3393</key>
 		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/algolia/algoliasearch-client-objc.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>58E5A108-BF31-45D1-AEC3-DD30C9ECA013</string>
+	<string>95CE8D3CD2EE20AACCB7738888F7D91EE95C3393</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>58E5A108-BF31-45D1-AEC3-DD30C9ECA013</string>
+			<string>95CE8D3CD2EE20AACCB7738888F7D91EE95C3393</string>
 			<key>IDESourceControlWCCName</key>
 			<string>algoliasearch-client-objc</string>
 		</dict>

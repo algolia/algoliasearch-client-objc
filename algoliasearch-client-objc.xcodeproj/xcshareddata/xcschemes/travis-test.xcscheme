@@ -49,6 +49,15 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "591C933218E265C3001F1A0F"
+            BuildableName = "libalgoliasearch-client-objc.a"
+            BlueprintName = "algoliasearch-client-objc"
+            ReferencedContainer = "container:algoliasearch-client-objc.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
