@@ -71,7 +71,7 @@ To setup your project, follow these steps:
  3. Initialize the client with your ApplicationID and API-Key. You can find all of them on [your Algolia account](http://www.algolia.com/users/edit).
 
 ```objc
-  ASAPIClient *apiClient = 
+ASAPIClient *apiClient = 
     [ASAPIClient apiClientWithApplicationID:@"YourApplicationID" apiKey:@"YourAPIKey"];
 ```
 
@@ -94,7 +94,7 @@ NSData* jsonData = [NSData dataWithContentsOfFile:jsonPath];
 NSDictionary* dict = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
 // Load all objects of json file in an index named "contacts"
 ASRemoteIndex *index = [apiClient getIndex:@"contacts"];
-[index addObjects:[dict objectForKey:@"objects"] success:nil failure:nil];
+[index addObjects:dict[@"objects"] success:nil failure:nil];
 ```
 
 You can now search for contacts using firstname, lastname, company, etc. (even with typos):
@@ -102,29 +102,29 @@ You can now search for contacts using firstname, lastname, company, etc. (even w
 // search by firstname
 [index search:[ASQuery queryWithFullTextQuery:@"jimmie"] 
   success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
-    NSLog(@"Result:%@", result);
+    NSLog(@"Result: %@", result);
 } failure:nil];
 // search a firstname with typo
 [index search:[ASQuery queryWithFullTextQuery:@"jimie"] 
   success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
-    NSLog(@"Result:%@", result);
+    NSLog(@"Result: %@", result);
 } failure:nil];
 // search for a company
 [index search:[ASQuery queryWithFullTextQuery:@"california paint"] 
   success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
-    NSLog(@"Result:%@", result);
+    NSLog(@"Result: %@", result);
 } failure:nil];
 // search for a firstname & company
 [index search:[ASQuery queryWithFullTextQuery:@"jimmie paint"] 
   success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
-    NSLog(@"Result:%@", result);
+    NSLog(@"Result: %@", result);
 } failure:nil];
 ```
 
 Settings can be customized to tune the search behavior. For example, you can add a custom sort by number of followers to the already great built-in relevance:
 ```objc
-NSArray *customRanking = [NSArray arrayWithObjects:@"desc(followers)", nil];
-NSDictionary *settings = [NSDictionary dictionaryWithObjectsAndKeys:customRanking, @"customRanking", nil];
+NSArray *customRanking = @[@"desc(followers)"];
+NSDictionary *settings = @{@"customRanking": customRanking};
 [index setSettings:settings success:nil
   failure:^(ASRemoteIndex *index, NSDictionary *settings, NSString *errorMessage) {
     NSLog(@"Error when applying settings: %@", errorMessage);
@@ -133,8 +133,8 @@ NSDictionary *settings = [NSDictionary dictionaryWithObjectsAndKeys:customRankin
 
 You can also configure the list of attributes you want to index by order of importance (first = most important):
 ```objc
-NSArray *customRanking = [NSArray arrayWithObjects:@"lastname", @"firstname", @"company", @"email", @"city", @"address", nil];
-NSDictionary *settings = [NSDictionary dictionaryWithObjectsAndKeys:customRanking, @"attributesToIndex", nil];
+NSArray *customRanking = @[@"lastname", @"firstname", @"company", @"email", @"city", @"address"];
+NSDictionary *settings = @{@"attributesToIndex": customRanking};
 [index setSettings:settings success:nil
   failure:^(ASRemoteIndex *index, NSDictionary *settings, NSString *errorMessage) {
     NSLog(@"Error when applying settings: %@", errorMessage);
@@ -145,12 +145,12 @@ Since the engine is designed to suggest results as you type, you'll generally se
 ```objc
 [index search:[ASQuery queryWithFullTextQuery:@"or"] 
   success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
-    NSLog(@"Result:%@", result);
+    NSLog(@"Result: %@", result);
 } failure:nil];
 
 [index search:[ASQuery queryWithFullTextQuery:@"jim"] 
   success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
-    NSLog(@"Result:%@", result);
+    NSLog(@"Result: %@", result);
 } failure:nil];
 ```
 
@@ -209,22 +209,20 @@ Objects are schema less so you don't need any configuration to start indexing. I
 Example with automatic `objectID` assignment:
 
 ```objc
-NSDictionary *newObject = [NSDictionary dictionaryWithObjectsAndKeys:@"Jimmie", @"firstname",
-                                        @"Barninger", @"lastname", nil];
+NSDictionary *newObject = @{@"firstname": @"Jimmie", @"lastname": @"Barninger"};
 [index addObject:newObject 
   success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
-    NSLog(@"Object ID:%@", [result valueForKey:@"objectID"]);
+  	NSLog(@"Object ID: %@", result[@"objectID"]);
 } failure:nil];
 ```
 
 Example with manual `objectID` assignment:
 
 ```objc
-NSDictionary *newObject = [NSDictionary dictionaryWithObjectsAndKeys:@"Jimmie", @"firstname",
-                                        @"Barninger", @"lastname", nil];
+NSDictionary *newObject = @{@"firstname": @"Jimmie", @"lastname": @"Barninger"};
 [index addObject:newObject withObjectID:@"myID" 
   success:^(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSDictionary *result) {
-    NSLog(@"Object ID:%@", [result valueForKey:@"objectID"]);
+    NSLog(@"Object ID: %@", result[@"objectID"]);
 } failure:nil];
 ```
 
@@ -240,8 +238,11 @@ You have three options when updating an existing object:
 Example on how to replace all attributes of an existing object:
 
 ```objc
-NSDictionary *newObject = [NSDictionary dictionaryWithObjectsAndKeys:@"Jimmie", @"firstname",
-                                        @"Barninger", @"lastname", @"New York", @"city", nil];
+NSDictionary *newObject = @{
+	@"firstname": @"Jimmie",
+    @"lastname": @"Barninger",
+	@"city": @"New York"
+};
 [index saveObject:newObject objectID:@"myID" success:nil failure:nil];
 ```
 
@@ -257,57 +258,62 @@ You have many ways to update an object's attributes:
 Example to update only the city attribute of an existing object:
 
 ```objc
-NSDictionary *partialObject = [NSDictionary dictionaryWithObjectsAndKeys:@"San Francisco", @"city", nil];
+NSDictionary *partialObject = @{@"city": @"San Francisco"};
 [index partialUpdateObject:partialObject objectID:@"myID" success:nil failure:nil];
 ```
 
 Example to add a tag:
 
 ```objc
-NSMutableDictionary *operation = [NSMutableDictionary dictionary];
-[operation set:Object:@"MyTag" forKey:@"value"]
-[operation set:Object:@"Add" forKey:@"_operation"]
-NSDictionary *partialObject = [NSDictionary dictionaryWithObjectsAndKeys:operation, @"_tags", nil];
+NSDictionary *operation = @{
+	@"value": @"MyTag",
+	@"_operation": @"Add"
+};
+NSDictionary *partialObject = @{@"_tags": operation};
 [index partialUpdateObject:partialObject objectID:@"myID" success:nil failure:nil];
 ```
 
 Example to remove a tag:
 
 ```objc
-NSMutableDictionary *operation = [NSMutableDictionary dictionary];
-[operation set:Object:@"MyTag" forKey:@"value"]
-[operation set:Object:@"Remove" forKey:@"_operation"]
-NSDictionary *partialObject = [NSDictionary dictionaryWithObjectsAndKeys:operation, @"_tags", nil];
+NSDictionary *operation = @{
+	@"value": @"MyTag",
+	@"_operation": @"Remove"
+};
+NSDictionary *partialObject = @{@"_tags": operation};
 [index partialUpdateObject:partialObject objectID:@"myID" success:nil failure:nil];
 ```
 
 Example to add a tag if it doesn't exist:
 
 ```objc
-NSMutableDictionary *operation = [NSMutableDictionary dictionary];
-[operation set:Object:@"MyTag" forKey:@"value"]
-[operation set:Object:@"AddUnique" forKey:@"_operation"]
-NSDictionary *partialObject = [NSDictionary dictionaryWithObjectsAndKeys:operation, @"_tags", nil];
+NSDictionary *operation = @{
+	@"value": @"MyTag",
+	@"_operation": @"AddUnique"
+};
+NSDictionary *partialObject = @{@"_tags": operation};
 [index partialUpdateObject:partialObject objectID:@"myID" success:nil failure:nil];
 ```
 
 Example to increment a numeric value:
 
 ```objc
-NSMutableDictionary *operation = [NSMutableDictionary dictionary];
-[operation set:Object:42 forKey:@"value"]
-[operation set:Object:@"Increment" forKey:@"_operation"]
-NSDictionary *partialObject = [NSDictionary dictionaryWithObjectsAndKeys:operation, @"price", nil];
+NSDictionary *operation = @{
+	@"value": 42,
+	@"_operation": @"Increment"
+};
+NSDictionary *partialObject = @{@"price": operation};
 [index partialUpdateObject:partialObject objectID:@"myID" success:nil failure:nil];
 ```
 
 Example to decrement a numeric value:
 
 ```objc
-NSMutableDictionary *operation = [NSMutableDictionary dictionary];
-[operation set:Object:42 forKey:@"value"]
-[operation set:Object:@"Decrement" forKey:@"_operation"]
-NSDictionary *partialObject = [NSDictionary dictionaryWithObjectsAndKeys:operation, @"price", nil];
+NSDictionary *operation = @{
+	@"value": 42,
+	@"_operation": @"Decrement"
+};
+NSDictionary *partialObject = @{@"price": operation};
 [index partialUpdateObject:partialObject objectID:@"myID" success:nil failure:nil];
 ```
 
@@ -408,15 +414,15 @@ You can also use a string array encoding (for example `numericFilters: ["price>1
 ASRemoteIndex *index = [apiClient getIndex:@"contacts"];
 [index search:[ASQuery queryWithFullTextQuery:@"s"] 
   success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
-    NSLog(@"Result:%@", result);
+    NSLog(@"Result: %@", result);
 } failure:nil];
 
 ASQuery *query = [ASQuery queryWithFullTextQuery:@"s"];
-query.attributesToRetrieve = [NSArray arrayWithObjects:@"firstname", @"lastname", nil];
+query.attributesToRetrieve = @[@"firstname", @"lastname"];
 query.hitsPerPage = 50;
 [index search:query 
   success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
-    NSLog(@"Result:%@", result);
+    NSLog(@"Result: %@", result);
 } failure:nil];
 ```
 
@@ -465,12 +471,15 @@ You can send multiple queries with a single API call using a batch of queries:
 // perform 3 queries in a single API call:
 //  - 1st query targets index `categories`
 //  - 2nd and 3rd queries target index `products`
-[_client multipleQueries:@[@{@"indexName":@"categories", @"query": anASQueryObject, @"hitsPerPage": 3}, 
-	@{@"indexName":@"products", @"query": anotherASQueryObject, @"hitsPerPage": 3, @"tagFilters": @"promotion"},
-	@{@"indexName":@"products", @"query": anotherASQueryObject, @"hitsPerPage": 10}] 
-	success:^(ASAPIClient *client, NSArray *queries, NSDictionary *result) {
-	 	NSLog(@"Result: %@", result);
-     } failure:nil];
+NSArray *queries = @[
+	@{@"indexName": @"categories", @"query": anASQueryObject}, 
+	@{@"indexName": @"products", @"query": anotherASQueryObject},
+	@{@"indexName": @"products", @"query": anotherASQueryObject}
+];
+[client multipleQueries:queries
+  success:^(ASAPIClient *client, NSArray *queries, NSDictionary *result) {
+  	NSLog(@"Result: %@", result);
+} failure:nil];
 ```
 
 
@@ -487,7 +496,7 @@ You can easily retrieve an object using its `objectID` and optionally specify a 
     NSLog(@"Object: %@", result);
 } failure:nil];
 // Retrieves only the firstname attribute
-[index getObject:@"myID" attributesToRetrieve:[NSArray arrayWithObject:@"firstname"] 
+[index getObject:@"myID" attributesToRetrieve:@[@"firstname"] 
   success:^(ASRemoteIndex *index, NSString *objectID, NSArray *attributesToRetrieve, NSDictionary *result) {
     NSLog(@"Object: %@", result);
 } failure:nil];
@@ -496,9 +505,9 @@ You can easily retrieve an object using its `objectID` and optionally specify a 
 You can also retrieve a set of objects:
 
 ```objc
-[index getObjects:[NSArray arrayWithObjects:@"myObj1", @"myObj2", nil]
+[index getObjects:@[@"myID1", @"myID2"]
   success:^(ASRemoteIndex *index, NSArray *objectIDs, NSDictionary *result) {
-
+	// do something
 } failure:nil];
 ```
 
@@ -596,8 +605,8 @@ You can easily retrieve settings or update them:
 ```
 
 ```objc
-NSArray *customRanking = [NSArray arrayWithObjects:@"desc(followers)", @"asc(name)", nil];
-NSDictionary *settings = [NSDictionary dictionaryWithObjectsAndKeys:customRanking, @"customRanking", nil];
+NSArray *customRanking = @[@"desc(followers)", @"asc(name)"];
+NSDictionary *settings = @{@"customRanking": customRanking};
 [index setSettings:settings success:nil failure:nil];
 
 ```
@@ -644,7 +653,7 @@ For example, to wait for indexing of a new object:
 [index addObject:newObject 
   success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
     // Wait task
-    [index waitTask:[result valueForKey:@"taskID"]
+    [index waitTask:result[@"taskID"]
       success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
         NSLog(@"New object is indexed");
     } failure:nil];
@@ -666,11 +675,9 @@ We expose three methods to perform batch operations:
 
 Example using automatic `objectID` assignment:
 ```objc
-NSDictionary *obj1 = [NSDictionary dictionaryWithObjectsAndKeys:@"Jimmie", @"firstname",
-                             @"Barninger", @"lastname", nil];
-NSDictionary *obj2 = [NSDictionary dictionaryWithObjectsAndKeys:@"Warren", @"firstname",
-                             @"Speach", @"lastname", nil];
-[index addObjects:[NSArray arrayWithObjects:obj1, obj2, nil] 
+NSDictionary *obj1 = @{@"firstname": @"Jimmie", @"lastname": @"Barninger"};
+NSDictionary *obj2 = @{@"firstname": @"Warren", @"lastname": @"Speach"};
+[index addObjects:@[obj1, obj2] 
   success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
     NSLog(@"Object IDs: %@", result);
 } failure:nil];
@@ -678,13 +685,9 @@ NSDictionary *obj2 = [NSDictionary dictionaryWithObjectsAndKeys:@"Warren", @"fir
 
 Example with user defined `objectID` (add or update):
 ```objc
-NSDictionary *obj1 = [NSDictionary dictionaryWithObjectsAndKeys:@"Jimmie", @"firstname",
-                            @"Barninger", @"lastname",
-                            @"myID1", @"objectID", nil];
-NSDictionary *obj2 = [NSDictionary dictionaryWithObjectsAndKeys:@"Warren", @"firstname",
-                            @"Speach", @"lastname",
-                            @"myID2", @"objectID", nil];
-[index saveObjects:[NSArray arrayWithObjects:obj1, obj2, nil] 
+NSDictionary *obj1 = @{@"firstname": @"Jimmie", @"lastname": @"Barninger", @"objectID": @"myID1"};
+NSDictionary *obj2 = @{@"firstname": @"Warren", @"lastname": @"Speach", @"objectID": @"myID2"};
+[index saveObjects:@[obj1, obj2] 
   success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
     NSLog(@"Object IDs: %@", result);
 } failure:nil];
@@ -692,18 +695,14 @@ NSDictionary *obj2 = [NSDictionary dictionaryWithObjectsAndKeys:@"Warren", @"fir
 
 Example that deletes a set of records:
 ```objc
-[index deleteObjects:[NSArray arrayWithObjects:@"myID1", @"myID2", nil] 
-  success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
-} failure:nil];
+[index deleteObjects:@[@"myID1", @"myID2"] success:nil failure:nil];
 ```
 
 Example that updates only the `firstname` attribute:
 ```objc
-NSDictionary *obj1 = [NSDictionary dictionaryWithObjectsAndKeys:@"Jimmie", @"firstname",
-                            @"myID1", @"objectID", nil];
-NSDictionary *obj2 = [NSDictionary dictionaryWithObjectsAndKeys:@"Warren", @"firstname",
-                            @"myID2", @"objectID", nil];
-[index partialUpdateObjects:[NSArray arrayWithObjects:obj1, obj2, nil] 
+NSDictionary *obj1 = @{@"firstname": @"Jimmie", @"objectID": @"myID1"};
+NSDictionary *obj2 = @{@"firstname": @"Warren", @"objectID": @"myID2"};
+[index partialUpdateObjects:@[obj1, obj2] 
   success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
     NSLog(@"Object IDs: %@", result);
 } failure:nil];
@@ -744,14 +743,14 @@ Each key is defined by a set of permissions that specify the authorized actions.
 Example of API Key creation:
 ```objc
 // Creates a new global API key that can only perform search actions
-[apiClient addUserKey:[NSArray arrayWithObject:@"search"] 
+[apiClient addUserKey:@[@"search"] 
   success:^(ASAPIClient *client, NSArray *acls, NSDictionary *result) {
-    NSLog(@"API Key:%@", [result objectForKey:@"key"]);
+    NSLog(@"API Key: %@", result[@"key"]);
 } failure:nil];
 // Creates a new API key that can only perform search action on this index
-[index addUserKey:[NSArray arrayWithObject:@"search"] 
+[index addUserKey:@[@"search"] 
   success:^(ASRemoteIndex *index, NSArray *acls, NSDictionary *result) {
-    NSLog(@"API Key:%@", [result objectForKey:@"key"]);
+    NSLog(@"API Key: %@", result[@"key"]);
 } failure:nil];
 ```
 
@@ -765,28 +764,28 @@ You can also create an API Key with advanced restrictions:
 
 ```objc
 // Creates a new global API key that is valid for 300 seconds
-[apiClient addUserKey:[NSArray arrayWithObject:@"search"] withValidity:300 maxQueriesPerIPPerHour:0 maxHitsPerQuery:0
+[apiClient addUserKey:@[@"search"] withValidity:300 maxQueriesPerIPPerHour:0 maxHitsPerQuery:0
   success:^(ASAPIClient *client, NSArray *acls, NSDictionary *result) {
-    NSLog(@"API Key:%@", [result objectForKey:@"key"]);
+    NSLog(@"API Key: %@", result[@"key"]);
 } failure:nil];
 // Creates a new index specific API key valid for 300 seconds, with a rate limit of 100 calls per hour per IP and a maximum of 20 hits
-[index addUserKey:[NSArray arrayWithObject:@"search"] withValidity:300 maxQueriesPerIPPerHour:100 maxHitsPerQuery:20
+[index addUserKey:[@"search"] withValidity:300 maxQueriesPerIPPerHour:100 maxHitsPerQuery:20
   success:^(ASRemoteIndex *index, NSArray *acls, NSDictionary *result) {
-    NSLog(@"API Key:%@", [result objectForKey:@"key"]);
+    NSLog(@"API Key: %@", result[@"key"]);
 } failure:nil];
 ```
 
 Update the permissions of an existing key:
 ```objc
 // Update an existing global API key that is valid for 300 seconds
-[apiClient updateUserKey:@"myAPIKey", withACL:[NSArray arrayWithObject:@"search"] withValidity:300 maxQueriesPerIPPerHour:0 maxHitsPerQuery:0
+[apiClient updateUserKey:@"myAPIKey", withACL:@[@"search"] withValidity:300 maxQueriesPerIPPerHour:0 maxHitsPerQuery:0
   success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result) {
-    NSLog(@"API Key:%@", [result objectForKey:@"key"]);
+    NSLog(@"API Key: %@", result[@"key"]);
 } failure:nil];
 // Update an existing index specific API key valid for 300 seconds, with a rate limit of 100 calls per hour per IP and a maximum of 20 hits
-[index updateUserKey:@"myAPIKey" withACL:[NSArray arrayWithObject:@"search"] withValidity:300 maxQueriesPerIPPerHour:100 maxHitsPerQuery:20
+[index updateUserKey:@"myAPIKey" withACL:@[@"search"] withValidity:300 maxQueriesPerIPPerHour:100 maxHitsPerQuery:20
   success:^(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result) {
-    NSLog(@"API Key:%@", [result objectForKey:@"key"]);
+    NSLog(@"API Key: %@", result[@"key"]);
 } failure:nil];
 ```
 Get the permissions of a given key:
@@ -827,13 +826,15 @@ You can easily copy or rename an existing index using the `copy` and `move` comm
 
 ```objc
 // Rename MyIndex in MyIndexNewName
-[apiClient moveIndex:@"MyIndex" to:@"MyIndexNewName" success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
+[apiClient moveIndex:@"MyIndex" to:@"MyIndexNewName" 
+  success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
     NSLog(@"Move Success: %@", result);
 } failure:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage) {
     NSLog(@"Move Failure: %@", errorMessage);
 }];
 // Copy MyIndex in MyIndexCopy
-[apiClient copyIndex:@"MyIndex" to:@"MyIndexCopy" success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
+[apiClient copyIndex:@"MyIndex" to:@"MyIndexCopy" 
+  success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
     NSLog(@"Copy Success: %@", result);
 } failure:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage) {
     NSLog(@"Copy Failure: %@", errorMessage);
@@ -846,12 +847,12 @@ The move command is particularly useful if you want to update a big index atomic
 
 ```objc
 // Rename MyNewIndex in MyIndex (and overwrite it)
-[apiClient moveIndex:@"MyNewIndex" to:@"MyIndex" success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
+[apiClient moveIndex:@"MyNewIndex" to:@"MyIndex" 
+  success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
     NSLog(@"Move Success: %@", result);
 } failure:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage) {
     NSLog(@"Move Failure: %@", errorMessage);
 }];
-
 ```
 
 Backup / Retrieve of all index content
@@ -906,7 +907,8 @@ You can retrieve the logs of your last 1,000 API calls and browse them using the
     NSLog(@"GetLogs failure: %@", errorMessage);
 }];
 // Get last 100 log entries
-[apiClient getLogsWithOffset:0 length:100 success:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSDictionary *result) {
+[apiClient getLogsWithOffset:0 length:100 
+  success:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSDictionary *result) {
     NSLog(@"GetLog success: %@", result);
 } failure:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString *errorMessage) {
     NSLog(@"GetLogs failure: %@", errorMessage);
