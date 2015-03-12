@@ -244,6 +244,7 @@
         failure(self, objectID, @"empty objectID is not allowed");
         return;
     }
+    
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/%@", self.urlEncodedIndexName, [ASAPIClient urlEncode:objectID]];
     [self.apiClient performHTTPQuery:path method:@"DELETE" body:nil index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)

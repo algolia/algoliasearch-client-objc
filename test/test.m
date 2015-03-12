@@ -23,6 +23,7 @@
 
 #import <XCTest/XCTest.h>
 #import "../src/ASAPIClient.h"
+#import "../src/ASAPIClient+Network.h"
 
 @interface test : XCTestCase
 @property (strong, nonatomic) ASAPIClient *client;
@@ -57,6 +58,41 @@
     [self.client deleteIndex:@"algol?à-objc" success:^(ASAPIClient *client, NSString *indexName, NSDictionary *result) {
         [expecatation fulfill];
     } failure:nil];
+    [self waitForExpectationsWithTimeout:100 handler:nil];
+}
+
+- (void)testQueryErrorHandling
+{
+    XCTestExpectation *notFoundExpectation = [self expectationWithDescription:@"ressourceDoesNotExist"];
+    [self.index getObject:@"invalidObject" success:^(ASRemoteIndex *index, NSString *objectID, NSDictionary *result) {
+        XCTFail("No error during getObject");
+        [notFoundExpectation fulfill];
+    } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
+        XCTAssertEqualObjects(errorMessage, @"Resource does not exist", "Wrong error message");
+        [notFoundExpectation fulfill];
+    }];
+    
+    XCTestExpectation *badRequestExpectation = [self expectationWithDescription:@"badRequestArgument"];
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/batch", self.index.urlEncodedIndexName];
+    [self.client performHTTPQuery:path method:@"POST" body:@{@"request": @"badObject"} index:0 timeout:self.client.timeout success:^(id JSON) {
+        XCTFail("No error during performHTTPQuery");
+        [badRequestExpectation fulfill];
+    } failure:^(NSString *errorMessage) {
+        XCTAssertEqualObjects(errorMessage, @"Bad request argument: Invalid object attributes:request near line:1 column:10", "Wrong error message");
+        [badRequestExpectation fulfill];
+    }];
+    
+    XCTestExpectation *invalidClientExpectation = [self expectationWithDescription:@"invalidClient"];
+    NSString* appID = [[NSProcessInfo processInfo] environment][@"ALGOLIA_APPLICATION_ID"];
+    ASAPIClient *invalidClient = [ASAPIClient apiClientWithApplicationID:appID apiKey:@"invalid"];
+    [invalidClient listIndexes:^(ASAPIClient *client, NSDictionary *result) {
+        XCTFail("No error during listIndexes");
+        [invalidClientExpectation fulfill];
+    } failure:^(ASAPIClient *client, NSString *errorMessage) {
+        XCTAssertEqualObjects(errorMessage, @"Invalid Application-ID or API-Key", "Wrong error message");
+        [invalidClientExpectation fulfill];
+    }];
+    
     [self waitForExpectationsWithTimeout:100 handler:nil];
 }
 

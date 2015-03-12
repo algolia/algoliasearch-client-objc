@@ -71,15 +71,7 @@
             if ((index + 1) < [self.operationManagers count]) {
                 [self performHTTPQuery:path method:method body:body index:(index + 1) timeout:timeout success:success failure:failure];
             } else {
-                NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
-                NSError *error;
-                NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData: errorData options:kNilOptions error:&error];
-                
-                if (error != nil) {
-                    failure(JSON[@"message"]);
-                } else {
-                    failure(@"No error message");
-                }
+                failure(error.description);
             }
         }
     }];
