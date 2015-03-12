@@ -352,8 +352,8 @@
  */
 -(void) cancelPreviousSearches;
 
-@property (strong, nonatomic) NSString     *indexName;
-@property (strong, nonatomic) ASAPIClient  *apiClient;
-@property (strong, nonatomic) NSString     *urlEncodedIndexName;
+@property (nonatomic)           NSString     *indexName;
+@property (readonly, nonatomic) ASAPIClient  *apiClient;
+@property (nonatomic)           NSString     *urlEncodedIndexName;
 
 @end

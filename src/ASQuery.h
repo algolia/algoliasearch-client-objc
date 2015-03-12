@@ -95,7 +95,7 @@
  * "prefixLast": only the last word is interpreted as a prefix (default behavior),
  * "prefixNone": no query word is interpreted as a prefix. This option is not recommended.
  */
-@property (strong, nonatomic) NSString            *queryType;
+@property (nonatomic) NSString            *queryType;
 
 /**
  * Select the strategy to avoid having an empty result page.
@@ -104,88 +104,102 @@
  * "FirstWords": when a query does not return any result, the first word will be removed until there is results.
  * "allOptional": When a query does not return any result, a second trial will be made with all words as optional (which is equivalent to transforming the AND operand between query terms in a OR operand)
  */
-@property (strong, nonatomic) NSString              *removeWordsIfNoResult;
+@property (nonatomic) NSString            *removeWordsIfNoResult;
 
 /**
  * Specify the list of attribute names to retrieve.
  * By default all attributes are retrieved.
  */
-@property (strong, nonatomic) NSArray             *attributesToRetrieve;
+@property (nonatomic) NSArray             *attributesToRetrieve;
+
 /**
  * Specify the list of attribute names to highlight.
  * By default indexed attributes are highlighted.
  */
-@property (strong, nonatomic) NSArray             *attributesToHighlight;
+@property (nonatomic) NSArray             *attributesToHighlight;
+
 /**
  * Specify the list of attributes to snippet alongside the number of words to return 
  * (syntax is 'attributeName:nbWords'). 
  * Attributes are separated by a comma (Example: "attributesToSnippet=name:10,content:10").
  * By default no snippet is computed.
 */
-@property (strong, nonatomic) NSArray             *attributesToSnippet;
+@property (nonatomic) NSArray             *attributesToSnippet;
+
 /**
  * Filter the query by a set of tags. You can AND tags by separating them by commas. To OR tags, you must add parentheses. For example tag1,(tag2,tag3) means tag1 AND (tag2 OR tag3).
  * At indexing, tags should be added in the _tags attribute of objects (for example {"_tags":["tag1","tag2"]} )
  */
-@property (strong, nonatomic) NSString            *tagFilters;
+@property (nonatomic) NSString            *tagFilters;
 
 /**
  * Add a list of numeric filters separated by a comma.
  * The syntax of one filter is `attributeName` followed by `operand` followed by `value. Supported operands are `<`, `<=`, `=`, `>` and `>=`.
  * You can have multiple conditions on one attribute like for example `numerics=price>100,price<1000`.
  */
-@property (strong, nonatomic) NSString            *numericFilters;
+@property (nonatomic) NSString            *numericFilters;
+
 /**
  * Set the full text query.
  */
-@property (strong, nonatomic) NSString            *fullTextQuery;
+@property (nonatomic) NSString            *fullTextQuery;
+
 /**
  * Specify the minimum number of characters in a query word to accept one typo in this word.
  * Defaults to 3.
  */
-@property NSUInteger                              minWordSizeForApprox1;
+@property (nonatomic) NSUInteger           minWordSizeForApprox1;
+
 /**
  * Specify the minimum number of characters in a query word to accept two typos in this word.
  * Defaults to 7.
  */
-@property NSUInteger                               minWordSizeForApprox2;
+@property (nonatomic) NSUInteger           minWordSizeForApprox2;
+
 /**
  * Set the page to retrieve (zero base). Defaults to 0.
  */
-@property NSUInteger                               page;
+@property (nonatomic) NSUInteger           page;
+
 /**
  *  Set the number of hits per page. Defaults to 10.
  */
-@property NSUInteger                               hitsPerPage;
+@property (nonatomic) NSUInteger           hitsPerPage;
+
 /**
  * if set, the result hits will contain ranking information in _rankingInfo attribute.
  */
-@property BOOL                                     getRankingInfo;
+@property BOOL                             getRankingInfo;
+
 /**
  * If set to YES, plural won't be considered as a typo (for example car/cars will be considered as equals). Default to NO.
  */
-@property BOOL                                     ignorePlural;
+@property BOOL                             ignorePlural;
 
 /**
  * This option allow to control the number of typo in the results set.
  */
-@property (strong, nonatomic) NSString             *typoTolerance;
+@property (nonatomic) NSString            *typoTolerance;
+
 /**
  *  If set to false, disable typo-tolerance on numeric tokens. Default to true.
  */
-@property BOOL                                     typosOnNumericTokens;
+@property BOOL                             typosOnNumericTokens;
+
 /**
  * If set to false, disable this query won't appear in the analytics. Default to true.
  */
-@property BOOL                                      analytics;
+@property BOOL                             analytics;
+
 /**
  * If set to false, this query will not use synonyms defined in configuration. Default to true.
  */
-@property BOOL                                      synonyms;
+@property BOOL                             synonyms;
+
 /**
  * If set to false, words matched via synonyms expansion will not be replaced by the matched synonym in highlight result. Default to true.
  */
-@property BOOL                                      replaceSynonyms;
+@property BOOL                             replaceSynonyms;
 
 /**
  *
@@ -196,44 +210,34 @@
  *   For example, if the chosen attribute is show_name and several hits have the same value for show_name, 
  *   then only the best one is kept and others are removed.
  */
-@property BOOL                                     distinct;
-/**
- * Contains insideBoundingBox query (you should use searchInsideBoundingBox selector to set it)
- */
-@property (strong, nonatomic) NSString             *insideBoundingBox;
-/**
- * Contains aroundLatLong query (you should use searchAroundLatitude:longitude:maxDist selector to set it)
- */
-@property (strong, nonatomic) NSString             *aroundLatLong;
-/**
- * If set to YES use geolocation via client IP instead of passing a latitude/longitude manually
- */
-@property BOOL                                     aroundLatLongViaIP;
+@property BOOL                             distinct;
+
 /**
   * Set the list of words that should be considered as optional when found in the query (array of NSString).
   */
-@property (strong, nonatomic) NSArray              *optionalWords;
+@property (nonatomic) NSArray             *optionalWords;
+
 /**
  *  Set the minimum number of optional words that need to match
  */
-@property NSUInteger                               optionalWordsMinimumMatched;
+@property (nonatomic) NSUInteger           optionalWordsMinimumMatched;
 
 /**
  * Filter the query by a list of facets. Each facet is encoded as `attributeName:value`. For example: ["category:Book","author:John%20Doe"].
  */
-@property (strong, nonatomic) NSArray              *facetFilters;
+@property (nonatomic) NSArray             *facetFilters;
 
 /**
  * Filter the query by a list of facets encoded as one string by example "(category:Book,author:John)"
  */
-@property (strong, nonatomic) NSString             *facetFiltersRaw;
+@property (nonatomic) NSString            *facetFiltersRaw;
 
 /**
  * List of object attributes that you want to use for faceting. <br/>
  * Only attributes that have been added in **attributesForFaceting** index setting can be used in this parameter. 
  * You can also use `*` to perform faceting on all attributes specified in **attributesForFaceting**.
  */
-@property (strong, nonatomic) NSArray             *facets;
+@property (nonatomic) NSArray             *facets;
 
 /**
  * List of object attributes you want to use for textual search (must be a subset of the attributesToIndex 
@@ -241,6 +245,6 @@
  * You can also use a JSON string array encoding (for example encodeURIComponent("[\"name\",\"address\"]")).
  * By default, all attributes specified in attributesToIndex settings are used to search.
  */
-@property (strong, nonatomic) NSString            *restrictSearchableAttributes;
+@property (nonatomic) NSString            *restrictSearchableAttributes;
 
 @end

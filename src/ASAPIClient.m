@@ -42,15 +42,24 @@
     return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:nil dsn:false dsnHost:nil tagFilters:nil userToken:nil];
 }
 
++(instancetype) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey {
+    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:nil dsn:true dsnHost:nil tagFilters:nil userToken:nil];
+}
+
++(instancetype) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames dsnHost:(NSString*)dsnHost
+{
+    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:hostnames dsn:true dsnHost:dsnHost tagFilters:nil userToken:nil];
+}
+
 -(instancetype) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey hostnames:(NSArray*)phostnames dsn:(Boolean)dsn dsnHost:(NSString*)dsnHost tagFilters:(NSString*)tagFiltersHeader userToken:(NSString*)userTokenHeader
 {
     self = [super init];
     if (self) {
-        self.applicationID = papplicationID;
-        self.apiKey = papiKey;
-        self.tagFilters = tagFiltersHeader;
-        self.userToken = userTokenHeader;
-        self.timeout = 30;
+        _applicationID = papplicationID;
+        _apiKey = papiKey;
+        _tagFilters = tagFiltersHeader;
+        _userToken = userTokenHeader;
+        _timeout = 30;
         
         NSMutableArray *array = nil;
         if (phostnames == nil) {
@@ -67,9 +76,6 @@
                 NSUInteger n = (random() % nElements) + i;
                 [array exchangeObjectAtIndex:i withObjectAtIndex:n];
             }
-            if (dsn || dsnHost != nil) {
-                
-            }
         } else {
             array = [NSMutableArray arrayWithArray:phostnames];
             srandom((unsigned int)time(NULL));
@@ -80,15 +86,17 @@
                 NSUInteger n = (random() % nElements) + i;
                 [array exchangeObjectAtIndex:i withObjectAtIndex:n];
             }
-            if (dsn || dsnHost != nil) {
-                if (dsnHost != nil) {
-                    [array insertObject:dsnHost atIndex:0];
-                } else {
-                    [array insertObject:[NSString stringWithFormat:@"%@-dsn.algolia.net", papplicationID] atIndex:0];
-                }
+        }
+        
+        if (dsn || dsnHost != nil) {
+            if (dsnHost != nil) {
+                [array insertObject:dsnHost atIndex:0];
+            } else {
+                [array insertObject:[NSString stringWithFormat:@"%@-dsn.algolia.net", papplicationID] atIndex:0];
             }
         }
-        self.hostnames = array;
+        
+        _hostnames = array;
 
         if (self.applicationID == nil || [self.applicationID length] == 0)
             @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"Application ID must be set" userInfo:nil];
@@ -114,25 +122,14 @@
             }
             [httpRequestOperationManagers addObject:httpRequestOperationManager];
         }
-        operationManagers = httpRequestOperationManagers;
+        _operationManagers = httpRequestOperationManagers;
     }
     return self;
 }
 
-+(instancetype) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey {
-    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:nil dsn:true dsnHost:nil tagFilters:nil userToken:nil];
-}
-
-+(instancetype) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames dsnHost:(NSString*)dsnHost
-{
-    return [[ASAPIClient alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:hostnames dsn:true dsnHost:dsnHost tagFilters:nil userToken:nil];
-}
-
-
-
 -(void) setExtraHeader:(NSString*)value forHeaderField:key
 {
-    for (AFHTTPRequestOperationManager *manager in operationManagers) {
+    for (AFHTTPRequestOperationManager *manager in self.operationManagers) {
         [manager.requestSerializer setValue:value forHTTPHeaderField:key];
     }
 }
@@ -391,7 +388,7 @@
 
 -(void) setTagFilters:(NSString *)tagFiltersHeader
 {
-    tagFilters = tagFiltersHeader;
+    _tagFilters = tagFiltersHeader;
     
     for (AFHTTPRequestOperationManager* manager in self.operationManagers) {
         [manager.requestSerializer setValue:self.tagFilters forHTTPHeaderField:@"X-Algolia-TagFilters"];
@@ -400,35 +397,11 @@
 
 -(void) setUserToken:(NSString *)userTokenHeader
 {
-    userToken = userTokenHeader;
+    _userToken = userTokenHeader;
     
     for (AFHTTPRequestOperationManager* manager in self.operationManagers) {
         [manager.requestSerializer setValue:self.userToken forHTTPHeaderField:@"X-Algolia-UserToken"];
     }
 }
 
--(void) setApiKey:(NSString *)apiKeyHeader
-{
-    apiKey = apiKeyHeader;
-    
-    for (AFHTTPRequestOperationManager* manager in self.operationManagers) {
-        [manager.requestSerializer setValue:self.apiKey forHTTPHeaderField:@"X-Algolia-API-Key"];
-    }
-}
-
--(void) setApplicationID:(NSString *)applicationIDHeader
-{
-    applicationID = applicationIDHeader;
-    
-    for (AFHTTPRequestOperationManager* manager in self.operationManagers) {
-        [manager.requestSerializer setValue:self.applicationID forHTTPHeaderField:@"X-Algolia-Application-Id"];
-    }
-}
-
-@synthesize applicationID;
-@synthesize apiKey;
-@synthesize hostnames;
-@synthesize operationManagers;
-@synthesize tagFilters;
-@synthesize userToken;
 @end

@@ -38,4 +38,5 @@
                  success:(void(^)(id JSON))success failure:(void(^)(NSString *errorMessage))failure;
 
 -(void) cancelQueries:(NSString*)method path:(NSString*)path;
+
 @end

@@ -35,9 +35,9 @@
 {
     self = [super init];
     if (self) {
-        self.apiClient = client;
-        self.indexName = indexName;
-        self.urlEncodedIndexName = [ASAPIClient urlEncode:indexName];
+        _apiClient = client;
+        _indexName = indexName;
+        _urlEncodedIndexName = [ASAPIClient urlEncode:indexName];
     }
     return self;
 }

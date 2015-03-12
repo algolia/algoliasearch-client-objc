@@ -25,6 +25,11 @@
 #import "ASAPIClient+Network.h"
 
 @implementation ASQuery
+{
+    BOOL aroundLatLongViaIP;
+    NSString *aroundLatLong;
+    NSString *insideBoundingBox;
+}
 
 +(instancetype) queryWithFullTextQuery:(NSString *)fullTextQuery
 {
@@ -33,99 +38,73 @@
 
 -(instancetype) init
 {
-    self = [super init];
-    if (self) {
-        self.minWordSizeForApprox1 = 3;
-        self.minWordSizeForApprox2 = 7;
-        self.getRankingInfo = NO;
-        self.ignorePlural = NO;
-        self.distinct = NO;
-        self.page = 0;
-        self.hitsPerPage = 20;
-        self.attributesToHighlight = nil;
-        self.attributesToRetrieve = nil;
-        self.attributesToSnippet = nil;
-        self.tagFilters = nil;
-        self.numericFilters = nil;
-        self.fullTextQuery = nil;
-        self.insideBoundingBox = nil;
-        self.aroundLatLong = nil;
-        self.AroundLatLongViaIP = NO;
-        self.queryType = nil;
-        self.removeWordsIfNoResult = nil;
-        self.typoTolerance = nil;
-        self.typosOnNumericTokens = YES;
-        self.analytics = YES;
-        self.synonyms = YES;
-        self.replaceSynonyms = YES;
-        self.optionalWordsMinimumMatched = 0;
-    }
-    return self;
+    return [self initWithFullTextQuery:nil];
 }
 
 -(instancetype) initWithFullTextQuery:(NSString *)pfullTextQuery
 {
     self = [super init];
     if (self) {
-        self.minWordSizeForApprox1 = 3;
-        self.minWordSizeForApprox2 = 7;
-        self.getRankingInfo = NO;
-        self.ignorePlural = NO;
-        self.distinct = NO;
-        self.page = 0;
-        self.hitsPerPage = 20;
-        self.fullTextQuery = pfullTextQuery;
-        self.attributesToHighlight = nil;
-        self.attributesToRetrieve = nil;
-        self.attributesToSnippet = nil;
-        self.tagFilters = nil;
-        self.numericFilters = nil;
-        self.insideBoundingBox = nil;
-        self.aroundLatLong = nil;
-        self.aroundLatLongViaIP = NO;
-        self.queryType = nil;
-        self.removeWordsIfNoResult = nil;
-        self.typoTolerance = nil;
-        self.typosOnNumericTokens = YES;
-        self.analytics = YES;
-        self.synonyms = YES;
-        self.replaceSynonyms = YES;
-        self.optionalWordsMinimumMatched = 0;
+        _minWordSizeForApprox1 = 3;
+        _minWordSizeForApprox2 = 7;
+        _getRankingInfo = NO;
+        _ignorePlural = NO;
+        _distinct = NO;
+        _page = 0;
+        _hitsPerPage = 20;
+        _attributesToHighlight = nil;
+        _attributesToRetrieve = nil;
+        _attributesToSnippet = nil;
+        _tagFilters = nil;
+        _numericFilters = nil;
+        _fullTextQuery = pfullTextQuery;
+        _queryType = nil;
+        _removeWordsIfNoResult = nil;
+        _typoTolerance = nil;
+        _typosOnNumericTokens = YES;
+        _analytics = YES;
+        _synonyms = YES;
+        _replaceSynonyms = YES;
+        _optionalWordsMinimumMatched = 0;
+        
+        insideBoundingBox = nil;
+        aroundLatLong = nil;
+        aroundLatLongViaIP = NO;
     }
     return self;
 }
 
 -(ASQuery*) searchAroundLatitude:(float)latitude longitude:(float)longitude maxDist:(NSUInteger)maxDist
 {
-    self.aroundLatLong = [NSString stringWithFormat:@"aroundLatLng=%f,%f&aroundRadius=%zd", latitude, longitude, maxDist];
+    aroundLatLong = [NSString stringWithFormat:@"aroundLatLng=%f,%f&aroundRadius=%zd", latitude, longitude, maxDist];
     return self;
 }
 
 -(ASQuery*) searchAroundLatitude:(float)latitude longitude:(float)longitude maxDist:(NSUInteger)maxDist precision:(NSUInteger)precision
 {
-    self.aroundLatLong = [NSString stringWithFormat:@"aroundLatLng=%f,%f&aroundRadius=%zd&aroundPrecision=%zd", latitude, longitude, maxDist, precision];
+    aroundLatLong = [NSString stringWithFormat:@"aroundLatLng=%f,%f&aroundRadius=%zd&aroundPrecision=%zd", latitude, longitude, maxDist, precision];
     return self;
 }
 
 -(ASQuery*) searchAroundLatitudeLongitudeViaIP:(NSUInteger)maxDist
 {
-    self.aroundLatLong = [NSString stringWithFormat:@"aroundRadius=%zd", maxDist];
-    self.aroundLatLongViaIP = YES;
+    aroundLatLong = [NSString stringWithFormat:@"aroundRadius=%zd", maxDist];
+    aroundLatLongViaIP = YES;
     return self;
 }
 
 
 -(ASQuery*) searchAroundLatitudeLongitudeViaIP:(NSUInteger)maxDist precision:(NSUInteger)precision
 {
-    self.aroundLatLong = [NSString stringWithFormat:@"aroundRadius=%zd&aroundPrecision=%zd", maxDist, precision];
-    self.aroundLatLongViaIP = YES;
+    aroundLatLong = [NSString stringWithFormat:@"aroundRadius=%zd&aroundPrecision=%zd", maxDist, precision];
+    aroundLatLongViaIP = YES;
     return self;
 }
 
 
 -(ASQuery*) searchInsideBoundingBoxWithLatitudeP1:(float)latitudeP1 longitudeP1:(float)longitudeP1 latitudeP2:(float)latitudeP2 longitudeP2:(float)longitudeP2
 {
-    self.insideBoundingBox = [NSString stringWithFormat:@"insideBoundingBox=%f,%f,%f,%f", latitudeP1, longitudeP1, latitudeP2, longitudeP2];
+    insideBoundingBox = [NSString stringWithFormat:@"insideBoundingBox=%f,%f,%f,%f", latitudeP1, longitudeP1, latitudeP2, longitudeP2];
     return self;
 }
 
@@ -171,7 +150,7 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:@"facetFilters="];
         NSError* err = nil;
-        NSData *data = [NSJSONSerialization dataWithJSONObject:facetFilters options:NSJSONWritingPrettyPrinted error:&err];
+        NSData *data = [NSJSONSerialization dataWithJSONObject:self.facetFilters options:NSJSONWritingPrettyPrinted error:&err];
         if (err == nil) {
             NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             [stringBuilder appendString:[ASAPIClient urlEncode:jsonString]];
@@ -182,7 +161,7 @@
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:@"facetFilters="];
-        [stringBuilder appendString:[ASAPIClient urlEncode:facetFiltersRaw]];
+        [stringBuilder appendString:[ASAPIClient urlEncode:self.facetFiltersRaw]];
     }
 
     if (self.facets != nil) {
@@ -243,7 +222,7 @@
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:@"typoTolerance="];
-        [stringBuilder appendString:typoTolerance];
+        [stringBuilder appendString:self.typoTolerance];
     }
     if (self.distinct) {
         if ([stringBuilder length] > 0)
@@ -295,16 +274,16 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"numericFilters=%@", [ASAPIClient urlEncode:self.numericFilters]];
     }
-    if (self.insideBoundingBox != nil) {
+    if (insideBoundingBox != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:self.insideBoundingBox];
-    } else if (self.aroundLatLong != nil) {
+        [stringBuilder appendString:insideBoundingBox];
+    } else if (aroundLatLong != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:self.aroundLatLong];
+        [stringBuilder appendString:aroundLatLong];
     }
-    if (self.aroundLatLongViaIP) {
+    if (aroundLatLongViaIP) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:@"aroundLatLngViaIP=true"];      
@@ -322,30 +301,4 @@
     return stringBuilder;
 }
 
-@synthesize attributesToRetrieve;
-@synthesize attributesToHighlight;
-@synthesize attributesToSnippet;
-@synthesize tagFilters;
-@synthesize analytics;
-@synthesize synonyms;
-@synthesize replaceSynonyms;
-@synthesize numericFilters;
-@synthesize insideBoundingBox;
-@synthesize aroundLatLong;
-@synthesize fullTextQuery;
-@synthesize minWordSizeForApprox1;
-@synthesize minWordSizeForApprox2;
-@synthesize page;
-@synthesize hitsPerPage;
-@synthesize getRankingInfo;
-@synthesize ignorePlural;
-@synthesize queryType;
-@synthesize facetFilters;
-@synthesize facetFiltersRaw;
-@synthesize facets;
-@synthesize optionalWords;
-@synthesize typoTolerance;
-@synthesize typosOnNumericTokens;
-@synthesize restrictSearchableAttributes;
-@synthesize optionalWordsMinimumMatched;
 @end
