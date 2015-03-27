@@ -3,20 +3,8 @@
 
 
 [Algolia Search](http://www.algolia.com) is a hosted full-text, numerical, and faceted search engine capable of delivering realtime results from the first keystroke.
-Algolia's Search API makes it easy to deliver a great search experience in your websites and mobile applications by providing:
 
- * REST and JSON based API
- * Search against infinite attributes from a single search box
- * Instant search as you type experience
- * Relevance and popularity ranking
- * Global language support
- * Typo tolerance in any language
- * Smart highlighting
- * Facet as you type
- * Geo awareness
- * 99.99% SLA
- * First class data security
-
+Our Objective-C client lets you easily use the [Algolia Search API](https://www.algolia.com/doc/rest_api) from your iOS & OS X applications. It wraps the [Algolia Search REST API](http://www.algolia.com/doc/rest_api).
 
 
 [![Build Status](https://travis-ci.org/algolia/algoliasearch-client-objc.svg?branch=master)](https://travis-ci.org/algolia/algoliasearch-client-objc)
@@ -74,6 +62,9 @@ To setup your project, follow these steps:
 ASAPIClient *apiClient = 
     [ASAPIClient apiClientWithApplicationID:@"YourApplicationID" apiKey:@"YourAPIKey"];
 ```
+
+
+
 
 
 
@@ -428,7 +419,7 @@ query.hitsPerPage = 50;
 
 The server response will look like:
 
-```javascript
+```json
 {
   "hits": [
     {
@@ -504,12 +495,14 @@ You can easily retrieve an object using its `objectID` and optionally specify a 
 
 You can also retrieve a set of objects:
 
+
 ```objc
 [index getObjects:@[@"myID1", @"myID2"]
   success:^(ASRemoteIndex *index, NSArray *objectIDs, NSDictionary *result) {
 	// do something
 } failure:nil];
 ```
+
 
 
 
