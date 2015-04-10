@@ -60,6 +60,7 @@
         _tagFilters = tagFiltersHeader;
         _userToken = userTokenHeader;
         _timeout = 30;
+        _searchTimeout = 10;
         
         NSMutableArray *searchArray = nil;
         NSMutableArray *writeArray = nil;
@@ -131,7 +132,7 @@
             }
             [httpRequestOperationManagers addObject:httpRequestOperationManager];
         }
-        _writeOperationManagers = httpRequestOperationManagers;
+        _searchOperationManagers = httpRequestOperationManagers;
     }
     return self;
 }
