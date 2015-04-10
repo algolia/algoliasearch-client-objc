@@ -68,7 +68,7 @@
         XCTFail("No error during getObject");
         [notFoundExpectation fulfill];
     } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
-        XCTAssertEqualObjects(errorMessage, @"Resource does not exist", "Wrong error message");
+        XCTAssertEqualObjects(errorMessage, @"Bad request argument: Index algol?à-objc does not exist", "Wrong error message");
         [notFoundExpectation fulfill];
     }];
     
@@ -89,7 +89,7 @@
         XCTFail("No error during listIndexes");
         [invalidClientExpectation fulfill];
     } failure:^(ASAPIClient *client, NSString *errorMessage) {
-        XCTAssertEqualObjects(errorMessage, @"Invalid Application-ID or API-Key", "Wrong error message");
+        XCTAssertEqualObjects(errorMessage, @"Bad request argument: Invalid Application-ID or API key", "Wrong error message");
         [invalidClientExpectation fulfill];
     }];
     
