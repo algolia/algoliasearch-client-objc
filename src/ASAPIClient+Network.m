@@ -80,7 +80,7 @@
             failure(@"Resource does not exist");
         } else {
             if ((index + 1) < [managers count]) {
-                [self performHTTPQuery:path method:method body:body index:(index + 1) timeout:(timeout + 10) success:success failure:failure];
+                [self performHTTPQuery:path method:method body:body managers:managers index:(index + 1) timeout:(timeout + 10) success:success failure:failure];
             } else {
                 failure(error.description);
             }
