@@ -70,14 +70,10 @@
             failure(@"No error message");
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if (operation.response.statusCode == 400) {
+        if ((operation.response.statusCode / 100) == 4) {
             NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
             NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData: errorData options:kNilOptions error:nil];
             failure([NSString stringWithFormat:@"Bad request argument: %@", JSON[@"message"]]);
-        } else if (operation.response.statusCode == 403) {
-            failure(@"Invalid Application-ID or API-Key");
-        } else if(operation.response.statusCode == 404) {
-            failure(@"Resource does not exist");
         } else {
             if ((index + 1) < [managers count]) {
                 [self performHTTPQuery:path method:method body:body managers:managers index:(index + 1) timeout:(timeout + 10) success:success failure:failure];
