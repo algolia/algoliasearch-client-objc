@@ -30,6 +30,8 @@
 #include <Cocoa/Cocoa.h>
 #endif
 
+NSString *const Version = @"3.3.0";
+
 @implementation ASAPIClient
 
 +(instancetype) apiClientWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames
@@ -104,7 +106,7 @@
             httpRequestOperationManager.requestSerializer = [AFJSONRequestSerializer serializer];
             [httpRequestOperationManager.requestSerializer setValue:self.apiKey forHTTPHeaderField:@"X-Algolia-API-Key"];
             [httpRequestOperationManager.requestSerializer setValue:self.applicationID forHTTPHeaderField:@"X-Algolia-Application-Id"];
-            [httpRequestOperationManager.requestSerializer setValue:[NSString stringWithFormat:@"Algolia for Objective-C %@", @"3.3.0"] forHTTPHeaderField:@"User-Agent"];
+            [httpRequestOperationManager.requestSerializer setValue:[NSString stringWithFormat:@"Algolia for Objective-C %@", Version] forHTTPHeaderField:@"User-Agent"];
             if (self.tagFilters != nil) {
                 [httpRequestOperationManager.requestSerializer setValue:self.tagFilters forHTTPHeaderField:@"X-Algolia-TagFilters"];
             }
@@ -123,7 +125,7 @@
             httpRequestOperationManager.requestSerializer = [AFJSONRequestSerializer serializer];
             [httpRequestOperationManager.requestSerializer setValue:self.apiKey forHTTPHeaderField:@"X-Algolia-API-Key"];
             [httpRequestOperationManager.requestSerializer setValue:self.applicationID forHTTPHeaderField:@"X-Algolia-Application-Id"];
-            [httpRequestOperationManager.requestSerializer setValue:[NSString stringWithFormat:@"Algolia for Objective-C %@", @"3.3.0"] forHTTPHeaderField:@"User-Agent"];
+            [httpRequestOperationManager.requestSerializer setValue:[NSString stringWithFormat:@"Algolia for Objective-C %@", Version] forHTTPHeaderField:@"User-Agent"];
             if (self.tagFilters != nil) {
                 [httpRequestOperationManager.requestSerializer setValue:self.tagFilters forHTTPHeaderField:@"X-Algolia-TagFilters"];
             }

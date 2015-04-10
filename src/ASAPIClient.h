@@ -25,6 +25,8 @@
 #import "AFNetworking.h"
 #import "ASRemoteIndex.h"
 
+FOUNDATION_EXPORT NSString *const Version;
+
 /**
  * Entry point in the Objective-C API.
  * You should instantiate a Client object with your ApplicationID, ApiKey and Hosts
