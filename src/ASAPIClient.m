@@ -61,52 +61,42 @@
         _userToken = userTokenHeader;
         _timeout = 30;
         
-        NSMutableArray *array = nil;
+        NSMutableArray *searchArray = nil;
+        NSMutableArray *writeArray = nil;
         if (phostnames == nil) {
-             array = [NSMutableArray arrayWithObjects:
-                                     [NSString stringWithFormat:@"%@-1.algolia.net", papplicationID],
-                                     [NSString stringWithFormat:@"%@-2.algolia.net", papplicationID],
-                                     [NSString stringWithFormat:@"%@-3.algolia.net", papplicationID],
+             searchArray = [NSMutableArray arrayWithObjects:
+                                     [NSString stringWithFormat:@"%@-dsn.algolia.net", papplicationID],
+                                     [NSString stringWithFormat:@"%@-1.algolianet.com", papplicationID],
+                                     [NSString stringWithFormat:@"%@-2.algolianet.com", papplicationID],
+                                     [NSString stringWithFormat:@"%@-3.algolianet.com", papplicationID],
                                      nil];
-            srandom((unsigned int)time(NULL));
-            NSUInteger count = [array count];
-            for (NSUInteger i = 0; i < count; ++i) {
-                // Select a random element between i and end of array to swap with.
-                NSUInteger nElements = count - i;
-                NSUInteger n = (random() % nElements) + i;
-                [array exchangeObjectAtIndex:i withObjectAtIndex:n];
-            }
+            writeArray = [NSMutableArray arrayWithObjects:
+                     [NSString stringWithFormat:@"%@.algolia.net", papplicationID],
+                     [NSString stringWithFormat:@"%@-1.algolianet.com", papplicationID],
+                     [NSString stringWithFormat:@"%@-2.algolianet.com", papplicationID],
+                     [NSString stringWithFormat:@"%@-3.algolianet.com", papplicationID],
+                     nil];
         } else {
-            array = [NSMutableArray arrayWithArray:phostnames];
-            srandom((unsigned int)time(NULL));
-            NSUInteger count = [array count];
-            for (NSUInteger i = 0; i < count; ++i) {
-                // Select a random element between i and end of array to swap with.
-                NSUInteger nElements = count - i;
-                NSUInteger n = (random() % nElements) + i;
-                [array exchangeObjectAtIndex:i withObjectAtIndex:n];
-            }
+            searchArray = writeArray = [NSMutableArray arrayWithArray:phostnames];
         }
         
-        if (dsn || dsnHost != nil) {
+        if (dsnHost != nil) {
             if (dsnHost != nil) {
-                [array insertObject:dsnHost atIndex:0];
-            } else {
-                [array insertObject:[NSString stringWithFormat:@"%@-dsn.algolia.net", papplicationID] atIndex:0];
+                [searchArray replaceObjectAtIndex:0 withObject:dsnHost];
             }
         }
-        
-        _hostnames = array;
+        _writeHostnames = writeArray;
+        _searchHostnames = searchArray;
 
         if (self.applicationID == nil || [self.applicationID length] == 0)
             @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"Application ID must be set" userInfo:nil];
         if (self.apiKey == nil || [self.apiKey length] == 0)
             @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"APIKey must be set" userInfo:nil];
-        if ([self.hostnames count] == 0)
+        if ([self.searchHostnames count] == 0)
             @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"List of hosts must be set" userInfo:nil];
         NSMutableArray *httpRequestOperationManagers = [[NSMutableArray alloc] init];
         //NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]; TODO nil
-        for (NSString *host in self.hostnames) {
+        for (NSString *host in self.searchHostnames) {
             NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@", host]];
             AFHTTPRequestOperationManager *httpRequestOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:url];
             httpRequestOperationManager.responseSerializer = [AFJSONResponseSerializer serializer];
@@ -122,14 +112,36 @@
             }
             [httpRequestOperationManagers addObject:httpRequestOperationManager];
         }
-        _operationManagers = httpRequestOperationManagers;
+        _writeOperationManagers = httpRequestOperationManagers;
+        
+        httpRequestOperationManagers = [[NSMutableArray alloc] init];
+        for (NSString *host in self.searchHostnames) {
+            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@", host]];
+            AFHTTPRequestOperationManager *httpRequestOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:url];
+            httpRequestOperationManager.responseSerializer = [AFJSONResponseSerializer serializer];
+            httpRequestOperationManager.requestSerializer = [AFJSONRequestSerializer serializer];
+            [httpRequestOperationManager.requestSerializer setValue:self.apiKey forHTTPHeaderField:@"X-Algolia-API-Key"];
+            [httpRequestOperationManager.requestSerializer setValue:self.applicationID forHTTPHeaderField:@"X-Algolia-Application-Id"];
+            [httpRequestOperationManager.requestSerializer setValue:[NSString stringWithFormat:@"Algolia for Objective-C %@", @"3.3.0"] forHTTPHeaderField:@"User-Agent"];
+            if (self.tagFilters != nil) {
+                [httpRequestOperationManager.requestSerializer setValue:self.tagFilters forHTTPHeaderField:@"X-Algolia-TagFilters"];
+            }
+            if (self.userToken != nil) {
+                [httpRequestOperationManager.requestSerializer setValue:self.userToken forHTTPHeaderField:@"X-Algolia-UserToken"];
+            }
+            [httpRequestOperationManagers addObject:httpRequestOperationManager];
+        }
+        _writeOperationManagers = httpRequestOperationManagers;
     }
     return self;
 }
 
 -(void) setExtraHeader:(NSString*)value forHeaderField:key
 {
-    for (AFHTTPRequestOperationManager *manager in self.operationManagers) {
+    for (AFHTTPRequestOperationManager *manager in self.writeOperationManagers) {
+        [manager.requestSerializer setValue:value forHTTPHeaderField:key];
+    }
+    for (AFHTTPRequestOperationManager *manager in self.searchOperationManagers) {
         [manager.requestSerializer setValue:value forHTTPHeaderField:key];
     }
 }
@@ -146,7 +158,7 @@
     }
     NSString *path = [NSString stringWithFormat:@"/1/indexes/*/queries"];
     NSMutableDictionary *request = [NSMutableDictionary dictionaryWithObject:queriesTab forKey:@"requests"];
-    [self performHTTPQuery:path method:@"POST" body:request index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:path method:@"POST" body:request managers:self.searchOperationManagers index:0 timeout:self.searchTimeout success:^(id JSON) {
         if (success != nil)
             success(self, queries, JSON);
     } failure:^(NSString *errorMessage) {
@@ -157,7 +169,7 @@
 
 -(void) listIndexes:(void(^)(ASAPIClient *client, NSDictionary* result))success failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure
 {
-    [self performHTTPQuery:@"/1/indexes" method:@"GET" body:nil index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:@"/1/indexes" method:@"GET" body:nil managers:self.searchOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         success(self, JSON);
     } failure:^(NSString *errorMessage) {
         failure(self, errorMessage);
@@ -170,7 +182,7 @@
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/operation", [ASAPIClient urlEncode:srcIndexName]];
     NSDictionary *request = @{@"destination": dstIndexName, @"operation": @"move"};
-    [self performHTTPQuery:path method:@"POST" body:request index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:path method:@"POST" body:request managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, srcIndexName, dstIndexName, JSON);
     } failure:^(NSString *errorMessage) {
@@ -185,7 +197,7 @@
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/operation", [ASAPIClient urlEncode:srcIndexName]];
     NSDictionary *request = @{@"destination": dstIndexName, @"operation": @"copy"};
-    [self performHTTPQuery:path method:@"POST" body:request index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:path method:@"POST" body:request managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, srcIndexName, dstIndexName, JSON);
     } failure:^(NSString *errorMessage) {
@@ -197,7 +209,7 @@
 -(void) getLogs:(void(^)(ASAPIClient *client, NSDictionary *result))success
         failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure
 {
-    [self performHTTPQuery:@"/1/logs" method:@"GET" body:nil index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:@"/1/logs" method:@"GET" body:nil managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         success(self, JSON);
     } failure:^(NSString *errorMessage) {
         failure(self, errorMessage);
@@ -209,7 +221,7 @@
                   failure:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString *errorMessage))failure
 {
     NSString *url = [NSString stringWithFormat:@"/1/logs?offset=%zd&length=%zd", offset, length];
-    [self performHTTPQuery:url method:@"GET" body:nil index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:url method:@"GET" body:nil managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         success(self, offset, length, JSON);
     } failure:^(NSString *errorMessage) {
         failure(self, offset, length, errorMessage);
@@ -221,7 +233,7 @@
                 failure:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSString *errorMessage))failure
 {
     NSString *url = [NSString stringWithFormat:@"/1/logs?offset=%zd&length=%zd&type=%@", offset, length, type];
-    [self performHTTPQuery:url method:@"GET" body:nil index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:url method:@"GET" body:nil managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         success(self, offset, length, type, JSON);
     } failure:^(NSString *errorMessage) {
         failure(self, offset, length, type, errorMessage);
@@ -234,7 +246,7 @@
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@", [ASAPIClient urlEncode:indexName]];
     
-    [self performHTTPQuery:path method:@"DELETE" body:nil index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:path method:@"DELETE" body:nil managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, indexName, JSON);
     } failure:^(NSString *errorMessage) {
@@ -246,7 +258,7 @@
 -(void) listUserKeys:(void(^)(ASAPIClient *client, NSDictionary* result))success
                      failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure
 {
-    [self performHTTPQuery:@"/1/keys" method:@"GET" body:nil index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:@"/1/keys" method:@"GET" body:nil managers:self.searchOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         success(self, JSON);
     } failure:^(NSString *errorMessage) {
         failure(self, errorMessage);
@@ -257,7 +269,7 @@
                       failure:(void(^)(ASAPIClient *client, NSString *key, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
-    [self performHTTPQuery:path method:@"GET" body:nil index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:path method:@"GET" body:nil managers:self.searchOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, key, JSON);
     } failure:^(NSString *errorMessage) {
@@ -270,7 +282,7 @@
                        failure:(void(^)(ASAPIClient *client, NSString *key, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
-    [self performHTTPQuery:path method:@"DELETE" body:nil index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:path method:@"DELETE" body:nil managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, key, JSON);
     } failure:^(NSString *errorMessage) {
@@ -283,7 +295,7 @@
            failure:(void(^)(ASAPIClient *client, NSArray *acls, NSString *errorMessage))failure
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:acls forKey:@"acl"];
-    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, acls, JSON);
     } failure:^(NSString *errorMessage) {
@@ -301,7 +313,7 @@
                                 @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour", 
                                 @(maxHitsPerQuery), @"maxHitsPerQuery", 
                                 nil];
-    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, acls, JSON);
     } failure:^(NSString *errorMessage) {
@@ -319,7 +331,7 @@
                                  @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour",
                                  @(maxHitsPerQuery), @"maxHitsPerQuery",
                                  nil];
-    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, acls, indexes, JSON);
     } failure:^(NSString *errorMessage) {
@@ -333,7 +345,7 @@
 {
     NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:acls forKey:@"acl"];
-    [self performHTTPQuery:path method:@"PUT" body:dict index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:path method:@"PUT" body:dict managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, key, acls, JSON);
     } failure:^(NSString *errorMessage) {
@@ -352,7 +364,7 @@
                                  @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour",
                                  @(maxHitsPerQuery), @"maxHitsPerQuery",
                                  nil];
-    [self performHTTPQuery:path method:@"PUT" body:dict index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:path method:@"PUT" body:dict managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, key, acls, JSON);
     } failure:^(NSString *errorMessage) {
@@ -371,7 +383,7 @@
                                  @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour",
                                  @(maxHitsPerQuery), @"maxHitsPerQuery",
                                  nil];
-    [self performHTTPQuery:path method:@"PUT" body:dict index:0 timeout:self.timeout success:^(id JSON) {
+    [self performHTTPQuery:path method:@"PUT" body:dict managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, key, acls, indexes, JSON);
     } failure:^(NSString *errorMessage) {
@@ -390,7 +402,10 @@
 {
     _tagFilters = tagFiltersHeader;
     
-    for (AFHTTPRequestOperationManager* manager in self.operationManagers) {
+    for (AFHTTPRequestOperationManager* manager in self.writeOperationManagers) {
+        [manager.requestSerializer setValue:self.tagFilters forHTTPHeaderField:@"X-Algolia-TagFilters"];
+    }
+    for (AFHTTPRequestOperationManager* manager in self.searchOperationManagers) {
         [manager.requestSerializer setValue:self.tagFilters forHTTPHeaderField:@"X-Algolia-TagFilters"];
     }
 }
@@ -399,7 +414,10 @@
 {
     _userToken = userTokenHeader;
     
-    for (AFHTTPRequestOperationManager* manager in self.operationManagers) {
+    for (AFHTTPRequestOperationManager* manager in self.writeOperationManagers) {
+        [manager.requestSerializer setValue:self.userToken forHTTPHeaderField:@"X-Algolia-UserToken"];
+    }
+    for (AFHTTPRequestOperationManager* manager in self.searchOperationManagers) {
         [manager.requestSerializer setValue:self.userToken forHTTPHeaderField:@"X-Algolia-UserToken"];
     }
 }

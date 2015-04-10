@@ -41,7 +41,7 @@
     NSString* apiKey = [[NSProcessInfo processInfo] environment][@"ALGOLIA_API_KEY"];
     self.client = [ASAPIClient apiClientWithApplicationID :appID apiKey:apiKey];
     self.index = [self.client getIndex:@"algol?à-objc"];
-    self.httpRequestOperationManager = (self.client.operationManagers)[0];
+    self.httpRequestOperationManager = (self.client.writeOperationManagers)[0];
     
     XCTestExpectation *expecatation = [self expectationWithDescription:@"Delete index"];
     [self.client deleteIndex:@"algol?à-objc" success:^(ASAPIClient *client, NSString *indexName, NSDictionary *result) {
@@ -74,7 +74,7 @@
     
     XCTestExpectation *badRequestExpectation = [self expectationWithDescription:@"badRequestArgument"];
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/batch", self.index.urlEncodedIndexName];
-    [self.client performHTTPQuery:path method:@"POST" body:@{@"request": @"badObject"} index:0 timeout:self.client.timeout success:^(id JSON) {
+    [self.client performHTTPQuery:path method:@"POST" body:@{@"request": @"badObject"} managers:self.client.writeOperationManagers index:0 timeout:self.client.timeout success:^(id JSON) {
         XCTFail("No error during performHTTPQuery");
         [badRequestExpectation fulfill];
     } failure:^(NSString *errorMessage) {

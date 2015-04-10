@@ -297,9 +297,12 @@
 
 @property (readonly, nonatomic) NSString *applicationID;
 @property (readonly, nonatomic) NSString *apiKey;
-@property (readonly, nonatomic) NSArray *hostnames;
-@property (readonly, nonatomic) NSArray *operationManagers;
+@property (readonly, nonatomic) NSArray *writeHostnames;
+@property (readonly, nonatomic) NSArray *searchHostnames;
+@property (readonly, nonatomic) NSArray *searchOperationManagers;
+@property (readonly, nonatomic) NSArray *writeOperationManagers;
 @property NSTimeInterval timeout;
+@property NSTimeInterval searchTimeout;
 
 /**
  * Add security tag header (see http://www.algolia.com/doc/guides/objc#SecurityUser for more details)

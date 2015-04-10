@@ -31,9 +31,20 @@
 
 -(void) cancelQueries:(NSString*)method path:(NSString*)path
 {
-    NSUInteger count = [self.operationManagers count];
+    NSUInteger count = [self.searchOperationManagers count];
     for (NSUInteger i = 0; i < count; ++i) {
-        AFHTTPRequestOperationManager *httpRequestOperationManager = (self.operationManagers)[i];
+        AFHTTPRequestOperationManager *httpRequestOperationManager = (self.searchOperationManagers)[i];
+        for (AFHTTPRequestOperation *operation in httpRequestOperationManager.operationQueue.operations) {
+            if ([operation.request.URL.path isEqualToString:path]) {
+                if ([operation.request.HTTPMethod isEqualToString:method]) {
+                    [operation cancel];
+                }
+            }
+        }
+    }
+    count = [self.writeOperationManagers count];
+    for (NSUInteger i = 0; i < count; ++i) {
+        AFHTTPRequestOperationManager *httpRequestOperationManager = (self.writeOperationManagers)[i];
         for (AFHTTPRequestOperation *operation in httpRequestOperationManager.operationQueue.operations) {
             if ([operation.request.URL.path isEqualToString:path]) {
                 if ([operation.request.HTTPMethod isEqualToString:method]) {
@@ -44,16 +55,16 @@
     }
 }
 
--(void) performHTTPQuery:(NSString*)path method:(NSString*)method body:(NSDictionary*)body index:(NSUInteger)index timeout:(NSTimeInterval)timeout
+-(void) performHTTPQuery: (NSString*)path method:(NSString*)method body:(NSDictionary*)body managers:(NSArray*)managers index:(NSUInteger)index timeout:(NSTimeInterval)timeout
                  success:(void(^)(id JSON))success failure:(void(^)(NSString *errorMessage))failure
 {
-    assert(index < [self.operationManagers count]);
-    AFHTTPRequestOperationManager *httpRequestOperationManager = (self.operationManagers)[index];
+    assert(index < [managers count]);
+    AFHTTPRequestOperationManager *httpRequestOperationManager = (managers)[index];
     NSMutableURLRequest *request = [httpRequestOperationManager.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:path relativeToURL:httpRequestOperationManager.baseURL] absoluteString]  parameters:body error:nil];
     [httpRequestOperationManager.requestSerializer setTimeoutInterval:timeout];
     
     AFHTTPRequestOperation *operation = [httpRequestOperationManager HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id JSON) {
-        if (operation.response.statusCode == 200 || operation.response.statusCode == 201) {
+        if ((operation.response.statusCode / 100) == 2) {
             success(JSON);
         } else {
             failure(@"No error message");
@@ -68,8 +79,8 @@
         } else if(operation.response.statusCode == 404) {
             failure(@"Resource does not exist");
         } else {
-            if ((index + 1) < [self.operationManagers count]) {
-                [self performHTTPQuery:path method:method body:body index:(index + 1) timeout:timeout success:success failure:failure];
+            if ((index + 1) < [managers count]) {
+                [self performHTTPQuery:path method:method body:body index:(index + 1) timeout:(timeout + 10) success:success failure:failure];
             } else {
                 failure(error.description);
             }
