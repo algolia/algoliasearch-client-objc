@@ -153,20 +153,33 @@ NSString *const Version = @"3.4.1";
                 success:(void(^)(ASAPIClient *client, NSArray *queries, NSDictionary *result))success
                 failure: (void(^)(ASAPIClient *client, NSArray *queries, NSString *errorMessage))failure
 {
+    [self multipleQueries:queries withStrategy:@"none" success:^(ASAPIClient *client, NSArray *queries, NSString *strategy, NSDictionary *result) {
+        if (success != nil)
+            success(client, queries, result);
+    } failure:^(ASAPIClient *client, NSArray *queries, NSString *strategy, NSString *errorMessage) {
+        if (failure != nil)
+            failure(client, queries, errorMessage);
+    }];
+}
+
+-(void) multipleQueries:(NSArray*)queries withStrategy:(NSString*)strategy
+                success:(void(^)(ASAPIClient *client, NSArray *queries, NSString* strategy, NSDictionary *result))success
+                failure: (void(^)(ASAPIClient *client, NSArray *queries, NSString* strategy, NSString *errorMessage))failure
+{
     NSMutableArray *queriesTab =[[NSMutableArray alloc] initWithCapacity:[queries count]];
     int i = 0;
     for (NSDictionary *query in queries) {
         NSString *queryParams = [query[@"query"] buildURL];
         queriesTab[i++] = @{@"params": queryParams, @"indexName": query[@"indexName"]};
     }
-    NSString *path = [NSString stringWithFormat:@"/1/indexes/*/queries"];
+    NSString *path = [NSString stringWithFormat:@"/1/indexes/*/queries?strategy=%@", strategy];
     NSMutableDictionary *request = [NSMutableDictionary dictionaryWithObject:queriesTab forKey:@"requests"];
     [self performHTTPQuery:path method:@"POST" body:request managers:self.searchOperationManagers index:0 timeout:self.searchTimeout success:^(id JSON) {
         if (success != nil)
-            success(self, queries, JSON);
+            success(self, queries, strategy, JSON);
     } failure:^(NSString *errorMessage) {
         if (failure != nil)
-            failure(self, queries, errorMessage);
+            failure(self, queries, strategy, errorMessage);
     }];
 }
 
@@ -294,16 +307,25 @@ NSString *const Version = @"3.4.1";
     }];
 }
 
--(void) addUserKey:(NSArray*)acls success:(void(^)(ASAPIClient *client, NSArray *acls, NSDictionary *result))success
-           failure:(void(^)(ASAPIClient *client, NSArray *acls, NSString *errorMessage))failure
+-(void) addUserKey:(NSObject*)obj
+           success:(void(^)(ASAPIClient *client, NSObject* params, NSDictionary *result))success
+           failure:(void(^)(ASAPIClient *client, NSObject* params, NSString *errorMessage))failure
 {
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:acls forKey:@"acl"];
-    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
+    NSDictionary *params = nil;
+    if ([obj isMemberOfClass:[NSDictionary class]]) {
+        params = (NSDictionary*)obj;
+    } else if ([obj isMemberOfClass:[NSArray class]]) {
+        params = [NSMutableDictionary dictionaryWithObject:obj forKey:@"acl"];
+    } else {
+        return failure(self, obj, @"obj parameter can only be an NSDictionary or a NSArray");
+    }
+    
+    [self performHTTPQuery:@"/1/keys" method:@"POST" body:params managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
-            success(self, acls, JSON);
+            success(self, obj, JSON);
     } failure:^(NSString *errorMessage) {
         if (failure != nil)
-            failure(self, acls, errorMessage);
+            failure(self, obj, errorMessage);
     }];
 }
 
@@ -316,12 +338,12 @@ NSString *const Version = @"3.4.1";
                                 @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour", 
                                 @(maxHitsPerQuery), @"maxHitsPerQuery", 
                                 nil];
-    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
+    [self addUserKey:dict success:^(ASAPIClient *client, NSObject *obj, NSDictionary *result) {
         if (success != nil)
-            success(self, acls, JSON);
-    } failure:^(NSString *errorMessage) {
+            success(client, acls, result);
+    } failure:^(ASAPIClient *client, NSObject *obj, NSString *errorMessage) {
         if (failure != nil)
-            failure(self, acls, errorMessage);
+            failure(client, acls, errorMessage);
     }];
 }
 
@@ -334,26 +356,38 @@ NSString *const Version = @"3.4.1";
                                  @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour",
                                  @(maxHitsPerQuery), @"maxHitsPerQuery",
                                  nil];
-    [self performHTTPQuery:@"/1/keys" method:@"POST" body:dict managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
+    [self addUserKey:dict success:^(ASAPIClient *client, NSObject *obj, NSDictionary *result) {
         if (success != nil)
-            success(self, acls, indexes, JSON);
+            success(client, acls, indexes, result);
+    } failure:^(ASAPIClient *client, NSObject *obj, NSString *errorMessage) {
+        if (failure != nil)
+            failure(client, acls, indexes, errorMessage);
+    }];
+}
+
+-(void) updateUserKey:(NSString*)key withParams:(NSDictionary*)params success:(void(^)(ASAPIClient *client, NSString *key, NSDictionary *params, NSDictionary *result))success
+              failure:(void(^)(ASAPIClient *client, NSString *key, NSDictionary *params, NSString *errorMessage))failure
+{
+    NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
+    [self performHTTPQuery:path method:@"PUT" body:params managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
+        if (success != nil)
+            success(self, key, params, JSON);
     } failure:^(NSString *errorMessage) {
         if (failure != nil)
-            failure(self, acls, indexes, errorMessage);
+            failure(self, key, params, errorMessage);
     }];
 }
 
 -(void) updateUserKey:(NSString*)key withACL:(NSArray*)acls success:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result))success
            failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSString *errorMessage))failure
 {
-    NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:acls forKey:@"acl"];
-    [self performHTTPQuery:path method:@"PUT" body:dict managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
+    [self updateUserKey:key withParams:dict success:^(ASAPIClient *client, NSString *key, NSDictionary *params, NSDictionary *result) {
         if (success != nil)
-            success(self, key, acls, JSON);
-    } failure:^(NSString *errorMessage) {
+            success(client, key, acls, result);
+    } failure:^(ASAPIClient *client, NSString *key, NSDictionary *params, NSString *errorMessage) {
         if (failure != nil)
-            failure(self, key, acls, errorMessage);
+            failure(client, key, acls, errorMessage);
     }];
 }
 
@@ -361,18 +395,17 @@ NSString *const Version = @"3.4.1";
            success:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result))success
            failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSString *errorMessage))failure
 {
-    NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl",
                                  @(validity), @"validity",
                                  @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour",
                                  @(maxHitsPerQuery), @"maxHitsPerQuery",
                                  nil];
-    [self performHTTPQuery:path method:@"PUT" body:dict managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
+    [self updateUserKey:key withParams:dict success:^(ASAPIClient *client, NSString *key, NSDictionary *params, NSDictionary *result) {
         if (success != nil)
-            success(self, key, acls, JSON);
-    } failure:^(NSString *errorMessage) {
+            success(client, key, acls, result);
+    } failure:^(ASAPIClient *client, NSString *key, NSDictionary *params, NSString *errorMessage) {
         if (failure != nil)
-            failure(self, key, acls, errorMessage);
+            failure(client, key, acls, errorMessage);
     }];
 }
 
@@ -380,18 +413,17 @@ NSString *const Version = @"3.4.1";
            success:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSDictionary *result))success
            failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSString *errorMessage))failure
 {
-    NSString *path = [NSString stringWithFormat:@"/1/keys/%@", key];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl", indexes, @"indexes",
                                  @(validity), @"validity",
                                  @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour",
                                  @(maxHitsPerQuery), @"maxHitsPerQuery",
                                  nil];
-    [self performHTTPQuery:path method:@"PUT" body:dict managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
+    [self updateUserKey:key withParams:dict success:^(ASAPIClient *client, NSString *key, NSDictionary *params, NSDictionary *result) {
         if (success != nil)
-            success(self, key, acls, indexes, JSON);
-    } failure:^(NSString *errorMessage) {
+            success(client, key, acls, indexes, result);
+    } failure:^(ASAPIClient *client, NSString *key, NSDictionary *params, NSString *errorMessage) {
         if (failure != nil)
-            failure(self, key, acls, indexes, errorMessage);
+            failure(client, key, acls, indexes, errorMessage);
     }];
 }
 

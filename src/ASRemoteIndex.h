@@ -259,7 +259,18 @@
 /**
  * Create a new user key associated to this index
  *
- * @param acls the list of ACL for this key. Defined by an array of NSString that
+ * @param obj can be two different parameters:
+ * The list of parameters for this key. Defined by a NSDictionary that
+ * can contains the following values:
+ *   - acl: array of string
+ *   - indices: array of string
+ *   - validity: int
+ *   - referers: array of string
+ *   - description: string
+ *   - maxHitsPerQuery: integer
+ *   - queryParameters: string
+ *   - maxQueriesPerIPPerHour: integer
+ * Or the list of ACL for this key. Defined by an array of NSString that
  * can contains the following values:
  *   - search: allow to search (https and http)
  *   - addObject: allows to add/update an object in the index (https only)
@@ -268,9 +279,9 @@
  *   - settings : allows to get index settings (https only)
  *   - editSettings : allows to change index settings (https only)
  */
--(void) addUserKey:(NSArray*)acls
-           success:(void(^)(ASRemoteIndex *index, NSArray *acls, NSDictionary *result))success
-           failure:(void(^)(ASRemoteIndex *index, NSArray *acls, NSString *errorMessage))failure;
+-(void) addUserKey:(NSObject*)obj
+           success:(void(^)(ASRemoteIndex *index, NSObject *obj, NSDictionary *result))success
+           failure:(void(^)(ASRemoteIndex *index, NSObject *obj, NSString *errorMessage))failure;
 
 /**
  * Create a new user key associated to this index
@@ -290,6 +301,24 @@
 -(void) addUserKey:(NSArray*)acls withValidity:(NSUInteger)validity maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
            success:(void(^)(ASRemoteIndex *index, NSArray *acls, NSDictionary *result))success
            failure:(void(^)(ASRemoteIndex *index, NSArray *acls, NSString *errorMessage))failure;
+
+/**
+ * Update a user key associated to this index
+ *
+ * @params params the list of parameters for this key. Defined by a NSDictionary that
+ * can contains the following values:
+ *   - acl: array of string
+ *   - indices: array of string
+ *   - validity: int
+ *   - referers: array of string
+ *   - description: string
+ *   - maxHitsPerQuery: integer
+ *   - queryParameters: string
+ *   - maxQueriesPerIPPerHour: integer
+ */
+-(void) updateUserKey:(NSString*) key withParams:(NSDictionary*)params
+              success:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *params, NSDictionary *result))success
+              failure:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *params, NSString *errorMessage))failure;
 
 /**
  * Update a user key associated to this index

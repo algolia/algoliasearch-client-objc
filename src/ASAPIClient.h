@@ -171,6 +171,16 @@ FOUNDATION_EXPORT NSString *const Version;
                         failure: (void(^)(ASAPIClient *client, NSArray *queries, NSString *errorMessage))failure;
 
 /**
+ * Query multiple indexes with one API call
+ *
+ * @param query contains an array of queries with the associated index (NSArray of NSDictionary object @{"indexName":@"targettedIndex", @"query": theASQueryObject }).
+ * @param strategy name of the strategy applied to the sequence of queries default:none
+ */
+-(void) multipleQueries:(NSArray*)query withStrategy:(NSString*)strategy
+                success:(void(^)(ASAPIClient *client, NSArray *queries, NSString* strategy, NSDictionary *result))success
+                failure: (void(^)(ASAPIClient *client, NSArray *queries, NSString* strategy, NSString *errorMessage))failure;
+
+/**
  * List all existing user keys with their associated ACLs
  */
 -(void) listUserKeys:(void(^)(ASAPIClient *client, NSDictionary *result))success
@@ -191,7 +201,18 @@ FOUNDATION_EXPORT NSString *const Version;
 /**
  * Create a new user key
  *
- * @param acls the list of ACL for this key. Defined by an array of NSString that
+ * @param obj can be two different parameters:
+ * The list of parameters for this key. Defined by a NSDictionary that
+ * can contains the following values:
+ *   - acl: array of string
+ *   - indices: array of string
+ *   - validity: int
+ *   - referers: array of string
+ *   - description: string
+ *   - maxHitsPerQuery: integer
+ *   - queryParameters: string
+ *   - maxQueriesPerIPPerHour: integer
+ * Or the list of ACL for this key. Defined by an array of NSString that
  * can contains the following values:
  *   - search: allow to search (https and http)
  *   - addObject: allows to add/update an object in the index (https only)
@@ -200,9 +221,9 @@ FOUNDATION_EXPORT NSString *const Version;
  *   - settings : allows to get index settings (https only)
  *   - editSettings : allows to change index settings (https only)
  */
--(void) addUserKey:(NSArray*)acls
-           success:(void(^)(ASAPIClient *client, NSArray *acls, NSDictionary *result))success
-           failure:(void(^)(ASAPIClient *client, NSArray *acls, NSString *errorMessage))failure;
+-(void) addUserKey:(NSObject*)obj
+           success:(void(^)(ASAPIClient *client, NSObject *obj, NSDictionary *result))success
+           failure:(void(^)(ASAPIClient *client, NSObject *obj, NSString *errorMessage))failure;
 
 /**
  * Create a new user key
@@ -244,7 +265,25 @@ FOUNDATION_EXPORT NSString *const Version;
            failure:(void(^)(ASAPIClient *client, NSArray *acls, NSArray *indexes, NSString *errorMessage))failure;
 
 /**
- * Create a new user key
+ * Update a user key
+ *
+ * @params params the list of parameters for this key. Defined by a NSDictionary that
+ * can contains the following values:
+ *   - acl: array of string
+ *   - indices: array of string
+ *   - validity: int
+ *   - referers: array of string
+ *   - description: string
+ *   - maxHitsPerQuery: integer
+ *   - queryParameters: string
+ *   - maxQueriesPerIPPerHour: integer
+ */
+-(void) updateUserKey:(NSString*)key withParams:(NSDictionary*)params
+              success:(void(^)(ASAPIClient *client, NSString *key, NSDictionary *params, NSDictionary *result))success
+              failure:(void(^)(ASAPIClient *client, NSString *key, NSDictionary *params, NSString *errorMessage))failure;
+
+/**
+ * Update a user key
  *
  * @param acls the list of ACL for this key. Defined by an array of NSString that
  * can contains the following values:
@@ -259,7 +298,7 @@ FOUNDATION_EXPORT NSString *const Version;
               failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSString *errorMessage))failure;
 
 /**
- * Create a new user key
+ * Update a user key
  *
  * @param acls the list of ACL for this key. Defined by an array of NSString that
  * can contains the following values:
@@ -278,7 +317,7 @@ FOUNDATION_EXPORT NSString *const Version;
               failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSString *errorMessage))failure;
 
 /**
- * Create a new user key
+ * Update a user key
  *
  * @param acls the list of ACL for this key. Defined by an array of NSString that
  * can contains the following values:
