@@ -404,24 +404,32 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
     }];
 }
 
--(void) addUserKey:(NSObject*)obj success:(void(^)(ASRemoteIndex *index, NSObject *obj, NSDictionary *result))success
-           failure:(void(^)(ASRemoteIndex *index, NSObject *obj, NSString *errorMessage))failure
+-(void) addUserKey:(NSArray*)acls
+           success:(void(^)(ASRemoteIndex *index, NSArray *acls, NSDictionary *result))success
+           failure:(void(^)(ASRemoteIndex *index, NSArray *acls, NSString *errorMessage))failure
 {
-    NSDictionary *params = nil;
-    if ([obj isMemberOfClass:[NSDictionary class]]) {
-        params = (NSDictionary*)obj;
-    } else if ([obj isMemberOfClass:[NSArray class]]) {
-        params = [NSMutableDictionary dictionaryWithObject:obj forKey:@"acl"];
-    } else {
-        return failure(self, obj, @"obj parameter can only be an NSDictionary or a NSArray");
-    }
+    NSDictionary *params = [NSMutableDictionary dictionaryWithObject:acls forKey:@"acl"];
+    [self addUserKey:acls withParams:params success:^(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSDictionary *result) {
+        if (success != nil)
+            success(index, acls, result);
+    } failure:^(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSString *errorMessage) {
+        if (failure)
+            failure(index, acls, errorMessage);
+    }];
+}
+
+-(void) addUserKey:(NSArray*)acls withParams:(NSDictionary*)params
+           success:(void(^)(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSDictionary *result))success
+           failure:(void(^)(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSString *errorMessage))failure
+{
+    [params setValue:acls forKey:@"acls"];
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/keys", self.urlEncodedIndexName];
     [self.apiClient performHTTPQuery:path method:@"POST" body:params managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
-            success(self, obj, JSON);
+            success(self, acls, params, JSON);
     } failure:^(NSString *errorMessage) {
         if (failure != nil)
-            failure(self, obj, errorMessage);
+            failure(self, acls, params, errorMessage);
     }];
 }
 
@@ -434,10 +442,10 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
                                 @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour", 
                                 @(maxHitsPerQuery), @"maxHitsPerQuery", 
                                 nil];
-    [self addUserKey:dict success:^(ASRemoteIndex *index, NSObject *obj, NSDictionary *result) {
+    [self addUserKey:acls withParams:dict success:^(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSDictionary *result) {
         if (success != nil)
             success(index, acls, result);
-    } failure:^(ASRemoteIndex *index, NSObject *obj, NSString *errorMessage) {
+    } failure:^(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSString *errorMessage) {
         if (failure)
             failure(index, acls, errorMessage);
     }];

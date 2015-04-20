@@ -307,25 +307,32 @@ NSString *const Version = @"3.4.1";
     }];
 }
 
--(void) addUserKey:(NSObject*)obj
-           success:(void(^)(ASAPIClient *client, NSObject* params, NSDictionary *result))success
-           failure:(void(^)(ASAPIClient *client, NSObject* params, NSString *errorMessage))failure
+-(void) addUserKey:(NSArray*)acls
+           success:(void(^)(ASAPIClient *client, NSArray* acls, NSDictionary *result))success
+           failure:(void(^)(ASAPIClient *client, NSArray* acls, NSString *errorMessage))failure
 {
-    NSDictionary *params = nil;
-    if ([obj isMemberOfClass:[NSDictionary class]]) {
-        params = (NSDictionary*)obj;
-    } else if ([obj isMemberOfClass:[NSArray class]]) {
-        params = [NSMutableDictionary dictionaryWithObject:obj forKey:@"acl"];
-    } else {
-        return failure(self, obj, @"obj parameter can only be an NSDictionary or a NSArray");
-    }
+    NSDictionary *params = [NSMutableDictionary dictionaryWithObject:acls forKey:@"acl"];
     
+    [self addUserKey:acls withParams:params success:^(ASAPIClient *client, NSArray* acls, NSDictionary* params, NSDictionary *result) {
+        if (success != nil)
+            success(client, acls, result);
+    } failure:^(ASAPIClient *client, NSArray* acls, NSDictionary* params, NSString *errorMessage) {
+        if (failure != nil)
+            failure(client, acls, errorMessage);
+    }];
+}
+
+-(void) addUserKey:(NSArray*)acls withParams:(NSDictionary*)params
+           success:(void(^)(ASAPIClient *client, NSArray* acls, NSDictionary* params, NSDictionary *result))success
+           failure:(void(^)(ASAPIClient *client, NSArray* acls, NSDictionary* params, NSString *errorMessage))failure
+{
+    [params setValue:acls forKey:@"acl"];
     [self performHTTPQuery:@"/1/keys" method:@"POST" body:params managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
-            success(self, obj, JSON);
+            success(self, acls, params, JSON);
     } failure:^(NSString *errorMessage) {
         if (failure != nil)
-            failure(self, obj, errorMessage);
+            failure(self, acls, params, errorMessage);
     }];
 }
 
@@ -338,10 +345,10 @@ NSString *const Version = @"3.4.1";
                                 @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour", 
                                 @(maxHitsPerQuery), @"maxHitsPerQuery", 
                                 nil];
-    [self addUserKey:dict success:^(ASAPIClient *client, NSObject *obj, NSDictionary *result) {
+    [self addUserKey:acls withParams:dict success:^(ASAPIClient *client, NSArray* acls, NSDictionary* params, NSDictionary *result) {
         if (success != nil)
             success(client, acls, result);
-    } failure:^(ASAPIClient *client, NSObject *obj, NSString *errorMessage) {
+    } failure:^(ASAPIClient *client, NSArray* acls, NSDictionary* params, NSString *errorMessage) {
         if (failure != nil)
             failure(client, acls, errorMessage);
     }];
@@ -356,10 +363,10 @@ NSString *const Version = @"3.4.1";
                                  @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour",
                                  @(maxHitsPerQuery), @"maxHitsPerQuery",
                                  nil];
-    [self addUserKey:dict success:^(ASAPIClient *client, NSObject *obj, NSDictionary *result) {
+    [self addUserKey:acls withParams:dict success:^(ASAPIClient *client, NSArray* acls, NSDictionary* params, NSDictionary *result) {
         if (success != nil)
             success(client, acls, indexes, result);
-    } failure:^(ASAPIClient *client, NSObject *obj, NSString *errorMessage) {
+    } failure:^(ASAPIClient *client, NSArray* acls, NSDictionary* params, NSString *errorMessage) {
         if (failure != nil)
             failure(client, acls, indexes, errorMessage);
     }];
