@@ -47,7 +47,7 @@
     [self.client deleteIndex:@"algol?à-objc" success:^(ASAPIClient *client, NSString *indexName, NSDictionary *result) {
         [expecatation fulfill];
     } failure:nil];
-    [self waitForExpectationsWithTimeout:100 handler:nil];
+    [self waitForExpectationsWithTimeout:1000 handler:nil];
 }
 
 - (void)tearDown
@@ -58,17 +58,17 @@
     [self.client deleteIndex:@"algol?à-objc" success:^(ASAPIClient *client, NSString *indexName, NSDictionary *result) {
         [expecatation fulfill];
     } failure:nil];
-    [self waitForExpectationsWithTimeout:100 handler:nil];
+    [self waitForExpectationsWithTimeout:1000 handler:nil];
 }
 
 - (void)testQueryErrorHandling
 {
     XCTestExpectation *notFoundExpectation = [self expectationWithDescription:@"ressourceDoesNotExist"];
-    [self.index getObject:@"invalidObject" success:^(ASRemoteIndex *index, NSString *objectID, NSDictionary *result) {
+    [[self.client getIndex:@"algol?à-objc3"] getObject:@"invalidObject" success:^(ASRemoteIndex *index, NSString *objectID, NSDictionary *result) {
         XCTFail("No error during getObject");
         [notFoundExpectation fulfill];
     } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
-        XCTAssertEqualObjects(errorMessage, @"Bad request argument: Index algol?à-objc does not exist", "Wrong error message");
+        XCTAssertEqualObjects(errorMessage, @"Bad request argument: Index algol?à-objc3 does not exist", "Wrong error message");
         [notFoundExpectation fulfill];
     }];
     
