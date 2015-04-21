@@ -422,7 +422,7 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
            success:(void(^)(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSDictionary *result))success
            failure:(void(^)(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSString *errorMessage))failure
 {
-    [params setValue:acls forKey:@"acls"];
+    [params setValue:acls forKey:@"acl"];
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/keys", self.urlEncodedIndexName];
     [self.apiClient performHTTPQuery:path method:@"POST" body:params managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
