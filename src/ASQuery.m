@@ -25,11 +25,6 @@
 #import "ASAPIClient+Network.h"
 
 @implementation ASQuery
-{
-    BOOL aroundLatLongViaIP;
-    NSString *aroundLatLong;
-    NSString *insideBoundingBox;
-}
 
 +(instancetype) queryWithFullTextQuery:(NSString *)fullTextQuery
 {
@@ -66,45 +61,44 @@
         _synonyms = YES;
         _replaceSynonyms = YES;
         _optionalWordsMinimumMatched = 0;
-        
-        insideBoundingBox = nil;
-        aroundLatLong = nil;
-        aroundLatLongViaIP = NO;
+        _insideBoundingBox = nil;
+        _aroundLatLong = nil;
+        _aroundLatLongViaIP = NO;
     }
     return self;
 }
 
 -(ASQuery*) searchAroundLatitude:(float)latitude longitude:(float)longitude maxDist:(NSUInteger)maxDist
 {
-    aroundLatLong = [NSString stringWithFormat:@"aroundLatLng=%f,%f&aroundRadius=%zd", latitude, longitude, maxDist];
+    self.aroundLatLong = [NSString stringWithFormat:@"aroundLatLng=%f,%f&aroundRadius=%zd", latitude, longitude, maxDist];
     return self;
 }
 
 -(ASQuery*) searchAroundLatitude:(float)latitude longitude:(float)longitude maxDist:(NSUInteger)maxDist precision:(NSUInteger)precision
 {
-    aroundLatLong = [NSString stringWithFormat:@"aroundLatLng=%f,%f&aroundRadius=%zd&aroundPrecision=%zd", latitude, longitude, maxDist, precision];
+    self.aroundLatLong = [NSString stringWithFormat:@"aroundLatLng=%f,%f&aroundRadius=%zd&aroundPrecision=%zd", latitude, longitude, maxDist, precision];
     return self;
 }
 
 -(ASQuery*) searchAroundLatitudeLongitudeViaIP:(NSUInteger)maxDist
 {
-    aroundLatLong = [NSString stringWithFormat:@"aroundRadius=%zd", maxDist];
-    aroundLatLongViaIP = YES;
+    self.aroundLatLong = [NSString stringWithFormat:@"aroundRadius=%zd", maxDist];
+    self.aroundLatLongViaIP = YES;
     return self;
 }
 
 
 -(ASQuery*) searchAroundLatitudeLongitudeViaIP:(NSUInteger)maxDist precision:(NSUInteger)precision
 {
-    aroundLatLong = [NSString stringWithFormat:@"aroundRadius=%zd&aroundPrecision=%zd", maxDist, precision];
-    aroundLatLongViaIP = YES;
+    self.aroundLatLong = [NSString stringWithFormat:@"aroundRadius=%zd&aroundPrecision=%zd", maxDist, precision];
+    self.aroundLatLongViaIP = YES;
     return self;
 }
 
 
 -(ASQuery*) searchInsideBoundingBoxWithLatitudeP1:(float)latitudeP1 longitudeP1:(float)longitudeP1 latitudeP2:(float)latitudeP2 longitudeP2:(float)longitudeP2
 {
-    insideBoundingBox = [NSString stringWithFormat:@"insideBoundingBox=%f,%f,%f,%f", latitudeP1, longitudeP1, latitudeP2, longitudeP2];
+    self.insideBoundingBox = [NSString stringWithFormat:@"insideBoundingBox=%f,%f,%f,%f", latitudeP1, longitudeP1, latitudeP2, longitudeP2];
     return self;
 }
 
@@ -274,16 +268,16 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"numericFilters=%@", [ASAPIClient urlEncode:self.numericFilters]];
     }
-    if (insideBoundingBox != nil) {
+    if (self.insideBoundingBox != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:insideBoundingBox];
-    } else if (aroundLatLong != nil) {
+        [stringBuilder appendString:self.insideBoundingBox];
+    } else if (self.aroundLatLong != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:aroundLatLong];
+        [stringBuilder appendString:self.aroundLatLong];
     }
-    if (aroundLatLongViaIP) {
+    if (self.aroundLatLongViaIP) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:@"aroundLatLngViaIP=true"];      
