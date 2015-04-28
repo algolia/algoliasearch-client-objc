@@ -281,6 +281,13 @@
 success:(void(^)(ASRemoteIndex *index, NSString *taskID, NSDictionary *result))success
 failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage))failure
 {
+    [self waitTask:taskID withTimeToSleep:0.1f success:success failure:failure];
+}
+
+-(void) waitTask:(NSString*)taskID withTimeToSleep:(float)timeToSleep
+         success:(void(^)(ASRemoteIndex *index, NSString *taskID, NSDictionary *result))success
+         failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage))failure
+{
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/task/%@", self.urlEncodedIndexName, taskID];
     [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         NSString *status = [JSON valueForKey:@"status"];
@@ -288,7 +295,7 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
             if (success != nil)
                 success(self, taskID, JSON);
         } else {
-            [NSThread sleepForTimeInterval:0.1f];
+            [NSThread sleepForTimeInterval:timeToSleep];
             [self waitTask:taskID success:success failure:failure];
         }
     } failure:^(NSString *errorMessage) {

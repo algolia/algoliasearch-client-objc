@@ -1077,6 +1077,35 @@
     [self waitForExpectationsWithTimeout:100 handler:nil];
 }
 
+- (void) testMultipleBatch
+{
+    XCTestExpectation *expectation = [self expectationWithDescription:@"testMultipleBatch"];
+    NSDictionary *obj = @{@"action": @"addObject", @"indexName": self.index.indexName, @"body": @{@"city": @"San Francisco", @"objectID": @"a/go/?à"}};
+    NSDictionary *obj2 = @{@"action": @"addObject", @"indexName": self.index.indexName, @"body": @{@"city": @"Los Angeles", @"objectID": @"à/go/?à"}};
+
+    [self.client batch:@[obj, obj2] success:^(ASAPIClient *client, NSDictionary *requests, NSDictionary *result) {
+        [[self.client getIndex:self.index.indexName] waitTask:result[@"taskID"][self.index.indexName] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+            [index getObjects:@[@"a/go/?à", @"à/go/?à"] success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
+                NSMutableString *city1 = [NSMutableString stringWithFormat:@"%@",result[@"results"][0][@"city"]];
+                NSMutableString *city2 = [NSMutableString stringWithFormat:@"%@",result[@"results"][1][@"city"]];
+                XCTAssertEqualObjects(city1, @"San Francisco", @"GetObject return the wrong object");
+                XCTAssertEqualObjects(city2, @"Los Angeles", @"GetObject return the wrong object");
+                [expectation fulfill];
+            } failure:^(ASRemoteIndex *index, NSArray *objectIDs, NSString *errorMessage) {
+                XCTFail("@Error during getObjects: %@", errorMessage);
+                [expectation fulfill];
+            }];
+        } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
+            XCTFail("@Error during waitTask: %@", errorMessage);
+            [expectation fulfill];
+        }];
+    } failure:^(ASAPIClient *client, NSDictionary *requests, NSString *errorMessage) {
+        XCTFail("@Error during batch: %@", errorMessage);
+        [expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:100 handler:nil];
+}
+
 - (void)testMultipleQueries
 {
     XCTestExpectation *expectation = [self expectationWithDescription:@"testMultipleQueries"];

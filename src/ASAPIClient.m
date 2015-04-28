@@ -434,6 +434,20 @@ NSString *const Version = @"3.4.2";
     }];
 }
 
+-(void) batch:(NSDictionary*)requests
+           success:(void(^)(ASAPIClient *client, NSDictionary *requests, NSDictionary *result))success
+           failure:(void(^)(ASAPIClient *client, NSDictionary *requests, NSString *errorMessage))failure
+{
+    NSDictionary *request = @{@"requests": requests};
+    [self performHTTPQuery:@"/1/indexes/*/batch" method:@"POST" body:request managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
+        if (success != nil)
+            success(self, requests, JSON);
+    } failure:^(NSString *errorMessage) {
+        if (failure != nil)
+            failure(self, requests, errorMessage);
+    }];
+}
+
 
 -(ASRemoteIndex*) getIndex:(NSString*)indexName
 {
