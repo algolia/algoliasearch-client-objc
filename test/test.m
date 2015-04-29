@@ -68,7 +68,7 @@
         XCTFail("No error during getObject");
         [notFoundExpectation fulfill];
     } failure:^(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage) {
-        XCTAssertEqualObjects(errorMessage, @"Bad request argument: Index algol?à-objc3 does not exist", "Wrong error message");
+        XCTAssertEqualObjects(errorMessage, @"Index algol?à-objc3 does not exist", "Wrong error message");
         [notFoundExpectation fulfill];
     }];
     
@@ -78,7 +78,7 @@
         XCTFail("No error during performHTTPQuery");
         [badRequestExpectation fulfill];
     } failure:^(NSString *errorMessage) {
-        XCTAssertEqualObjects(errorMessage, @"Bad request argument: Invalid object attributes:request near line:1 column:10", "Wrong error message");
+        XCTAssertEqualObjects(errorMessage, @"Invalid object attributes:request near line:1 column:10", "Wrong error message");
         [badRequestExpectation fulfill];
     }];
     
@@ -89,7 +89,7 @@
         XCTFail("No error during listIndexes");
         [invalidClientExpectation fulfill];
     } failure:^(ASAPIClient *client, NSString *errorMessage) {
-        XCTAssertEqualObjects(errorMessage, @"Bad request argument: Invalid Application-ID or API key", "Wrong error message");
+        XCTAssertEqualObjects(errorMessage, @"Invalid Application-ID or API key", "Wrong error message");
         [invalidClientExpectation fulfill];
     }];
     
