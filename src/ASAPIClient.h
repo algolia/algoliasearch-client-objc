@@ -88,8 +88,8 @@ FOUNDATION_EXPORT NSString *const Version;
  * { "items": [ {"name": "contacts", "createdAt": "2013-01-18T15:33:13.556Z"},
  *              {"name": "notes", "createdAt": "2013-01-18T15:33:13.556Z"}]}
  */
--(void) listIndexes:(void(^)(ASAPIClient *client, NSDictionary *result))success
-                    failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) listIndexes:(void(^)(ASAPIClient *client, NSDictionary *result))success
+                                failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure;
 
 /**
  * Delete an index
@@ -97,9 +97,9 @@ FOUNDATION_EXPORT NSString *const Version;
  * @param indexName the name of index to delete
  * return an object containing a "deletedAt" attribute in the success block
  */
--(void) deleteIndex:(NSString*)indexName
-            success:(void(^)(ASAPIClient *client, NSString *indexName, NSDictionary *result))success
-            failure:(void(^)(ASAPIClient *client, NSString *indexName, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) deleteIndex:(NSString*)indexName
+                                success:(void(^)(ASAPIClient *client, NSString *indexName, NSDictionary *result))success
+                                failure:(void(^)(ASAPIClient *client, NSString *indexName, NSString *errorMessage))failure;
 
 /**
  * Move an existing index.
@@ -107,24 +107,26 @@ FOUNDATION_EXPORT NSString *const Version;
  * @param srcIndexName the name of index to copy.
  * @param dstIndexName the new index name that will contains srcIndexName (destination will be overriten if it already exist).
  */
--(void) moveIndex:(NSString*)srcIndexName to:(NSString*)dstIndexName
-            success:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result))success
-            failure:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) moveIndex:(NSString*)srcIndexName
+                                   to:(NSString*)dstIndexName
+                              success:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result))success
+                              failure:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage))failure;
 /**
  * Copy an existing index.
  *
  * @param srcIndexName the name of index to copy.
  * @param dstIndexName the new index name that will contains a copy of srcIndexName (destination will be overriten if it already exist).
  */
--(void) copyIndex:(NSString*)srcIndexName to:(NSString*)dstIndexName
-          success:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result))success
-          failure:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) copyIndex:(NSString*)srcIndexName
+                                   to:(NSString*)dstIndexName
+                              success:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result))success
+                              failure:(void(^)(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSString *errorMessage))failure;
 
 /**
  * Return 10 last log entries.
  */
--(void) getLogs:(void(^)(ASAPIClient *client, NSDictionary *result))success
-          failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) getLogs:(void(^)(ASAPIClient *client, NSDictionary *result))success
+                            failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure;
 
 /**
  * Return last logs entries.
@@ -132,9 +134,10 @@ FOUNDATION_EXPORT NSString *const Version;
  * @param offset Specify the first entry to retrieve (0-based, 0 is the most recent log entry).
  * @param length Specify the maximum number of entries to retrieve starting at offset. Maximum allowed value: 1000.
  */
--(void) getLogsWithOffset:(NSUInteger)offset length:(NSUInteger)length
-        success:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSDictionary *result))success
-        failure:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) getLogsWithOffset:(NSUInteger)offset
+                                       length:(NSUInteger)length
+                                      success:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSDictionary *result))success
+                                      failure:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString *errorMessage))failure;
 
 /**
  * Return last logs entries.
@@ -142,9 +145,11 @@ FOUNDATION_EXPORT NSString *const Version;
  * @param offset Specify the first entry to retrieve (0-based, 0 is the most recent log entry).
  * @param length Specify the maximum number of entries to retrieve starting at offset. Maximum allowed value: 1000.
  */
--(void) getLogsWithType:(NSUInteger)offset length:(NSUInteger)length type:(NSString*)type
-                  success:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSDictionary *result))success
-                  failure:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) getLogsWithType:(NSUInteger)offset
+                                     length:(NSUInteger)length
+                                       type:(NSString*)type
+                                    success:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSDictionary *result))success
+                                    failure:(void(^)(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSString *errorMessage))failure;
 
 /**
  * Get the index object initialized (no server call needed for initialization)
@@ -166,9 +171,9 @@ FOUNDATION_EXPORT NSString *const Version;
  *
  * @param query contains an array of queries with the associated index (NSArray of NSDictionary object @{"indexName":@"targettedIndex", @"query": theASQueryObject }).
  */
--(void) multipleQueries:(NSArray*)query
-                        success:(void(^)(ASAPIClient *client, NSArray *queries, NSDictionary *result))success
-                        failure: (void(^)(ASAPIClient *client, NSArray *queries, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) multipleQueries:(NSArray*)query
+                                    success:(void(^)(ASAPIClient *client, NSArray *queries, NSDictionary *result))success
+                                    failure: (void(^)(ASAPIClient *client, NSArray *queries, NSString *errorMessage))failure;
 
 /**
  * Query multiple indexes with one API call
@@ -176,27 +181,30 @@ FOUNDATION_EXPORT NSString *const Version;
  * @param query contains an array of queries with the associated index (NSArray of NSDictionary object @{"indexName":@"targettedIndex", @"query": theASQueryObject }).
  * @param strategy name of the strategy applied to the sequence of queries default:none
  */
--(void) multipleQueries:(NSArray*)query withStrategy:(NSString*)strategy
-                success:(void(^)(ASAPIClient *client, NSArray *queries, NSString* strategy, NSDictionary *result))success
-                failure: (void(^)(ASAPIClient *client, NSArray *queries, NSString* strategy, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) multipleQueries:(NSArray*)query
+                               withStrategy:(NSString*)strategy
+                                    success:(void(^)(ASAPIClient *client, NSArray *queries, NSString* strategy, NSDictionary *result))success
+                                    failure: (void(^)(ASAPIClient *client, NSArray *queries, NSString* strategy, NSString *errorMessage))failure;
 
 /**
  * List all existing user keys with their associated ACLs
  */
--(void) listUserKeys:(void(^)(ASAPIClient *client, NSDictionary *result))success
-                     failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) listUserKeys:(void(^)(ASAPIClient *client, NSDictionary *result))success
+                                 failure:(void(^)(ASAPIClient *client, NSString *errorMessage))failure;
 
 /**
  * Get ACL of a user key
  */
--(void) getUserKeyACL:(NSString*)key success:(void(^)(ASAPIClient *client, NSString *key, NSDictionary *result))success
-                                     failure:(void(^)(ASAPIClient *client, NSString *key, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) getUserKeyACL:(NSString*)key
+                                  success:(void(^)(ASAPIClient *client, NSString *key, NSDictionary *result))success
+                                  failure:(void(^)(ASAPIClient *client, NSString *key, NSString *errorMessage))failure;
 
 /**
  * Delete an existing user key
  */
--(void) deleteUserKey:(NSString*)key success:(void(^)(ASAPIClient *client, NSString *key, NSDictionary *result))success
-                                     failure:(void(^)(ASAPIClient *client, NSString *key, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) deleteUserKey:(NSString*)key
+                                  success:(void(^)(ASAPIClient *client, NSString *key, NSDictionary *result))success
+                                  failure:(void(^)(ASAPIClient *client, NSString *key, NSString *errorMessage))failure;
 
 /**
  * Create a new user key
@@ -210,9 +218,9 @@ FOUNDATION_EXPORT NSString *const Version;
  *   - settings : allows to get index settings (https only)
  *   - editSettings : allows to change index settings (https only)
  */
--(void) addUserKey:(NSArray*)acls
-           success:(void(^)(ASAPIClient *client, NSArray* acls, NSDictionary *result))success
-           failure:(void(^)(ASAPIClient *client, NSArray* acls, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) addUserKey:(NSArray*)acls
+                               success:(void(^)(ASAPIClient *client, NSArray* acls, NSDictionary *result))success
+                               failure:(void(^)(ASAPIClient *client, NSArray* acls, NSString *errorMessage))failure;
 
 /**
  * Create a new user key
@@ -236,9 +244,10 @@ FOUNDATION_EXPORT NSString *const Version;
  *   - queryParameters: string
  *   - maxQueriesPerIPPerHour: integer
  */
--(void) addUserKey:(NSArray*)acls withParams:(NSDictionary*)params
-           success:(void(^)(ASAPIClient *client, NSArray* acls, NSDictionary* params, NSDictionary *result))success
-           failure:(void(^)(ASAPIClient *client, NSArray* acls, NSDictionary* params, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) addUserKey:(NSArray*)acls
+                            withParams:(NSDictionary*)params
+                               success:(void(^)(ASAPIClient *client, NSArray* acls, NSDictionary* params, NSDictionary *result))success
+                               failure:(void(^)(ASAPIClient *client, NSArray* acls, NSDictionary* params, NSString *errorMessage))failure;
 
 /**
  * Create a new user key
@@ -253,11 +262,14 @@ FOUNDATION_EXPORT NSString *const Version;
  *   - editSettings : allows to change index settings (https only)
  * @param validity the number of seconds after which the key will be automatically removed (0 means no time limit for this key)
  * @param maxQueriesPerIPPerHour Specify the maximum number of API calls allowed from an IP address per hour.  Defaults to 0 (no rate limit).
- * @param maxHitsPerQuery Specify the maximum number of hits this API key can retrieve in one call. Defaults to 0 (unlimited) 
+ * @param maxHitsPerQuery Specify the maximum number of hits this API key can retrieve in one call. Defaults to 0 (unlimited)
  */
--(void) addUserKey:(NSArray*)acls withValidity:(NSUInteger)validity maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
-           success:(void(^)(ASAPIClient *client, NSArray *acls, NSDictionary *result))success
-           failure:(void(^)(ASAPIClient *client, NSArray *acls, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) addUserKey:(NSArray*)acls
+                          withValidity:(NSUInteger)validity
+                maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour
+                       maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
+                               success:(void(^)(ASAPIClient *client, NSArray *acls, NSDictionary *result))success
+                               failure:(void(^)(ASAPIClient *client, NSArray *acls, NSString *errorMessage))failure;
 
 /**
  * Create a new user key
@@ -275,9 +287,13 @@ FOUNDATION_EXPORT NSString *const Version;
  * @param maxQueriesPerIPPerHour Specify the maximum number of API calls allowed from an IP address per hour.  Defaults to 0 (no rate limit).
  * @param maxHitsPerQuery Specify the maximum number of hits this API key can retrieve in one call. Defaults to 0 (unlimited)
  */
--(void) addUserKey:(NSArray*)acls withIndexes:(NSArray*)indexes withValidity:(NSUInteger)validity maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
-           success:(void(^)(ASAPIClient *client, NSArray *acls, NSArray *indexes, NSDictionary *result))success
-           failure:(void(^)(ASAPIClient *client, NSArray *acls, NSArray *indexes, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) addUserKey:(NSArray*)acls
+                           withIndexes:(NSArray*)indexes
+                          withValidity:(NSUInteger)validity
+                maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour
+                       maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
+                               success:(void(^)(ASAPIClient *client, NSArray *acls, NSArray *indexes, NSDictionary *result))success
+                               failure:(void(^)(ASAPIClient *client, NSArray *acls, NSArray *indexes, NSString *errorMessage))failure;
 
 /**
  * Update a user key
@@ -293,9 +309,10 @@ FOUNDATION_EXPORT NSString *const Version;
  *   - queryParameters: string
  *   - maxQueriesPerIPPerHour: integer
  */
--(void) updateUserKey:(NSString*)key withParams:(NSDictionary*)params
-              success:(void(^)(ASAPIClient *client, NSString *key, NSDictionary *params, NSDictionary *result))success
-              failure:(void(^)(ASAPIClient *client, NSString *key, NSDictionary *params, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) updateUserKey:(NSString*)key
+                               withParams:(NSDictionary*)params
+                                  success:(void(^)(ASAPIClient *client, NSString *key, NSDictionary *params, NSDictionary *result))success
+                                  failure:(void(^)(ASAPIClient *client, NSString *key, NSDictionary *params, NSString *errorMessage))failure;
 
 /**
  * Update a user key
@@ -309,8 +326,10 @@ FOUNDATION_EXPORT NSString *const Version;
  *   - settings : allows to get index settings (https only)
  *   - editSettings : allows to change index settings (https only)
  */
--(void) updateUserKey:(NSString*)key withACL:(NSArray*)acls success:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result))success
-              failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) updateUserKey:(NSString*)key
+                                  withACL:(NSArray*)acls
+                                  success:(void(^)(ASAPIClient *clients, NSString *key, NSArray *acls, NSDictionary *result))success
+                                  failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSString *errorMessage))failure;
 
 /**
  * Update a user key
@@ -327,9 +346,13 @@ FOUNDATION_EXPORT NSString *const Version;
  * @param maxQueriesPerIPPerHour Specify the maximum number of API calls allowed from an IP address per hour.  Defaults to 0 (no rate limit).
  * @param maxHitsPerQuery Specify the maximum number of hits this API key can retrieve in one call. Defaults to 0 (unlimited)
  */
--(void) updateUserKey:(NSString*)key withACL:(NSArray*)acls withValidity:(NSUInteger)validity maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
-              success:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result))success
-              failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) updateUserKey:(NSString*)key
+                                  withACL:(NSArray*)acls
+                             withValidity:(NSUInteger)validity
+                   maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour
+                          maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
+                                  success:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result))success
+                                  failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSString *errorMessage))failure;
 
 /**
  * Update a user key
@@ -347,9 +370,13 @@ FOUNDATION_EXPORT NSString *const Version;
  * @param maxQueriesPerIPPerHour Specify the maximum number of API calls allowed from an IP address per hour.  Defaults to 0 (no rate limit).
  * @param maxHitsPerQuery Specify the maximum number of hits this API key can retrieve in one call. Defaults to 0 (unlimited)
  */
--(void) updateUserKey:(NSString*)key withACL:(NSArray*)acls withIndexes:(NSArray*)indexes withValidity:(NSUInteger)validity maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
-              success:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSDictionary *result))success
-              failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) updateUserKey:(NSString*)key
+                                  withACL:(NSArray*)acls withIndexes:(NSArray*)indexes
+                             withValidity:(NSUInteger)validity
+                   maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour
+                          maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
+                                  success:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSDictionary *result))success
+                                  failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSString *errorMessage))failure;
 
 @property (readonly, nonatomic) NSString *applicationID;
 @property (readonly, nonatomic) NSString *apiKey;
