@@ -378,6 +378,15 @@ FOUNDATION_EXPORT NSString *const Version;
                                   success:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSDictionary *result))success
                                   failure:(void(^)(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSString *errorMessage))failure;
 
+/**
+ * Send custom batch targeting multiple indexes
+ *
+ * @param requests contains an array of objects (NSArray of NSDictionary object).
+ */
+-(AFHTTPRequestOperation *) batch:(NSArray*)requests
+                          success:(void(^)(ASAPIClient *client, NSDictionary *requests, NSDictionary *result))success
+                          failure:(void(^)(ASAPIClient *client, NSDictionary *requests, NSString *errorMessage))failure;
+
 @property (readonly, nonatomic) NSString *applicationID;
 @property (readonly, nonatomic) NSString *apiKey;
 @property (readonly, nonatomic) NSArray *writeHostnames;

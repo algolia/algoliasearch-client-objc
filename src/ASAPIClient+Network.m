@@ -72,8 +72,14 @@
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if ((operation.response.statusCode / 100) == 4) {
             NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
-            NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData: errorData options:kNilOptions error:nil];
-            failure([NSString stringWithFormat:@"Bad request argument: %@", JSON[@"message"]]);
+            NSDictionary *JSON = nil;
+            if (errorData != nil) {
+                JSON = [NSJSONSerialization JSONObjectWithData: errorData options:kNilOptions error:nil];
+                failure(JSON[@"message"]);
+            } else {
+                failure(error.localizedDescription);
+            }
+
         } else {
             if ((index + 1) < [managers count]) {
                 [self performHTTPQuery:path method:method body:body managers:managers index:(index + 1) timeout:(timeout + 10) success:success failure:failure];
