@@ -285,7 +285,7 @@
     return [self waitTask:taskID withTimeToSleep:0.1f success:success failure:failure];
 }
 
--(AFHTTPRequestOperation *) waitTask:(NSString*)taskID withTimeToSleep:(float)timeToSleep
+-(AFHTTPRequestOperation *) waitTask:(NSString*)taskID withTimeToSleep:(NSTimeInterval)timeToSleep
                              success:(void(^)(ASRemoteIndex *index, NSString *taskID, NSDictionary *result))success
                              failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage))failure
 {
