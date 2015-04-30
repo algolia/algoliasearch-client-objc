@@ -386,6 +386,7 @@ FOUNDATION_EXPORT NSString *const Version;
 @property (readonly, nonatomic) NSArray *writeOperationManagers;
 @property NSTimeInterval timeout;
 @property NSTimeInterval searchTimeout;
+@property (assign, nonatomic) BOOL startOperationsManually;
 
 /**
  * Add security tag header (see http://www.algolia.com/doc/guides/objc#SecurityUser for more details)

@@ -83,7 +83,10 @@
         }
     }];
     
-    [httpRequestOperationManager.operationQueue addOperation:operation];
+    if (!self.startOperationsManually) {
+        [httpRequestOperationManager.operationQueue addOperation:operation];
+    }
+    
     return operation;
 }
 
