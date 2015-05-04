@@ -1,5 +1,14 @@
 CHANGELOG
 
+2015-05-04 3.4.3
+  * Add new methods to add/update api key
+  * Add batch method to target multiple indices
+  * Add strategy parameter for the multipleQueries
+  * Add new method to generate secured api key from query parameters
+
+2015-04-22 3.4.2
+  * Fix issue with geo search
+
 2015-04-10 3.4.1
   * Return the error message from the backend instead of a static message for 4XX
 
