@@ -55,7 +55,7 @@
     }
 }
 
--(void) performHTTPQuery: (NSString*)path method:(NSString*)method body:(NSDictionary*)body managers:(NSArray*)managers index:(NSUInteger)index timeout:(NSTimeInterval)timeout
+-(AFHTTPRequestOperation *) performHTTPQuery: (NSString*)path method:(NSString*)method body:(NSDictionary*)body managers:(NSArray*)managers index:(NSUInteger)index timeout:(NSTimeInterval)timeout
                  success:(void(^)(id JSON))success failure:(void(^)(NSString *errorMessage))failure
 {
     assert(index < [managers count]);
@@ -89,7 +89,11 @@
         }
     }];
     
-    [httpRequestOperationManager.operationQueue addOperation:operation];
+    if (!self.startOperationsManually) {
+        [httpRequestOperationManager.operationQueue addOperation:operation];
+    }
+    
+    return operation;
 }
 
 @end

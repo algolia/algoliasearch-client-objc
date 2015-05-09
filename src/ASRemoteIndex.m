@@ -42,12 +42,12 @@
     return self;
 }
 
--(void) addObject:(NSDictionary*)object
-          success:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result))success
-          failure:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) addObject:(NSDictionary*)object
+                              success:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result))success
+                              failure:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@", self.urlEncodedIndexName];
-    [self.apiClient performHTTPQuery:path method:@"POST" body:object managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"POST" body:object managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, object, JSON);
     } failure:^(NSString *errorMessage) {
@@ -56,12 +56,13 @@
     }];
 }
 
--(void) addObject:(NSDictionary*)object withObjectID:(NSString*)objectID
-          success:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSDictionary *result))success
-          failure:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) addObject:(NSDictionary*)object
+                         withObjectID:(NSString*)objectID
+                              success:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSDictionary *result))success
+                              failure:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/%@", self.urlEncodedIndexName, [ASAPIClient urlEncode:objectID]];
-    [self.apiClient performHTTPQuery:path method:@"PUT" body:object managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"PUT" body:object managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, object, objectID, JSON);
     } failure:^(NSString *errorMessage) {
@@ -70,18 +71,18 @@
     }];
 }
 
--(void) addObjects:(NSArray*)objects
-           success:(void(^)(ASRemoteIndex *index, NSArray *objects, NSDictionary *result))success
-           failure:(void(^)(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) addObjects:(NSArray*)objects
+                               success:(void(^)(ASRemoteIndex *index, NSArray *objects, NSDictionary *result))success
+                               failure:(void(^)(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/batch", self.urlEncodedIndexName];
     NSMutableArray *requests = [[NSMutableArray alloc] initWithCapacity:[objects count]];
     for (NSDictionary *object in objects) {
         [requests addObject:@{@"action": @"addObject",
-                             @"body": object}];
+                              @"body": object}];
     }
     NSDictionary *request = @{@"requests": requests};
-    [self.apiClient performHTTPQuery:path method:@"POST" body:request managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"POST" body:request managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, objects, JSON);
     } failure:^(NSString *errorMessage) {
@@ -90,18 +91,18 @@
     }];
 }
 
--(void) deleteObjects:(NSArray*)objects
-           success:(void(^)(ASRemoteIndex *index, NSArray *objects, NSDictionary *result))success
-           failure:(void(^)(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) deleteObjects:(NSArray*)objects
+                                  success:(void(^)(ASRemoteIndex *index, NSArray *objects, NSDictionary *result))success
+                                  failure:(void(^)(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/batch", self.urlEncodedIndexName];
     NSMutableArray *requests = [[NSMutableArray alloc] initWithCapacity:[objects count]];
     for (NSString *object in objects) {
         [requests addObject:@{@"action": @"deleteObject",
-                             @"objectID": object}];
+                              @"objectID": object}];
     }
     NSDictionary *request = @{@"requests": requests};
-    [self.apiClient performHTTPQuery:path method:@"POST" body:request managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"POST" body:request managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, objects, JSON);
     } failure:^(NSString *errorMessage) {
@@ -110,12 +111,12 @@
     }];
 }
 
--(void) getObject:(NSString*)objectID
-          success:(void(^)(ASRemoteIndex *index, NSString *objectID, NSDictionary *result))success
-          failure:(void(^)(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) getObject:(NSString*)objectID
+                              success:(void(^)(ASRemoteIndex *index, NSString *objectID, NSDictionary *result))success
+                              failure:(void(^)(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/%@", self.urlEncodedIndexName, [ASAPIClient urlEncode:objectID]];
-    [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, objectID, JSON);
     } failure:^(NSString *errorMessage) {
@@ -124,9 +125,10 @@
     }];
 }
 
--(void) getObject:(NSString*)objectID attributesToRetrieve:(NSArray*)attributes
-          success:(void(^)(ASRemoteIndex *index, NSString *objectID, NSArray *attributesToRetrieve, NSDictionary *result))success
-          failure:(void(^)(ASRemoteIndex *index, NSString *objectID, NSArray *attributesToRetrieve, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) getObject:(NSString*)objectID
+                 attributesToRetrieve:(NSArray*)attributes
+                              success:(void(^)(ASRemoteIndex *index, NSString *objectID, NSArray *attributesToRetrieve, NSDictionary *result))success
+                              failure:(void(^)(ASRemoteIndex *index, NSString *objectID, NSArray *attributesToRetrieve, NSString *errorMessage))failure
 {
     NSMutableString *path = [NSMutableString stringWithFormat:@"/1/indexes/%@/%@?attributes=", self.urlEncodedIndexName, [ASAPIClient urlEncode:objectID]];
     BOOL firstEntry = YES;
@@ -136,7 +138,7 @@
         [path appendString:[ASAPIClient urlEncode:attribute]];
         firstEntry = NO;
     }
-    [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, objectID, attributes, JSON);
     } failure:^(NSString *errorMessage) {
@@ -145,9 +147,9 @@
     }];
 }
 
--(void) getObjects:(NSArray*)objectIDs
-          success:(void(^)(ASRemoteIndex *index, NSArray *objectIDs, NSDictionary *result))success
-          failure:(void(^)(ASRemoteIndex *index, NSArray *objectIDs, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) getObjects:(NSArray*)objectIDs
+                               success:(void(^)(ASRemoteIndex *index, NSArray *objectIDs, NSDictionary *result))success
+                               failure:(void(^)(ASRemoteIndex *index, NSArray *objectIDs, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/*/objects"];
     
@@ -155,9 +157,9 @@
     for (NSString *id in objectIDs) {
         [requests addObject:@{@"indexName": self.indexName, @"objectID": id}];
     }
-
     
-    [self.apiClient performHTTPQuery:path method:@"POST" body:@{@"requests": requests} managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    
+    return [self.apiClient performHTTPQuery:path method:@"POST" body:@{@"requests": requests} managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, objectIDs, JSON);
     } failure:^(NSString *errorMessage) {
@@ -166,12 +168,13 @@
     }];
 }
 
--(void) partialUpdateObject:(NSDictionary*)partialObject objectID:(NSString*)objectID
-                    success:(void(^)(ASRemoteIndex *index, NSDictionary *partialObject, NSString *objectID, NSDictionary *result))success
-                    failure:(void(^)(ASRemoteIndex *index, NSDictionary *partialObject, NSString *objectID, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) partialUpdateObject:(NSDictionary*)partialObject
+                                       objectID:(NSString*)objectID
+                                        success:(void(^)(ASRemoteIndex *index, NSDictionary *partialObject, NSString *objectID, NSDictionary *result))success
+                                        failure:(void(^)(ASRemoteIndex *index, NSDictionary *partialObject, NSString *objectID, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/%@/partial", self.urlEncodedIndexName, [ASAPIClient urlEncode:objectID]];
-    [self.apiClient performHTTPQuery:path method:@"POST" body:partialObject managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"POST" body:partialObject managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, partialObject, objectID, JSON);
     } failure:^(NSString *errorMessage) {
@@ -180,19 +183,19 @@
     }];
 }
 
--(void) partialUpdateObjects:(NSArray*)objects
-            success:(void(^)(ASRemoteIndex *index, NSArray *objects, NSDictionary *result))success
-            failure:(void(^)(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) partialUpdateObjects:(NSArray*)objects
+                                         success:(void(^)(ASRemoteIndex *index, NSArray *objects, NSDictionary *result))success
+                                         failure:(void(^)(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/batch", self.urlEncodedIndexName];
     NSMutableArray *requests = [[NSMutableArray alloc] initWithCapacity:[objects count]];
     for (NSDictionary *object in objects) {
         [requests addObject:@{@"action": @"partialUpdateObject",
-                             @"objectID": [object valueForKey:@"objectID"],
-                             @"body": object}];
+                              @"objectID": [object valueForKey:@"objectID"],
+                              @"body": object}];
     }
     NSDictionary *request = @{@"requests": requests};
-    [self.apiClient performHTTPQuery:path method:@"POST" body:request managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"POST" body:request managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, objects, JSON);
     } failure:^(NSString *errorMessage) {
@@ -201,12 +204,13 @@
     }];
 }
 
--(void) saveObject:(NSDictionary*)object objectID:(NSString*)objectID
-           success:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSDictionary *result))success
-           failure:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) saveObject:(NSDictionary*)object
+                              objectID:(NSString*)objectID
+                               success:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSDictionary *result))success
+                               failure:(void(^)(ASRemoteIndex *index, NSDictionary *object, NSString *objectID, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/%@", self.urlEncodedIndexName, [ASAPIClient urlEncode:objectID]];
-    [self.apiClient performHTTPQuery:path method:@"PUT" body:object managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"PUT" body:object managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, object, objectID, JSON);
     } failure:^(NSString *errorMessage) {
@@ -215,9 +219,9 @@
     }];
 }
 
--(void) saveObjects:(NSArray*)objects
-            success:(void(^)(ASRemoteIndex *index, NSArray *objects, NSDictionary *result))success
-            failure:(void(^)(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) saveObjects:(NSArray*)objects
+                                success:(void(^)(ASRemoteIndex *index, NSArray *objects, NSDictionary *result))success
+                                failure:(void(^)(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/batch", self.urlEncodedIndexName];
     NSMutableArray *requests = [[NSMutableArray alloc] initWithCapacity:[objects count]];
@@ -227,7 +231,7 @@
                               @"body": object}];
     }
     NSDictionary *request = @{@"requests": requests};
-    [self.apiClient performHTTPQuery:path method:@"POST" body:request managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"POST" body:request managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, objects, JSON);
     } failure:^(NSString *errorMessage) {
@@ -236,17 +240,14 @@
     }];
 }
 
--(void) deleteObject:(NSString*)objectID
-             success:(void(^)(ASRemoteIndex *index, NSString *objectID, NSDictionary *result))success
-             failure:(void(^)(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) deleteObject:(NSString*)objectID
+                                 success:(void(^)(ASRemoteIndex *index, NSString *objectID, NSDictionary *result))success
+                                 failure:(void(^)(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage))failure
 {
-    if (objectID == nil || [objectID length] == 0) {
-        failure(self, objectID, @"empty objectID is not allowed");
-        return;
-    }
+    NSAssert(objectID == nil || [objectID length] == 0, @"empty objectID is not allowed");
     
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/%@", self.urlEncodedIndexName, [ASAPIClient urlEncode:objectID]];
-    [self.apiClient performHTTPQuery:path method:@"DELETE" body:nil managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"DELETE" body:nil managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, objectID, JSON);
     } failure:^(NSString *errorMessage) {
@@ -255,14 +256,14 @@
     }];
 }
 
--(void) search:(ASQuery*)query
-       success:(void(^)(ASRemoteIndex *index, ASQuery *query, NSDictionary *result))success
-       failure:(void(^)(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) search:(ASQuery*)query
+                           success:(void(^)(ASRemoteIndex *index, ASQuery *query, NSDictionary *result))success
+                           failure:(void(^)(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage))failure
 {
     NSString *queryParams = [query buildURL];
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/query", self.urlEncodedIndexName];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:queryParams forKey:@"params"];
-    [self.apiClient performHTTPQuery:path method:@"POST" body:dict managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.searchTimeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"POST" body:dict managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.searchTimeout success:^(id JSON) {
         if (success != nil)
             success(self, query, JSON);
     } failure:^(NSString *errorMessage) {
@@ -277,19 +278,19 @@
     [self.apiClient cancelQueries:@"POST" path:path];
 }
 
--(void) waitTask:(NSString*)taskID
-success:(void(^)(ASRemoteIndex *index, NSString *taskID, NSDictionary *result))success
-failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) waitTask:(NSString*)taskID
+                             success:(void(^)(ASRemoteIndex *index, NSString *taskID, NSDictionary *result))success
+                             failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage))failure
 {
-    [self waitTask:taskID withTimeToSleep:0.1f success:success failure:failure];
+    return [self waitTask:taskID withTimeToSleep:0.1f success:success failure:failure];
 }
 
--(void) waitTask:(NSString*)taskID withTimeToSleep:(float)timeToSleep
-         success:(void(^)(ASRemoteIndex *index, NSString *taskID, NSDictionary *result))success
-         failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) waitTask:(NSString*)taskID withTimeToSleep:(NSTimeInterval)timeToSleep
+                             success:(void(^)(ASRemoteIndex *index, NSString *taskID, NSDictionary *result))success
+                             failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/task/%@", self.urlEncodedIndexName, taskID];
-    [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         NSString *status = [JSON valueForKey:@"status"];
         if ([status compare:@"published"] == NSOrderedSame) {
             if (success != nil)
@@ -304,11 +305,11 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
     }];
 }
 
--(void) getSettings:(void(^)(ASRemoteIndex *index, NSDictionary *result))success
-            failure:(void(^)(ASRemoteIndex *index, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) getSettings:(void(^)(ASRemoteIndex *index, NSDictionary *result))success
+                                failure:(void(^)(ASRemoteIndex *index, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/settings", self.urlEncodedIndexName];
-    [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, JSON);
     } failure:^(NSString *errorMessage) {
@@ -317,12 +318,12 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
     }];
 }
 
--(void) setSettings:(NSDictionary*)settings
-            success:(void(^)(ASRemoteIndex *index, NSDictionary *settings, NSDictionary *result))success
-            failure:(void(^)(ASRemoteIndex *index, NSDictionary *settings, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) setSettings:(NSDictionary*)settings
+                                success:(void(^)(ASRemoteIndex *index, NSDictionary *settings, NSDictionary *result))success
+                                failure:(void(^)(ASRemoteIndex *index, NSDictionary *settings, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/settings", self.urlEncodedIndexName];
-    [self.apiClient performHTTPQuery:path method:@"PUT" body:settings managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"PUT" body:settings managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, settings, JSON);
     } failure:^(NSString *errorMessage) {
@@ -331,12 +332,12 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
     }];
 }
 
--(void) clearIndex:(void(^)(ASRemoteIndex *index, NSDictionary *result))success
-            failure:(void(^)(ASRemoteIndex *index, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) clearIndex:(void(^)(ASRemoteIndex *index, NSDictionary *result))success
+                               failure:(void(^)(ASRemoteIndex *index, NSString *errorMessage))failure
 {
     NSDictionary *obj = [[NSDictionary alloc] init];
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/clear", self.urlEncodedIndexName];
-    [self.apiClient performHTTPQuery:path method:@"POST" body:obj managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"POST" body:obj managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, JSON);
     } failure:^(NSString *errorMessage) {
@@ -345,22 +346,23 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
     }];
 }
 
--(void) listUserKeys:(void(^)(ASRemoteIndex *index, NSDictionary* result))success
-             failure:(void(^)(ASRemoteIndex *index, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) listUserKeys:(void(^)(ASRemoteIndex *index, NSDictionary* result))success
+                                 failure:(void(^)(ASRemoteIndex *index, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/keys", self.urlEncodedIndexName];
-    [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         success(self, JSON);
     } failure:^(NSString *errorMessage) {
         failure(self, errorMessage);
     }];
 }
 
--(void) getUserKeyACL:(NSString*)key success:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *result))success
-              failure:(void(^)(ASRemoteIndex *index, NSString *key, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) getUserKeyACL:(NSString*)key
+                                  success:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *result))success
+                                  failure:(void(^)(ASRemoteIndex *index, NSString *key, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/keys/%@", self.urlEncodedIndexName, key];
-    [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, key, JSON);
     } failure:^(NSString *errorMessage) {
@@ -369,12 +371,13 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
     }];
 }
 
--(void) browse:(NSUInteger)page hitsPerPage:(NSUInteger)hitsPerPage
-       success:(void(^)(ASRemoteIndex *index, NSUInteger page, NSUInteger hitsPerPage, NSDictionary *result))success
-       failure:(void(^)(ASRemoteIndex *index, NSUInteger page, NSUInteger hitsPerPage, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) browse:(NSUInteger)page
+                       hitsPerPage:(NSUInteger)hitsPerPage
+                           success:(void(^)(ASRemoteIndex *index, NSUInteger page, NSUInteger hitsPerPage, NSDictionary *result))success
+                           failure:(void(^)(ASRemoteIndex *index, NSUInteger page, NSUInteger hitsPerPage, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/browse?page=%lu&hitsPerPage=%lu", self.urlEncodedIndexName, (unsigned long)page, (unsigned long)hitsPerPage];
-    [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, page, hitsPerPage, JSON);
     } failure:^(NSString *errorMessage) {
@@ -383,12 +386,12 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
     }];
 }
 
--(void) browse:(NSUInteger)page
-       success:(void(^)(ASRemoteIndex *index, NSUInteger page, NSDictionary *result))success
-       failure:(void(^)(ASRemoteIndex *index, NSUInteger page, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) browse:(NSUInteger)page
+                           success:(void(^)(ASRemoteIndex *index, NSUInteger page, NSDictionary *result))success
+                           failure:(void(^)(ASRemoteIndex *index, NSUInteger page, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/browse?page=%lu", self.urlEncodedIndexName, (unsigned long)page];
-    [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"GET" body:nil managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, page, JSON);
     } failure:^(NSString *errorMessage) {
@@ -398,11 +401,12 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
 }
 
 
--(void) deleteUserKey:(NSString*)key success:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *result))success
-              failure:(void(^)(ASRemoteIndex *index, NSString *key, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) deleteUserKey:(NSString*)key
+                                  success:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *result))success
+                                  failure:(void(^)(ASRemoteIndex *index, NSString *key, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/keys/%@", self.urlEncodedIndexName, key];
-    [self.apiClient performHTTPQuery:path method:@"DELETE" body:nil managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"DELETE" body:nil managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, key, JSON);
     } failure:^(NSString *errorMessage) {
@@ -411,12 +415,12 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
     }];
 }
 
--(void) addUserKey:(NSArray*)acls
-           success:(void(^)(ASRemoteIndex *index, NSArray *acls, NSDictionary *result))success
-           failure:(void(^)(ASRemoteIndex *index, NSArray *acls, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) addUserKey:(NSArray*)acls
+                               success:(void(^)(ASRemoteIndex *index, NSArray *acls, NSDictionary *result))success
+                               failure:(void(^)(ASRemoteIndex *index, NSArray *acls, NSString *errorMessage))failure
 {
     NSDictionary *params = [NSMutableDictionary dictionaryWithObject:acls forKey:@"acl"];
-    [self addUserKey:acls withParams:params success:^(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSDictionary *result) {
+    return [self addUserKey:acls withParams:params success:^(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSDictionary *result) {
         if (success != nil)
             success(index, acls, result);
     } failure:^(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSString *errorMessage) {
@@ -425,13 +429,14 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
     }];
 }
 
--(void) addUserKey:(NSArray*)acls withParams:(NSDictionary*)params
-           success:(void(^)(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSDictionary *result))success
-           failure:(void(^)(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) addUserKey:(NSArray*)acls
+                            withParams:(NSDictionary*)params
+                               success:(void(^)(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSDictionary *result))success
+                               failure:(void(^)(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSString *errorMessage))failure
 {
     [params setValue:acls forKey:@"acl"];
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/keys", self.urlEncodedIndexName];
-    [self.apiClient performHTTPQuery:path method:@"POST" body:params managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"POST" body:params managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, acls, params, JSON);
     } failure:^(NSString *errorMessage) {
@@ -440,16 +445,19 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
     }];
 }
 
--(void) addUserKey:(NSArray*)acls withValidity:(NSUInteger)validity maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
-           success:(void(^)(ASRemoteIndex *index, NSArray *acls, NSDictionary *result))success
-           failure:(void(^)(ASRemoteIndex *index, NSArray *acls, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) addUserKey:(NSArray*)acls
+                          withValidity:(NSUInteger)validity
+                maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour
+                       maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
+                               success:(void(^)(ASRemoteIndex *index, NSArray *acls, NSDictionary *result))success
+                               failure:(void(^)(ASRemoteIndex *index, NSArray *acls, NSString *errorMessage))failure;
 {
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl", 
-                                @(validity), @"validity", 
-                                @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour", 
-                                @(maxHitsPerQuery), @"maxHitsPerQuery", 
-                                nil];
-    [self addUserKey:acls withParams:dict success:^(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSDictionary *result) {
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl",
+                                 @(validity), @"validity",
+                                 @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour",
+                                 @(maxHitsPerQuery), @"maxHitsPerQuery",
+                                 nil];
+    return [self addUserKey:acls withParams:dict success:^(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSDictionary *result) {
         if (success != nil)
             success(index, acls, result);
     } failure:^(ASRemoteIndex *index, NSArray* acls, NSDictionary *params, NSString *errorMessage) {
@@ -458,11 +466,13 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
     }];
 }
 
--(void) updateUserKey:(NSString*) key withParams:(NSDictionary*)params success:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *params, NSDictionary *result))success
-              failure:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *params, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) updateUserKey:(NSString*)key
+                               withParams:(NSDictionary*)params
+                                  success:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *params, NSDictionary *result))success
+                                  failure:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *params, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/keys/%@", self.urlEncodedIndexName, key];
-    [self.apiClient performHTTPQuery:path method:@"PUT" body:params managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
+    return [self.apiClient performHTTPQuery:path method:@"PUT" body:params managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
         if (success != nil)
             success(self, key, params, JSON);
     } failure:^(NSString *errorMessage) {
@@ -471,11 +481,13 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
     }];
 }
 
--(void) updateUserKey:(NSString*) key withACL:(NSArray*)acls success:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result))success
-           failure:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSString *errorMessage))failure
+-(AFHTTPRequestOperation *) updateUserKey:(NSString*)key
+                                  withACL:(NSArray*)acls
+                                  success:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result))success
+                                  failure:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSString *errorMessage))failure
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:acls forKey:@"acl"];
-    [self updateUserKey:key withParams:dict success:^(ASRemoteIndex *index, NSString *key, NSDictionary *params, NSDictionary *result) {
+    return [self updateUserKey:key withParams:dict success:^(ASRemoteIndex *index, NSString *key, NSDictionary *params, NSDictionary *result) {
         if (success != nil)
             success(index, key, acls, result);
     } failure:^(ASRemoteIndex *index, NSString *key, NSDictionary *params, NSString *errorMessage) {
@@ -484,16 +496,20 @@ failure:(void(^)(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage)
     }];
 }
 
--(void) updateUserKey:(NSString*) key withACL:(NSArray*)acls withValidity:(NSUInteger)validity maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
-           success:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result))success
-           failure:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSString *errorMessage))failure;
+-(AFHTTPRequestOperation *) updateUserKey:(NSString*)key
+                                  withACL:(NSArray*)acls
+                             withValidity:(NSUInteger)validity
+                   maxQueriesPerIPPerHour:(NSUInteger)maxQueriesPerIPPerHour
+                          maxHitsPerQuery:(NSUInteger)maxHitsPerQuery
+                                  success:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result))success
+                                  failure:(void(^)(ASRemoteIndex *index, NSString *key, NSArray *acls, NSString *errorMessage))failure;
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:acls, @"acl",
                                  @(validity), @"validity",
                                  @(maxQueriesPerIPPerHour), @"maxQueriesPerIPPerHour",
                                  @(maxHitsPerQuery), @"maxHitsPerQuery",
                                  nil];
-    [self updateUserKey:key withParams:dict success:^(ASRemoteIndex *index, NSString *key, NSDictionary *params, NSDictionary *result) {
+    return [self updateUserKey:key withParams:dict success:^(ASRemoteIndex *index, NSString *key, NSDictionary *params, NSDictionary *result) {
         if (success != nil)
             success(index, key, acls, result);
     } failure:^(ASRemoteIndex *index, NSString *key, NSDictionary *params, NSString *errorMessage) {
