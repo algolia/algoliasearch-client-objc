@@ -1022,11 +1022,11 @@
                 [expectation fulfill];
             }];
         } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
-            XCTFail("@Error during deleteObject: %@", errorMessage);
+            XCTFail("@Error during saveObjects: %@", errorMessage);
             [expectation fulfill];
         }];
     } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
-        XCTFail("@Error during addObject: %@", errorMessage);
+        XCTFail("@Error during addObjects: %@", errorMessage);
         [expectation fulfill];
     }];
     
@@ -1066,11 +1066,11 @@
                 [expectation fulfill];
             }];
         } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
-            XCTFail("@Error during deleteObject: %@", errorMessage);
+            XCTFail("@Error during partialUpdateObjects: %@", errorMessage);
             [expectation fulfill];
         }];
     } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
-        XCTFail("@Error during addObject: %@", errorMessage);
+        XCTFail("@Error during addObjects: %@", errorMessage);
         [expectation fulfill];
     }];
     
