@@ -244,7 +244,7 @@
                                  success:(void(^)(ASRemoteIndex *index, NSString *objectID, NSDictionary *result))success
                                  failure:(void(^)(ASRemoteIndex *index, NSString *objectID, NSString *errorMessage))failure
 {
-    NSAssert(objectID == nil || [objectID length] == 0, @"empty objectID is not allowed");
+    NSAssert(objectID != nil && [objectID length] != 0, @"empty objectID is not allowed");
     
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/%@", self.urlEncodedIndexName, [ASAPIClient urlEncode:objectID]];
     return [self.apiClient performHTTPQuery:path method:@"DELETE" body:nil managers:self.apiClient.writeOperationManagers index:0 timeout:self.apiClient.timeout success:^(id JSON) {
