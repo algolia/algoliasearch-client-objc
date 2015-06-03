@@ -167,6 +167,12 @@
 @property (nonatomic) NSUInteger           hitsPerPage;
 
 /**
+ * Configure the precision of the proximity ranking criterion. By default, the minimum (and best) proximity value distance between 2 matching words is 1. Setting it to 2 (or 3) would allow 1 (or 2) words to be found between the matching words without degrading the proximity ranking value.
+ * Considering the query "javascript framework", if you set minProximity=2 the records "JavaScript framework" and "JavaScript charting framework" will get the same proximity score, even if the second one contains a word between the 2 matching words. Default to 1.
+ */
+@property (nonatomic) NSUInteger           minProximity;
+
+/**
  * if set, the result hits will contain ranking information in _rankingInfo attribute.
  */
 @property BOOL                             getRankingInfo;
@@ -246,6 +252,16 @@
  * By default, all attributes specified in attributesToIndex settings are used to search.
  */
 @property (nonatomic) NSString            *restrictSearchableAttributes;
+
+/**
+ * Specify the string that is inserted before the highlighted parts in the query result (default to "<em>").
+ */
+@property (nonatomic) NSString            *highlightPreTag;
+
+/**
+ * Specify the string that is inserted after the highlighted parts in the query result (default to "</em>").
+ */
+@property (nonatomic) NSString            *highlightPostTag;
 
 /**
  * Contains insideBoundingBox query (you should use searchInsideBoundingBox selector to set it)

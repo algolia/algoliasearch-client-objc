@@ -47,6 +47,7 @@
         _distinct = NO;
         _page = 0;
         _hitsPerPage = 20;
+	_minProximity = 1;
         _attributesToHighlight = nil;
         _attributesToRetrieve = nil;
         _attributesToSnippet = nil;
@@ -248,6 +249,11 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"hitsPerPage=%zd", self.hitsPerPage];
     }
+    if (self.minProximity > 1) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"minProximity=%zd", self.minProximity];
+    }
     if (self.queryType != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
@@ -291,6 +297,16 @@
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"restrictSearchableAttributes=%@", [ASAPIClient urlEncode:self.restrictSearchableAttributes]];
+    }
+    if (self.highlightPreTag != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"highlightPreTag=%@", [ASAPIClient urlEncode:self.highlightPreTag]];
+    }
+    if (self.highlightPostTag != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"highlightPostTag=%@", [ASAPIClient urlEncode:self.highlightPostTag]];
     }
     return stringBuilder;
 }

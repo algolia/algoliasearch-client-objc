@@ -30,7 +30,7 @@
 #include <Cocoa/Cocoa.h>
 #endif
 
-NSString *const Version = @"3.4.3";
+NSString *const Version = @"3.4.4";
 
 @implementation ASAPIClient
 
