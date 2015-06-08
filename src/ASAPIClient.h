@@ -56,31 +56,13 @@ FOUNDATION_EXPORT NSString *const Version;
  *
  * @param applicationID the application ID you have in your admin interface
  * @param apiKey a valid API key for the service
- */
-+(instancetype) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey;
-
-/**
- * Algolia Search initialization
- *
- * @param applicationID the application ID you have in your admin interface
- * @param apiKey a valid API key for the service
- * @param hotsnames the list of hosts that you have received for the service
- * @param dsnHost override the automatic computation of dsn hostname
- */
-+(instancetype) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames dsnHost:(NSString*)dsnHost;
-
-/**
- * Algolia Search initialization
- *
- * @param applicationID the application ID you have in your admin interface
- * @param apiKey a valid API key for the service
  * @param hostnames the list of hosts that you have received for the service
  * @param dsn set to true if your account has the Distributed Search Option
  * @param dsnHost override the automatic computation of dsn hostname
  * @param tagFilters value of the header X-Algolia-TagFilters
  * @param userToken value of the header X-Algolia-UserToken
  */
--(instancetype) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey hostnames:(NSArray*)phostnames dsn:(Boolean)dsn dsnHost:(NSString*)dsnHost tagFilters:(NSString*)tagFiltersHeader userToken:(NSString*)userTokenHeader;
+-(instancetype) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey hostnames:(NSArray*)phostnames tagFilters:(NSString*)tagFiltersHeader userToken:(NSString*)userTokenHeader;
 
 /**
  * List all existing indexes

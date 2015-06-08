@@ -1,5 +1,8 @@
 CHANGELOG
 
+2015-06-08
+  * Remove DSN flag
+
 2015-05-04 3.4.4
   * add new parameter on the Query: setMinProximity & setHighlightingTags
 

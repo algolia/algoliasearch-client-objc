@@ -36,24 +36,15 @@ NSString *const Version = @"3.4.4";
 
 +(instancetype) apiClientWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames
 {
-    return [[self.class alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:hostnames dsn:false dsnHost:nil tagFilters:nil userToken:nil];
+    return [[self.class alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:hostnames tagFilters:nil userToken:nil];
 }
 
 +(instancetype) apiClientWithApplicationID:(NSString*)applicationID apiKey:(NSString*)apiKey
 {
-    return [[self.class alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:nil dsn:false dsnHost:nil tagFilters:nil userToken:nil];
+    return [[self.class alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:nil tagFilters:nil userToken:nil];
 }
 
-+(instancetype) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey {
-    return [[self.class alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:nil dsn:true dsnHost:nil tagFilters:nil userToken:nil];
-}
-
-+(instancetype) apiClientWithDSN:(NSString*)applicationID apiKey:(NSString*)apiKey hostnames:(NSArray*)hostnames dsnHost:(NSString*)dsnHost
-{
-    return [[self.class alloc] initWithApplicationID:applicationID apiKey:apiKey hostnames:hostnames dsn:true dsnHost:dsnHost tagFilters:nil userToken:nil];
-}
-
--(instancetype) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey hostnames:(NSArray*)phostnames dsn:(Boolean)dsn dsnHost:(NSString*)dsnHost tagFilters:(NSString*)tagFiltersHeader userToken:(NSString*)userTokenHeader
+-(instancetype) initWithApplicationID:(NSString*)papplicationID apiKey:(NSString*)papiKey hostnames:(NSArray*)phostnames tagFilters:(NSString*)tagFiltersHeader userToken:(NSString*)userTokenHeader
 {
     self = [super init];
     if (self) {
@@ -63,7 +54,7 @@ NSString *const Version = @"3.4.4";
         _userToken = userTokenHeader;
         _timeout = 30;
         _searchTimeout = 10;
-        
+
         NSMutableArray *searchArray = nil;
         NSMutableArray *writeArray = nil;
         if (phostnames == nil) {
@@ -82,15 +73,10 @@ NSString *const Version = @"3.4.4";
         } else {
             searchArray = writeArray = [NSMutableArray arrayWithArray:phostnames];
         }
-        
-        if (dsnHost != nil) {
-            if (dsnHost != nil) {
-                [searchArray replaceObjectAtIndex:0 withObject:dsnHost];
-            }
-        }
+
         _writeHostnames = writeArray;
         _searchHostnames = searchArray;
-        
+
         if (self.applicationID == nil || [self.applicationID length] == 0)
             @throw [NSException exceptionWithName:@"InvalidArgument" reason:@"Application ID must be set" userInfo:nil];
         if (self.apiKey == nil || [self.apiKey length] == 0)
@@ -116,7 +102,7 @@ NSString *const Version = @"3.4.4";
             [httpRequestOperationManagers addObject:httpRequestOperationManager];
         }
         _writeOperationManagers = httpRequestOperationManagers;
-        
+
         httpRequestOperationManagers = [[NSMutableArray alloc] init];
         for (NSString *host in self.searchHostnames) {
             NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@", host]];
@@ -267,7 +253,7 @@ NSString *const Version = @"3.4.4";
                                 failure:(void(^)(ASAPIClient *client, NSString *indexName, NSString *errorMessage))failure
 {
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@", [ASAPIClient urlEncode:indexName]];
-    
+
     return [self performHTTPQuery:path method:@"DELETE" body:nil managers:self.writeOperationManagers index:0 timeout:self.timeout success:^(id JSON) {
         if (success != nil)
             success(self, indexName, JSON);
@@ -320,7 +306,7 @@ NSString *const Version = @"3.4.4";
                                failure:(void(^)(ASAPIClient *client, NSArray* acls, NSString *errorMessage))failure
 {
     NSDictionary *params = [NSMutableDictionary dictionaryWithObject:acls forKey:@"acl"];
-    
+
     return [self addUserKey:acls withParams:params success:^(ASAPIClient *client, NSArray* acls, NSDictionary* params, NSDictionary *result) {
         if (success != nil)
             success(client, acls, result);
@@ -486,7 +472,7 @@ NSString *const Version = @"3.4.4";
 -(void) setTagFilters:(NSString *)tagFiltersHeader
 {
     _tagFilters = tagFiltersHeader;
-    
+
     for (AFHTTPRequestOperationManager* manager in self.writeOperationManagers) {
         [manager.requestSerializer setValue:self.tagFilters forHTTPHeaderField:@"X-Algolia-TagFilters"];
     }
@@ -498,7 +484,7 @@ NSString *const Version = @"3.4.4";
 -(void) setUserToken:(NSString *)userTokenHeader
 {
     _userToken = userTokenHeader;
-    
+
     for (AFHTTPRequestOperationManager* manager in self.writeOperationManagers) {
         [manager.requestSerializer setValue:self.userToken forHTTPHeaderField:@"X-Algolia-UserToken"];
     }

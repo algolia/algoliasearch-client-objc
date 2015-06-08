@@ -15,6 +15,6 @@ Pod::Spec.new do |s|
 
   s.source_files = 'src'
   s.requires_arc = true
-  
+
   s.dependency 'AFNetworking', '~> 2.2'
 end

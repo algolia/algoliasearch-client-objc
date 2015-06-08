@@ -732,7 +732,7 @@
     
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
         [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
-            [_client getLogsWithType:0 length:1 type:@"error" success:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSDictionary *result) {
+            [_client getLogsWithType:0 length:1 type:@"success" success:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSDictionary *result) {
                 XCTAssertEqual(1, [result[@"logs"] count], "Get logs failed");
                 [expectation fulfill];
             } failure:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString* type, NSString *errorMessage) {
