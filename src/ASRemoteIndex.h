@@ -409,6 +409,15 @@
                            success:(void(^)(ASRemoteIndex *index, NSUInteger page, NSDictionary *result))success
                            failure:(void(^)(ASRemoteIndex *index, NSUInteger page, NSString *errorMessage))failure;
 
+/**
+ * Browse all index content.
+ *
+ * The iterator object has a attribute `result` that contains the result of the current page.
+ * At the end of the block handler, call the method `next` of the iterator object to get the next page.
+ * The attribute `end` is set to true when all the index was browsed.
+ *
+ * @param query The query parameters for the browse.
+ */
 -(void) browseWithQuery:(ASQuery*)query block:(BrowseIteratorHandler)block;
 
 /**
