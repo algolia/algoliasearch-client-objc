@@ -1,5 +1,8 @@
 CHANGELOG
 
+2015-06-16
+  * new browse method that takes a ASQuery object
+
 2015-06-08
   * Remove DSN flag
 
