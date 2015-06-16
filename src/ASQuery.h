@@ -266,12 +266,12 @@
 /**
  * Contains insideBoundingBox query (you should use searchInsideBoundingBox selector to set it)
  */
-@property (strong, nonatomic) NSString    *insideBoundingBox;
+@property (nonatomic) NSString    *insideBoundingBox;
 
 /**
  * Contains aroundLatLong query (you should use searchAroundLatitude:longitude:maxDist selector to set it)
  */
-@property (strong, nonatomic) NSString    *aroundLatLong;
+@property (nonatomic) NSString    *aroundLatLong;
 
 /**
  * If set to YES use geolocation via client IP instead of passing a latitude/longitude manually

@@ -23,6 +23,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ASQuery.h"
+#import "ASBrowseIterator.h"
 
 @class AFHTTPRequestOperation;
 @class ASAPIClient;
@@ -407,6 +408,8 @@
 -(AFHTTPRequestOperation *) browse:(NSUInteger)page
                            success:(void(^)(ASRemoteIndex *index, NSUInteger page, NSDictionary *result))success
                            failure:(void(^)(ASRemoteIndex *index, NSUInteger page, NSString *errorMessage))failure;
+
+-(void) browseWithQuery:(ASQuery*)query block:(BrowseIteratorHandler)block;
 
 /**
  * Delete all previous search queries

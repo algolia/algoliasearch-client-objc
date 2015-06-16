@@ -538,6 +538,46 @@
     [self waitForExpectationsWithTimeout:100 handler:nil];
 }
 
+- (void)testBrowseWithQuery
+{
+    XCTestExpectation *expectation = [self expectationWithDescription:@"testBrowseWithQuery"];
+    NSArray *obj = @[
+        @{@"city": @"San Francisco", @"objectID": @"a/go/?à"},
+        @{@"city": @"Paris", @"objectID": @"a/go/?à2"}
+    ];
+    
+    [self.index addObjects:obj success:^(ASRemoteIndex *index, NSArray *objects, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+            ASQuery *query = [[ASQuery alloc] init];
+            query.hitsPerPage = 1;
+            __block int n = 0;
+            
+            [index browseWithQuery:query block:^(ASBrowseIterator *iterator, BOOL end, NSString *error) {
+                if (error != nil) {
+                    XCTFail("@Error during browse: %@", error);
+                    [expectation fulfill];
+                } else if (end) {
+                    NSMutableString *page = [NSMutableString stringWithFormat:@"%@", iterator.result[@"page"]];
+                    XCTAssertEqualObjects(page, @"1", @"Wrong page");
+                    [expectation fulfill];
+                } else {
+                    ++n;
+                    [iterator next];
+                }
+            }];
+        } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
+            XCTFail("@Error during waitTask: %@", errorMessage);
+            [expectation fulfill];
+        }];
+    } failure:^(ASRemoteIndex *index, NSArray *objects, NSString *errorMessage) {
+        XCTFail("@Error during addObjects: %@", errorMessage);
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:100 handler:nil];
+}
+
+
 - (void)testListIndexes
 {
     XCTestExpectation *expectation = [self expectationWithDescription:@"testListIndexes"];

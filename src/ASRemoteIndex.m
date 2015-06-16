@@ -400,6 +400,12 @@
     }];
 }
 
+-(void) browseWithQuery:(ASQuery*)query block:(BrowseIteratorHandler)block
+{
+    ASBrowseIterator *iterator = [[ASBrowseIterator alloc] initWithIndex:self query:query andBlock:block];
+    [iterator next];
+}
+
 
 -(AFHTTPRequestOperation *) deleteUserKey:(NSString*)key
                                   success:(void(^)(ASRemoteIndex *index, NSString *key, NSDictionary *result))success
