@@ -219,6 +219,12 @@
 @property BOOL                             distinct;
 
 /**
+ *  This feature is similar to the distinct just before but instead of keeping the best value per value of attributeForDistinct, it allows to keep N values.
+ * Specify the maximum number of hits to keep for each distinct value.
+ */
+@property (nonatomic) NSUInteger          maxHitsForDistinct;
+
+/**
   * Set the list of words that should be considered as optional when found in the query (array of NSString).
   */
 @property (nonatomic) NSArray             *optionalWords;

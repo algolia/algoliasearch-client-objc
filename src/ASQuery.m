@@ -62,6 +62,7 @@
         _synonyms = YES;
         _replaceSynonyms = YES;
         _optionalWordsMinimumMatched = 0;
+	_maxHitsForDistinct = 0;
         _insideBoundingBox = nil;
         _aroundLatLong = nil;
         _aroundLatLongViaIP = NO;
@@ -219,10 +220,13 @@
         [stringBuilder appendString:@"typoTolerance="];
         [stringBuilder appendString:self.typoTolerance];
     }
-    if (self.distinct) {
+    if (self.distinct || self.maxHitsForDistinct > 0) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:@"distinct=1"];
+	if (self.maxHitsForDistinct == 0)
+	  [stringBuilder appendString:@"distinct=1"];
+	else
+	  [stringBuilder appendFormat:@"minWordSizefor2Typos=%zd", self.maxHitsForDistinct];
     }
     if (!self.analytics) {
         if ([stringBuilder length] > 0)
