@@ -211,20 +211,14 @@
 
 /**
  *
- * If set to YES, enable the distinct feature (disabled by default) if the attributeForDistinct index
- *   setting is set.
- *   This feature is similar to the SQL "distinct" keyword: when enabled in a query with the distinct=1 parameter,
- *   all hits containing a duplicate value for the attributeForDistinct attribute are removed from results.
- *   For example, if the chosen attribute is show_name and several hits have the same value for show_name, 
- *   then only the best one is kept and others are removed.
- */
-@property BOOL                             distinct;
-
-/**
- *  This feature is similar to the distinct just before but instead of keeping the best value per value of attributeForDistinct, it allows to keep N values.
+ * Enable the distinct feature (disabled by default) if the attributeForDistinct index setting is set.
+ * This feature is similar to the SQL "distinct" keyword: when enabled in a query with the distinct=1 parameter,
+ * all hits containing a duplicate value for the attributeForDistinct attribute are removed from results.
+ * For example, if the chosen attribute is show_name and several hits have the same value for show_name,
+ * then only the best one is kept and others are removed.
  * Specify the maximum number of hits to keep for each distinct value.
  */
-@property (nonatomic) NSUInteger           maxHitsForDistinct;
+@property (nonatomic) NSUInteger           distinct;
 
 /**
   * Set the list of words that should be considered as optional when found in the query (array of NSString).

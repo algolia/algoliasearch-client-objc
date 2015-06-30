@@ -44,7 +44,7 @@
         _minWordSizeForApprox2 = 7;
         _getRankingInfo = NO;
         _ignorePlural = NO;
-        _distinct = NO;
+        _distinct = 0;
         _page = 0;
         _hitsPerPage = 20;
         _minProximity = 1;
@@ -62,7 +62,6 @@
         _synonyms = YES;
         _replaceSynonyms = YES;
         _optionalWordsMinimumMatched = 0;
-        _maxHitsForDistinct = 0;
         _insideBoundingBox = nil;
         _aroundLatLong = nil;
         _aroundLatLongViaIP = NO;
@@ -102,7 +101,6 @@
     new.synonyms = self.synonyms;
     new.replaceSynonyms = self.replaceSynonyms;
     new.optionalWordsMinimumMatched = self.optionalWordsMinimumMatched;
-    new.maxHitsForDistinct = self.maxHitsForDistinct;
     new.insideBoundingBox = [self.insideBoundingBox copyWithZone:zone];
     new.aroundLatLong = [self.aroundLatLong copyWithZone:zone];
     new.aroundLatLongViaIP = self.aroundLatLongViaIP;
@@ -267,13 +265,11 @@
         [stringBuilder appendString:@"typoTolerance="];
         [stringBuilder appendString:self.typoTolerance];
     }
-    if (self.distinct || self.maxHitsForDistinct > 0) {
+    if (self.distinct > 0) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-	if (self.maxHitsForDistinct == 0)
-	  [stringBuilder appendString:@"distinct=1"];
-	else
-	  [stringBuilder appendFormat:@"minWordSizefor2Typos=%zd", self.maxHitsForDistinct];
+
+        [stringBuilder appendFormat:@"distinct=%zd", self.distinct];
     }
     if (!self.analytics) {
         if ([stringBuilder length] > 0)
