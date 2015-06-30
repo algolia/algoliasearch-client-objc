@@ -26,7 +26,7 @@
 /**
  * Describes all parameters of search query.
  */
-@interface ASQuery : NSObject
+@interface ASQuery : NSObject <NSCopying>
 
 /**
  * Initialize query with a full text query string
@@ -42,6 +42,8 @@
  * Initialize query with a full text query string
  */
 -(instancetype) initWithFullTextQuery:(NSString*)fullTextQuery;
+
+-(instancetype) copyWithZone:(NSZone*)zone;
 
 /**
  *  Search for entries around a given latitude/longitude.
@@ -222,7 +224,7 @@
  *  This feature is similar to the distinct just before but instead of keeping the best value per value of attributeForDistinct, it allows to keep N values.
  * Specify the maximum number of hits to keep for each distinct value.
  */
-@property (nonatomic) NSUInteger          maxHitsForDistinct;
+@property (nonatomic) NSUInteger           maxHitsForDistinct;
 
 /**
   * Set the list of words that should be considered as optional when found in the query (array of NSString).
@@ -245,7 +247,7 @@
 @property (nonatomic) NSString            *facetFiltersRaw;
 
 /**
- * List of object attributes that you want to use for faceting. <br/>
+ * List of object attributes that you want to use for faceting.
  * Only attributes that have been added in **attributesForFaceting** index setting can be used in this parameter. 
  * You can also use `*` to perform faceting on all attributes specified in **attributesForFaceting**.
  */
@@ -272,12 +274,12 @@
 /**
  * Contains insideBoundingBox query (you should use searchInsideBoundingBox selector to set it)
  */
-@property (nonatomic) NSString    *insideBoundingBox;
+@property (nonatomic) NSString            *insideBoundingBox;
 
 /**
  * Contains aroundLatLong query (you should use searchAroundLatitude:longitude:maxDist selector to set it)
  */
-@property (nonatomic) NSString    *aroundLatLong;
+@property (nonatomic) NSString            *aroundLatLong;
 
 /**
  * If set to YES use geolocation via client IP instead of passing a latitude/longitude manually

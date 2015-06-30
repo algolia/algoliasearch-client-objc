@@ -47,7 +47,7 @@
         _distinct = NO;
         _page = 0;
         _hitsPerPage = 20;
-	_minProximity = 1;
+        _minProximity = 1;
         _attributesToHighlight = nil;
         _attributesToRetrieve = nil;
         _attributesToSnippet = nil;
@@ -62,12 +62,59 @@
         _synonyms = YES;
         _replaceSynonyms = YES;
         _optionalWordsMinimumMatched = 0;
-	_maxHitsForDistinct = 0;
+        _maxHitsForDistinct = 0;
         _insideBoundingBox = nil;
         _aroundLatLong = nil;
         _aroundLatLongViaIP = NO;
+        _optionalWords = nil;
+        _facetFilters = nil;
+        _facetFiltersRaw = nil;
+        _facets = nil;
+        _restrictSearchableAttributes = nil;
+        _highlightPreTag = nil;
+        _highlightPostTag = nil;
     }
     return self;
+}
+
+-(instancetype) copyWithZone:(NSZone*)zone {
+    ASQuery *new = [[ASQuery alloc] init];
+    
+    new.minWordSizeForApprox1 = self.minWordSizeForApprox1;
+    new.minWordSizeForApprox2 = self.minWordSizeForApprox2;
+    new.getRankingInfo = self.getRankingInfo;
+    new.ignorePlural = self.ignorePlural;
+    new.distinct = self.distinct;
+    new.page = self.page;
+    new.hitsPerPage = self.hitsPerPage;
+    new.minProximity = self.minProximity;
+    new.attributesToHighlight = [self.attributesToHighlight copyWithZone:zone];
+    new.attributesToRetrieve = [self.attributesToRetrieve copyWithZone:zone];
+    new.attributesToSnippet = [self.attributesToSnippet copyWithZone:zone];
+    new.tagFilters = [self.tagFilters copyWithZone:zone];
+    new.numericFilters = [self.numericFilters copyWithZone:zone];
+    new.fullTextQuery = [self.fullTextQuery copyWithZone:zone];
+    new.queryType = [self.queryType copyWithZone:zone];
+    new.removeWordsIfNoResult = [self.removeWordsIfNoResult copyWithZone:zone];
+    new.typoTolerance = [self.typoTolerance copyWithZone:zone];
+    new.typosOnNumericTokens = self.typosOnNumericTokens;
+    new.analytics = self.analytics;
+    new.synonyms = self.synonyms;
+    new.replaceSynonyms = self.replaceSynonyms;
+    new.optionalWordsMinimumMatched = self.optionalWordsMinimumMatched;
+    new.maxHitsForDistinct = self.maxHitsForDistinct;
+    new.insideBoundingBox = [self.insideBoundingBox copyWithZone:zone];
+    new.aroundLatLong = [self.aroundLatLong copyWithZone:zone];
+    new.aroundLatLongViaIP = self.aroundLatLongViaIP;
+    new.optionalWords = [self.optionalWords copyWithZone:zone];
+    new.facetFilters = [self.facetFilters copyWithZone:zone];
+    new.facetFiltersRaw = [self.facetFiltersRaw copyWithZone:zone];
+    new.facets = [self.facets copyWithZone:zone];
+    new.restrictSearchableAttributes = [self.restrictSearchableAttributes copyWithZone:zone];
+    new.highlightPreTag = [self.highlightPreTag copyWithZone:zone];
+    new.highlightPostTag = [self.highlightPostTag copyWithZone:zone];
+    
+    return new;
 }
 
 -(ASQuery*) searchAroundLatitude:(float)latitude longitude:(float)longitude maxDist:(NSUInteger)maxDist
