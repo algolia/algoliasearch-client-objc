@@ -24,13 +24,9 @@
 #import "ASAPIClient.h"
 #import "ASAPIClient+Network.h"
 #import "ASRemoteIndex.h"
-#if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
-#else
-#include <Cocoa/Cocoa.h>
-#endif
 
-NSString *const Version = @"3.4.6";
+
+NSString *const Version = @"3.5.0";
 
 @implementation ASAPIClient
 

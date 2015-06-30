@@ -1,12 +1,14 @@
 CHANGELOG
 
+2015-07-01 3.5.0
+  * ASQuery implements protocol NSCopying
+  * Fix various bugs
+
 2015-06-30 3.4.6
   * Added support of grouping (distinct=3 for example keep the 3 best hits for a distinct key)
 
 2015-06-16 3.4.5
   * New browse method that takes a ASQuery object
-
-2015-06-08
   * Remove DSN flag
 
 2015-05-04 3.4.4
