@@ -25,6 +25,17 @@
 #import "../src/ASAPIClient.h"
 #import "../src/ASAPIClient+Network.h"
 
+
+NSString* safeIndexName(NSString* indexName)
+{
+    NSString *travis = [[NSProcessInfo processInfo] environment][@"TRAVIS_JOB_NUMBER"];
+    if (travis) {
+        return [NSString stringWithFormat:@"%@_travis-%@", indexName, travis];
+    } else {
+        return indexName;
+    }
+}
+
 @interface test : XCTestCase
 @property (strong, nonatomic) ASAPIClient *client;
 @property (strong, nonatomic) ASRemoteIndex *index;
@@ -40,11 +51,11 @@
     NSString* appID = [[NSProcessInfo processInfo] environment][@"ALGOLIA_APPLICATION_ID"];
     NSString* apiKey = [[NSProcessInfo processInfo] environment][@"ALGOLIA_API_KEY"];
     self.client = [ASAPIClient apiClientWithApplicationID :appID apiKey:apiKey];
-    self.index = [self.client getIndex:@"algol?à-objc"];
+    self.index = [self.client getIndex:safeIndexName(@"algol?à-objc")];
     self.httpRequestOperationManager = (self.client.writeOperationManagers)[0];
     
     XCTestExpectation *expecatation = [self expectationWithDescription:@"Delete index"];
-    [self.client deleteIndex:@"algol?à-objc" success:^(ASAPIClient *client, NSString *indexName, NSDictionary *result) {
+    [self.client deleteIndex:safeIndexName(@"algol?à-objc") success:^(ASAPIClient *client, NSString *indexName, NSDictionary *result) {
         [expecatation fulfill];
     } failure:nil];
     [self waitForExpectationsWithTimeout:1000 handler:nil];
@@ -55,7 +66,7 @@
     [super tearDown];
     
     XCTestExpectation *expecatation = [self expectationWithDescription:@"Delete index"];
-    [self.client deleteIndex:@"algol?à-objc" success:^(ASAPIClient *client, NSString *indexName, NSDictionary *result) {
+    [self.client deleteIndex:safeIndexName(@"algol?à-objc") success:^(ASAPIClient *client, NSString *indexName, NSDictionary *result) {
         [expecatation fulfill];
     } failure:nil];
     [self waitForExpectationsWithTimeout:1000 handler:nil];
@@ -621,9 +632,9 @@
     
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
         [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
-            [_client moveIndex:@"algol?à-objc" to:@"algol?à-objc2" success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
+            [_client moveIndex:safeIndexName(@"algol?à-objc") to:safeIndexName(@"algol?à-objc2") success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
                 [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
-                    ASRemoteIndex *index2 = [self.client getIndex:@"algol?à-objc2"];
+                    ASRemoteIndex *index2 = [self.client getIndex:safeIndexName(@"algol?à-objc2")];
                     ASQuery *query = [[ASQuery alloc] initWithFullTextQuery:@""];
                     [index2 search:query success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
                         NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",result[@"nbHits"]];
@@ -653,7 +664,7 @@
     [self waitForExpectationsWithTimeout:100 handler:nil];
     
     XCTestExpectation *deleteExpectation = [self expectationWithDescription:@"Delete index"];
-    [self.client deleteIndex:@"algol?à-objc2" success:^(ASAPIClient *client, NSString *indexName, NSDictionary *result) {
+    [self.client deleteIndex:safeIndexName(@"algol?à-objc2") success:^(ASAPIClient *client, NSString *indexName, NSDictionary *result) {
         [deleteExpectation fulfill];
     } failure:nil];
     [self waitForExpectationsWithTimeout:100 handler:nil];
@@ -666,14 +677,14 @@
     
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
         [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
-            [_client copyIndex:@"algol?à-objc" to:@"algol?à-objc2" success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
+            [_client copyIndex:safeIndexName(@"algol?à-objc") to:safeIndexName(@"algol?à-objc2") success:^(ASAPIClient *client, NSString *srcIndexName, NSString *dstIndexName, NSDictionary *result) {
                 [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
-                    ASRemoteIndex *index2 = [self.client getIndex:@"algol?à-objc2"];
+                    ASRemoteIndex *index2 = [self.client getIndex:safeIndexName(@"algol?à-objc2")];
                     ASQuery *query = [[ASQuery alloc] initWithFullTextQuery:@""];
                     [index2 search:query success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
                         NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",result[@"nbHits"]];
                         XCTAssertEqualObjects(nbHits, @"1", @"Wrong number of object in the index");
-                        ASRemoteIndex *indexOrigin = [self.client getIndex:@"algol?à-objc"];
+                        ASRemoteIndex *indexOrigin = [self.client getIndex:safeIndexName(@"algol?à-objc")];
                         query = [[ASQuery alloc] initWithFullTextQuery:@""];
                         [indexOrigin search:query success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
                             NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",result[@"nbHits"]];
@@ -707,7 +718,7 @@
     [self waitForExpectationsWithTimeout:100 handler:nil];
     
     XCTestExpectation *deleteExpectation = [self expectationWithDescription:@"Delete index"];
-    [self.client deleteIndex:@"algol?à-objc2" success:^(ASAPIClient *client, NSString *indexName, NSDictionary *result) {
+    [self.client deleteIndex:safeIndexName(@"algol?à-objc2") success:^(ASAPIClient *client, NSString *indexName, NSDictionary *result) {
         [deleteExpectation fulfill];
     } failure:nil];
     [self waitForExpectationsWithTimeout:100 handler:nil];
@@ -866,14 +877,14 @@
     
     [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
         [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
-            [_client addUserKey:@[@"search"] withIndexes:@[@"algol?à-objc"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASAPIClient *client, NSArray *acls, NSArray *indexes, NSDictionary *result) {
+            [_client addUserKey:@[@"search"] withIndexes:@[safeIndexName(@"algol?à-objc")] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASAPIClient *client, NSArray *acls, NSArray *indexes, NSDictionary *result) {
                 [NSThread sleepForTimeInterval:5.0]; // wait the backend
                 [client getUserKeyACL:result[@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
                     NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",result[@"acl"][0]];
                     NSMutableString *validity = [NSMutableString stringWithFormat:@"%@",result[@"validity"]];
                     XCTAssertEqualObjects(acl, @"search", @"add user key failed");
                     XCTAssertNotEqualObjects(validity, @"0", @"add user key failed");
-                    [_client updateUserKey:result[@"value"] withACL:@[@"addObject"] withIndexes:@[@"algol?à-objc"] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSDictionary *result) {
+                    [_client updateUserKey:result[@"value"] withACL:@[@"addObject"] withIndexes:@[safeIndexName(@"algol?à-objc")] withValidity:3000 maxQueriesPerIPPerHour:42 maxHitsPerQuery:42 success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSArray *indexes, NSDictionary *result) {
                         [NSThread sleepForTimeInterval:5.0]; // wait the backend
                         [client getUserKeyACL:result[@"key"] success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
                             NSMutableString *acl = [NSMutableString stringWithFormat:@"%@",result[@"acl"][0]];
@@ -1155,7 +1166,7 @@
         [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
             XCTAssertEqualObjects(result[@"status"], @"published", "Wait task failed");
             ASQuery *query = [[ASQuery alloc] initWithFullTextQuery:@""];
-            [_client multipleQueries:@[@{@"indexName":@"algol?à-objc", @"query": query}] success:^(ASAPIClient *client, NSArray *queries, NSDictionary *result) {
+            [_client multipleQueries:@[@{@"indexName":safeIndexName(@"algol?à-objc"), @"query": query}] success:^(ASAPIClient *client, NSArray *queries, NSDictionary *result) {
                 NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",result[@"results"][0][@"nbHits"]];
                 XCTAssertEqualObjects(nbHits, @"1", @"Wrong number of object in the index");
                 [expectation fulfill];

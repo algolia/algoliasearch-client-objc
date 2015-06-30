@@ -226,7 +226,7 @@
 		591C932B18E265C3001F1A0F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = Algolia;
 				TargetAttributes = {
 					590677C818E4E38B00D2B893 = {
@@ -507,6 +507,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = EE723D9FA715B3A80A9DBE58 /* Pods.debug.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				DSTROOT = /tmp/algoliasearch_client_objc.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -532,6 +533,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 93A3C6D5C4BEC322D8180EA7 /* Pods.release.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				DSTROOT = /tmp/algoliasearch_client_objc.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
