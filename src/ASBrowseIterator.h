@@ -15,14 +15,15 @@
 
 typedef void(^BrowseIteratorHandler)(ASBrowseIterator *iterator, BOOL end, NSString *error);
 
--(instancetype)initWithIndex:(ASRemoteIndex*)index
+- (instancetype)initWithIndex:(ASRemoteIndex*)index
                        query:(ASQuery*)query
+                      cursor:(NSString*)cursor
                     andBlock:(BrowseIteratorHandler)pblock;
 
--(void) next;
+- (void)next;
 
 @property (nonatomic) ASRemoteIndex *index;
-@property (nonatomic) ASQuery *query;
+@property (nonatomic) NSString *cursor;
 @property (nonatomic) NSDictionary *result;
 
 @end

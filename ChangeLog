@@ -1,5 +1,8 @@
 CHANGELOG
 
+2015-07-XX X.X.X
+  * New browseFromCursor method
+
 2015-07-01 3.5.0
   * ASQuery implements protocol NSCopying
   * Fix various bugs

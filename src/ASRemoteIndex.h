@@ -421,6 +421,17 @@
 -(void) browseWithQuery:(ASQuery*)query block:(BrowseIteratorHandler)block;
 
 /**
+ * Browse the index from a cursor.
+ *
+ * The iterator object has a attribute `result` that contains the result of the current page.
+ * At the end of the block handler, call the method `next` of the iterator object to get the next page.
+ * The attribute `end` is set to true when all the index was browsed.
+ *
+ * @param cursor The cursor of the next page to retrieve.
+ */
+-(void) browseFromCursor:(NSString*)cursor block:(BrowseIteratorHandler)block;
+
+/**
  * Delete all previous search queries
  */
 -(void) cancelPreviousSearches;

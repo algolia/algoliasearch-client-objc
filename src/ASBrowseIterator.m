@@ -18,49 +18,47 @@
     NSString *path;
     NSString *queryURL;
     BrowseIteratorHandler block;
-    NSString *cursor;
     BOOL end;
 }
 
--(instancetype)initWithIndex:(ASRemoteIndex*)index
-                       query:(ASQuery*)query
-                    andBlock:(BrowseIteratorHandler)pblock
+- (instancetype)initWithIndex:(ASRemoteIndex*)index
+                        query:(ASQuery*)query
+                       cursor:(NSString*)cursor
+                     andBlock:(BrowseIteratorHandler)pblock
 {
     self = [super init];
     if (self) {
         _index = index;
-        _query = query;
+        _cursor = (cursor != nil) ? cursor : nil;
         block = [pblock copy];
         
-        queryURL = [query buildURL];
-        path = [NSString stringWithFormat:@"/1/indexes/%@/browse?%@", index.urlEncodedIndexName, queryURL];
+        queryURL = (query != nil) ? [query buildURL] : @"";
+        path = [NSString stringWithFormat:@"/1/indexes/%@/browse?", index.urlEncodedIndexName];
         
         end = false;
     }
     return self;
 }
 
--(void) next
+- (void)next
 {
     NSMutableString *requestPath = [path mutableCopy];
-    if (self->cursor != nil) {
-        if ([self->queryURL length] > 0) {
-            [requestPath appendString:@"&"];
-        }
-
-        [requestPath appendFormat:@"cursor=%@", [ASAPIClient urlEncode:self->cursor]];
+    if (self.cursor != nil) {
+        [requestPath appendFormat:@"cursor=%@", [ASAPIClient urlEncode:self.cursor]];
+    } else {
+        [requestPath appendString:queryURL];
     }
     
     [self.index.apiClient performHTTPQuery:requestPath method:@"GET" body:nil managers:self.index.apiClient.searchOperationManagers index:0 timeout:self.index.apiClient.timeout success:^(id JSON) {
         self.result = JSON;
-        self->cursor = JSON[@"cursor"];
-        if (self->cursor == nil) {
-            self->end = true;
+        self.cursor = JSON[@"cursor"];
+        if (self.cursor == nil) {
+            end = true;
         }
         
-        self->block(self, self->end, nil);
+        block(self, end, nil);
     } failure:^(NSString *errorMessage) {
-        self->block(self, false, errorMessage);
+        block(self, false, errorMessage);
     }];
 }
 
