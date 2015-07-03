@@ -3,6 +3,7 @@
 
 
 
+
 [Algolia Search](http://www.algolia.com) is a hosted full-text, numerical, and faceted search engine capable of delivering realtime results from the first keystroke.
 
 Our Objective-C client lets you easily use the [Algolia Search API](https://www.algolia.com/doc/rest_api) from your iOS & OS X applications. It wraps the [Algolia Search REST API](http://www.algolia.com/doc/rest_api).
@@ -318,7 +319,7 @@ You can use the following optional arguments on ASQuery class:
  * **setRemoveWordsIfNoResults**: This option is used to select a strategy in order to avoid having an empty result page. There are three different options:
   * **lastWords**: When a query does not return any results, the last word will be added as optional. The process is repeated with n-1 word, n-2 word, ... until there are results.
   * **firstWords**: When a query does not return any results, the first word will be added as optional. The process is repeated with second word, third word, ... until there are results.
-  * **allOptional**: When a query does not return any results, a second trial will be made with all words as optional. This is equivalent to transforming the AND operand between query terms to an OR operand. 
+  * **allOptional**: When a query does not return any results, a second trial will be made with all words as optional. This is equivalent to transforming the AND operand between query terms to an OR operand.
   * **none**: No specific processing is done when a query does not return any results (default behavior).
  * **minWordSizeForApprox1**: The minimum number of characters in a query word to accept one typo in this word.<br/>Defaults to 4.
  * **minWordSizeForApprox2**: The minimum number of characters in a query word to accept two typos in this word.<br/>Defaults to 8.
@@ -655,7 +656,7 @@ Batch writes
 -------------
 
 You may want to perform multiple operations with one API call to reduce latency.
-We expose three methods to perform batch operations:
+We expose four methods to perform batch operations:
  * `addObjects`: Add an array of objects using automatic `objectID` assignment.
  * `saveObjects`: Add or update an array of objects that contains an `objectID` attribute.
  * `deleteObjects`: Delete an array of objectIDs.
@@ -872,7 +873,7 @@ Backup / Retrieve of all index content
 -------------
 
 You can retrieve all index content for backup purposes or for SEO using the browse method.
-This method can retrieve up to 1,000 objects per call and supports full text search, filters.
+This method can retrieve up to 1,000 objects per call and supports full text search and filters but the distinct feature is not available
 Unlike the search method, the sort by typo, proximity, geo distance and matched words is not applied, the hits are only sorted by numeric attributes specified in the ranking and the custom ranking.
 
 You can browse the index:
@@ -880,8 +881,9 @@ You can browse the index:
 ```objc
 // Iterate with a filter over the index
 [index browseWithQuery:query block:^(ASBrowseIterator *iterator, BOOL end, NSString *error) {
-
-```    if (error != nil) {
+	// Retrieve the next cursor from the browse method
+	NSLog(iterator.cursor);
+    if (error != nil) {
         // Handle errors
     } else if (end) {
         // End of the index
@@ -890,6 +892,7 @@ You can browse the index:
         [iterator next];
     }
 }];
+```
 
 Logs
 -------------
