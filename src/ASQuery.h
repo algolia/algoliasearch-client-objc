@@ -276,6 +276,11 @@
 @property (nonatomic) NSString            *aroundLatLong;
 
 /**
+ * Tags can be used in the Analytics to analyze a subset of searches only. Comma-separated string list like @[@"ios", @"web"]
+ */
+@property (nonatomic) NSArray            *analyticsTags;
+
+/**
  * If set to YES use geolocation via client IP instead of passing a latitude/longitude manually
  */
 @property BOOL                             aroundLatLongViaIP;
