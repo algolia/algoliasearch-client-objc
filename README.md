@@ -2,6 +2,16 @@
 
 
 
+**&lt;Welcome Swift developers&gt;**
+
+In June 2015, we release our [Swift API Client](https://github.com/algolia/algoliasearch-client-swift).
+
+It is able to work with Swift and Objective-C. If you plan to use Swift in your project, please use it since we don't support Swift in our Objective-C API Client.
+
+The Objective-C API Client is still supported and updated.
+
+**&lt;/Welcome Swift developers&gt;**
+
 
 
 [Algolia Search](http://www.algolia.com) is a hosted full-text, numerical, and faceted search engine capable of delivering realtime results from the first keystroke.
