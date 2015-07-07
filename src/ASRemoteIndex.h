@@ -436,6 +436,28 @@
  */
 -(void) cancelPreviousSearches;
 
+/**
+ * Enable search cache.
+ */
+- (void)enableSearchCache;
+
+/**
+ * Enable search cache.
+ * 
+ * @param eti Each cached search will be valid during this interval of time
+ */
+- (void)enableSearchCacheWithExpiringTimeInterval:(NSTimeInterval)eti;
+
+/**
+ * Disable search cache
+ */
+- (void)disableSearchCache;
+
+/**
+ * Clear search cache
+ */
+- (void)clearSearchCache;
+
 @property (nonatomic)           NSString     *indexName;
 @property (readonly, nonatomic) ASAPIClient  *apiClient;
 @property (nonatomic)           NSString     *urlEncodedIndexName;

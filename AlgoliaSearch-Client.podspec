@@ -13,8 +13,8 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = '10.8'
   s.osx.frameworks = 'CoreServices', 'SystemConfiguration', 'Security'
 
-  s.source_files = 'src'
-  s.requires_arc = true
+  s.source_files = 'src/*.{h,m}'
+  s.private_header_files = 'src/ASExpiringCache*.h'
 
   s.dependency 'AFNetworking', '~> 2.2'
 end
