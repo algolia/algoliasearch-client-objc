@@ -2,6 +2,10 @@ CHANGELOG
 
 2015-07-XX X.X.X
   * New browseFromCursor method
+  * Add search cache (disabled by default)
+
+2015-07-01 3.5.1
+  * Fix grouping
 
 2015-07-01 3.5.0
   * ASQuery implements protocol NSCopying
