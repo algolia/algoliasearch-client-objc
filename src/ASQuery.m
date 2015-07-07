@@ -72,6 +72,7 @@
         _restrictSearchableAttributes = nil;
         _highlightPreTag = nil;
         _highlightPostTag = nil;
+        _analyticsTags = nil;
     }
     return self;
 }
@@ -111,6 +112,7 @@
     new.restrictSearchableAttributes = [self.restrictSearchableAttributes copyWithZone:zone];
     new.highlightPreTag = [self.highlightPreTag copyWithZone:zone];
     new.highlightPostTag = [self.highlightPostTag copyWithZone:zone];
+    new.analyticsTags = [self.analyticsTags copyWithZone:zone];
     
     return new;
 }
@@ -354,6 +356,18 @@
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"highlightPostTag=%@", [ASAPIClient urlEncode:self.highlightPostTag]];
+    }
+    if (self.analyticsTags != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"analyticsTags="];
+        BOOL first = YES;
+        for (NSString* tag in self.analyticsTags) {
+            if (!first)
+                [stringBuilder appendString:@","];
+            [stringBuilder appendString:[ASAPIClient urlEncode:tag]];
+            first = NO;
+        }
     }
     return stringBuilder;
 }
