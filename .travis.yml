@@ -1,4 +1,5 @@
 language: objective-c
+cache: cocoapods
 env:
   global:
     - secure: UiyDncG6TxTG1MLIBqAwN6K7OQZL5jI78SHJ/CQS6FydkGV8OWYEoV5l2adPx3Eq4BRdanq3FaMmX1sVzqQkCbKhUF3JU9+Dgpvo/IpYVLmKEwfDBTQv2KQacRB52KeBK9DBrhDiydjCQpzNoNeKffK5zLULaqEsq0uZnoVmfxg=
