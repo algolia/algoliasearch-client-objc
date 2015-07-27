@@ -1,6 +1,10 @@
 CHANGELOG
 
+2015-07-XX X.X.X
+  * Add search cache (disabled by default)
+
 2015-07-07 3.5.2
+  * New browseFromCursor method
   * Add analyticsTags to Query
 
 2015-07-01 3.5.1

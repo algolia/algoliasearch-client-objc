@@ -22,6 +22,8 @@
 		591C936818E267B5001F1A0F /* ASRemoteIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 591C936418E267B5001F1A0F /* ASRemoteIndex.m */; };
 		592EEA9118E4F14200891427 /* libalgoliasearch-client-objc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 591C933318E265C3001F1A0F /* libalgoliasearch-client-objc.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		599EA22D19EFB2D700FEF7E7 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 599EA22619ED664700FEF7E7 /* AppKit.framework */; };
+		5D7B33401B4BBD7B00F12D56 /* ASExpiringCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D7B333F1B4BBD7B00F12D56 /* ASExpiringCache.m */; };
+		5D7B33431B4BBDEB00F12D56 /* ASExpiringCacheItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D7B33421B4BBDEB00F12D56 /* ASExpiringCacheItem.m */; };
 		5D85ED221B28659A001C1C5B /* ASBrowseIterator.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D85ED211B28659A001C1C5B /* ASBrowseIterator.m */; };
 		88FF96774A8D4C439B606454 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 454533AE49614E8FA1210C4D /* libPods.a */; settings = {ATTRIBUTES = (Required, ); }; };
 /* End PBXBuildFile section */
@@ -68,6 +70,10 @@
 		591C936418E267B5001F1A0F /* ASRemoteIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASRemoteIndex.m; sourceTree = "<group>"; };
 		599EA22119ED5E9A00FEF7E7 /* libPods-AFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-AFNetworking.a"; path = "../../../Library/Developer/Xcode/DerivedData/algoliasearch-client-objc-ezaqtrvmayymwwavbcfvoeuiphpx/Build/Products/Debug/libPods-AFNetworking.a"; sourceTree = "<group>"; };
 		599EA22619ED664700FEF7E7 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		5D7B333E1B4BBD7B00F12D56 /* ASExpiringCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASExpiringCache.h; sourceTree = "<group>"; };
+		5D7B333F1B4BBD7B00F12D56 /* ASExpiringCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASExpiringCache.m; sourceTree = "<group>"; };
+		5D7B33411B4BBDEB00F12D56 /* ASExpiringCacheItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASExpiringCacheItem.h; sourceTree = "<group>"; };
+		5D7B33421B4BBDEB00F12D56 /* ASExpiringCacheItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASExpiringCacheItem.m; sourceTree = "<group>"; };
 		5D85ED201B28659A001C1C5B /* ASBrowseIterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASBrowseIterator.h; sourceTree = "<group>"; };
 		5D85ED211B28659A001C1C5B /* ASBrowseIterator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASBrowseIterator.m; sourceTree = "<group>"; };
 		93A3C6D5C4BEC322D8180EA7 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -174,6 +180,10 @@
 				591C936418E267B5001F1A0F /* ASRemoteIndex.m */,
 				5D85ED201B28659A001C1C5B /* ASBrowseIterator.h */,
 				5D85ED211B28659A001C1C5B /* ASBrowseIterator.m */,
+				5D7B333E1B4BBD7B00F12D56 /* ASExpiringCache.h */,
+				5D7B333F1B4BBD7B00F12D56 /* ASExpiringCache.m */,
+				5D7B33411B4BBDEB00F12D56 /* ASExpiringCacheItem.h */,
+				5D7B33421B4BBDEB00F12D56 /* ASExpiringCacheItem.m */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -339,6 +349,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D7B33401B4BBD7B00F12D56 /* ASExpiringCache.m in Sources */,
+				5D7B33431B4BBDEB00F12D56 /* ASExpiringCacheItem.m in Sources */,
 				591C936718E267B5001F1A0F /* ASQuery.m in Sources */,
 				591C936518E267B5001F1A0F /* ASAPIClient+Network.m in Sources */,
 				591C936818E267B5001F1A0F /* ASRemoteIndex.m in Sources */,

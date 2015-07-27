@@ -23,8 +23,21 @@
 
 #import "ASRemoteIndex.h"
 #import "ASAPIClient+Network.h"
+#import "ASExpiringCache.h"
 
-@implementation ASRemoteIndex
+@interface ASRemoteIndex ()
+
+- (AFHTTPRequestOperation*)performSearchQuery:(NSString*)path
+                                       method:(NSString*)method
+                                         body:(NSDictionary*)body
+                                      success:(void(^)(id JSON))success
+                                      failure:(void(^)(NSString *errorMessage))failure;
+
+@end
+
+@implementation ASRemoteIndex {
+    ASExpiringCache *searchCache;
+}
 
 +(instancetype) remoteIndexWithAPIClient:(ASAPIClient*)client indexName:(NSString*)indexName
 {
@@ -38,6 +51,8 @@
         _apiClient = client;
         _indexName = indexName;
         _urlEncodedIndexName = [ASAPIClient urlEncode:indexName];
+        
+        searchCache = nil;
     }
     return self;
 }
@@ -263,7 +278,7 @@
     NSString *queryParams = [query buildURL];
     NSString *path = [NSString stringWithFormat:@"/1/indexes/%@/query", self.urlEncodedIndexName];
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObject:queryParams forKey:@"params"];
-    return [self.apiClient performHTTPQuery:path method:@"POST" body:dict managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.searchTimeout success:^(id JSON) {
+    return [self performSearchQuery:path method:@"POST" body:dict success:^(id JSON) {
         if (success != nil)
             success(self, query, JSON);
     } failure:^(NSString *errorMessage) {
@@ -527,6 +542,52 @@
         if (failure != nil)
             failure(index, key, acls, errorMessage);
     }];
+}
+
+#pragma mark - Search Cache
+
+- (void)enableSearchCache {
+    [self enableSearchCacheWithExpiringTimeInterval:120];
+}
+
+- (void)enableSearchCacheWithExpiringTimeInterval:(NSTimeInterval)eti {
+    searchCache = [[ASExpiringCache alloc] initWithExpiringTimeInterval:eti];
+}
+
+- (void)disableSearchCache {
+    if (searchCache != nil) {
+        [searchCache clearCache];
+        searchCache = nil;
+    }
+}
+
+- (void)clearSearchCache {
+    if (searchCache != nil)
+        [searchCache clearCache];
+}
+
+- (AFHTTPRequestOperation*)performSearchQuery:(NSString*)path
+                                       method:(NSString*)method
+                                         body:(NSDictionary*)body
+                                      success:(void(^)(id JSON))success
+                                      failure:(void(^)(NSString *errorMessage))failure {
+    
+    NSString *cacheKey = [NSString stringWithFormat:@"%@_body_%@", path, body];
+    
+    if (searchCache != nil) {
+        NSDictionary *content = [searchCache objectForKey:cacheKey];
+        if (content != nil) {
+            success(content);
+            return nil;
+        }
+    }
+    
+    return [self.apiClient performHTTPQuery:path method:method body:body managers:self.apiClient.searchOperationManagers index:0 timeout:self.apiClient.searchTimeout success:^(id JSON) {
+        if (searchCache != nil)
+            [searchCache setObject:JSON forKey:cacheKey];
+
+        success(JSON);
+    } failure:failure];
 }
 
 @end
