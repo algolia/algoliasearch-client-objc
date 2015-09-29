@@ -142,7 +142,7 @@
 {
     self.aroundLatLong = [NSString stringWithFormat:@"aroundLatLng=%f,%f", latitude, longitude];
     self.aroundRadius = maxDist;
-    self.aroundPrecision = precisionl;
+    self.aroundPrecision = precision;
     return self;
 }
 
