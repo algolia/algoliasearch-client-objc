@@ -45,10 +45,13 @@
         _getRankingInfo = NO;
         _ignorePlural = NO;
         _distinct = 0;
+        _aroundPrecision = 0;
+        _aroundRadius = 0;
         _page = 0;
         _hitsPerPage = 20;
         _minProximity = 1;
         _attributesToHighlight = nil;
+        _disableTypoToleranceOnAttributes = nil;
         _attributesToRetrieve = nil;
         _attributesToSnippet = nil;
         _tagFilters = nil;
@@ -63,6 +66,7 @@
         _replaceSynonyms = YES;
         _optionalWordsMinimumMatched = 0;
         _insideBoundingBox = nil;
+        _insidePolygon = nil;
         _aroundLatLong = nil;
         _aroundLatLongViaIP = NO;
         _optionalWords = nil;
@@ -85,10 +89,13 @@
     new.getRankingInfo = self.getRankingInfo;
     new.ignorePlural = self.ignorePlural;
     new.distinct = self.distinct;
+    new.aroundRadius = new.aroundRadius;
+    new.aroundPrecision = new.aroundPrecision;
     new.page = self.page;
     new.hitsPerPage = self.hitsPerPage;
     new.minProximity = self.minProximity;
     new.attributesToHighlight = [self.attributesToHighlight copyWithZone:zone];
+    new.disableTypoToleranceOnAttributes = [self.disableTypoToleranceOnAttributes copyWithZone:zone];
     new.attributesToRetrieve = [self.attributesToRetrieve copyWithZone:zone];
     new.attributesToSnippet = [self.attributesToSnippet copyWithZone:zone];
     new.tagFilters = [self.tagFilters copyWithZone:zone];
@@ -103,6 +110,7 @@
     new.replaceSynonyms = self.replaceSynonyms;
     new.optionalWordsMinimumMatched = self.optionalWordsMinimumMatched;
     new.insideBoundingBox = [self.insideBoundingBox copyWithZone:zone];
+    new.insidePolygon = [self.insidePolygon copyWithZone:zone];
     new.aroundLatLong = [self.aroundLatLong copyWithZone:zone];
     new.aroundLatLongViaIP = self.aroundLatLongViaIP;
     new.optionalWords = [self.optionalWords copyWithZone:zone];
@@ -117,29 +125,44 @@
     return new;
 }
 
+-(ASQuery*) searchAroundLatitude:(float)latitude longitude:(float)longitude
+{
+    self.aroundLatLong = [NSString stringWithFormat:@"aroundLatLng=%f,%f", latitude, longitude];
+    return self;    
+}
+
 -(ASQuery*) searchAroundLatitude:(float)latitude longitude:(float)longitude maxDist:(NSUInteger)maxDist
 {
-    self.aroundLatLong = [NSString stringWithFormat:@"aroundLatLng=%f,%f&aroundRadius=%zd", latitude, longitude, maxDist];
+    self.aroundLatLong = [NSString stringWithFormat:@"aroundLatLng=%f,%f", latitude, longitude];
+    self.aroundRadius = maxDist;
     return self;
 }
 
 -(ASQuery*) searchAroundLatitude:(float)latitude longitude:(float)longitude maxDist:(NSUInteger)maxDist precision:(NSUInteger)precision
 {
-    self.aroundLatLong = [NSString stringWithFormat:@"aroundLatLng=%f,%f&aroundRadius=%zd&aroundPrecision=%zd", latitude, longitude, maxDist, precision];
+    self.aroundLatLong = [NSString stringWithFormat:@"aroundLatLng=%f,%f", latitude, longitude];
+    self.aroundRadius = maxDist;
+    self.aroundPrecision = precisionl;
+    return self;
+}
+
+-(ASQuery*) searchAroundLatitudeLongitudeViaIP
+{
+    self.aroundLatLongViaIP = YES;
     return self;
 }
 
 -(ASQuery*) searchAroundLatitudeLongitudeViaIP:(NSUInteger)maxDist
 {
-    self.aroundLatLong = [NSString stringWithFormat:@"aroundRadius=%zd", maxDist];
+    self.aroundRadius = maxDist;
     self.aroundLatLongViaIP = YES;
     return self;
 }
 
-
 -(ASQuery*) searchAroundLatitudeLongitudeViaIP:(NSUInteger)maxDist precision:(NSUInteger)precision
 {
-    self.aroundLatLong = [NSString stringWithFormat:@"aroundRadius=%zd&aroundPrecision=%zd", maxDist, precision];
+    self.aroundRadius = maxDist;
+    self.aroundPrecision = precisionl;
     self.aroundLatLongViaIP = YES;
     return self;
 }
@@ -147,7 +170,21 @@
 
 -(ASQuery*) searchInsideBoundingBoxWithLatitudeP1:(float)latitudeP1 longitudeP1:(float)longitudeP1 latitudeP2:(float)latitudeP2 longitudeP2:(float)longitudeP2
 {
-    self.insideBoundingBox = [NSString stringWithFormat:@"insideBoundingBox=%f,%f,%f,%f", latitudeP1, longitudeP1, latitudeP2, longitudeP2];
+    if (self.insideBoundingBox != nil) {
+        self.insideBoundingBox = [NSString stringWithFormat:@"%@,%f,%f,%f,%f", self.insideBoundingBox, latitudeP1, longitudeP1, latitudeP2, longitudeP2];
+    } else {
+        self.insideBoundingBox = [NSString stringWithFormat:@"insideBoundingBox=%f,%f,%f,%f", latitudeP1, longitudeP1, latitudeP2, longitudeP2];
+    }
+    return self;
+}
+
+-(ASQuery*) addInsidePolygon:(float)latitude longitude:(float)longitude
+{
+    if (self.insidePolygon != nil) {
+        self.insidePolygon = [NSString stringWithFormat:@"%@,%f,%f", self.insidePolygon, latitude, longitude];
+    } else {
+        self.insidePolygon = [NSString stringWithFormat:@"insidePolygon=%f,%f", latitude, longitude];
+    }
     return self;
 }
 
@@ -167,9 +204,21 @@
     if (self.attributesToHighlight != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:@"attributesToHighlight="];
+        [stringBuilder appendString:@"disableTypoToleranceOnAttributes="];
         BOOL first = YES;
         for (NSString* attribute in self.attributesToHighlight) {
+            if (!first)
+                [stringBuilder appendString:@","];
+            [stringBuilder appendString:[ASAPIClient urlEncode:attribute]];
+            first = NO;
+        }
+    }
+    if (self.disableTypoToleranceOnAttributes != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"attributesToHighlight="];
+        BOOL first = YES;
+        for (NSString* attribute in self.disableTypoToleranceOnAttributes) {
             if (!first)
                 [stringBuilder appendString:@","];
             [stringBuilder appendString:[ASAPIClient urlEncode:attribute]];
@@ -267,6 +316,18 @@
         [stringBuilder appendString:@"typoTolerance="];
         [stringBuilder appendString:self.typoTolerance];
     }
+    if (self.aroundRadius > 0) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+
+        [stringBuilder appendFormat:@"aroundRadius=%zd", self.aroundRadius];
+    }
+    if (self.aroundPrecision > 0) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+
+        [stringBuilder appendFormat:@"aroundPrecision=%zd", self.aroundPrecision];
+    }
     if (self.distinct > 0) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
@@ -331,11 +392,15 @@
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:self.aroundLatLong];
+    } else if (self.insidePolygon != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:self.insidePolygon];        
     }
     if (self.aroundLatLongViaIP) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:@"aroundLatLngViaIP=true"];      
+        [stringBuilder appendString:@"aroundLatLngViaIP=true"];
     }
     if (self.fullTextQuery != nil) {
         if ([stringBuilder length] > 0)
