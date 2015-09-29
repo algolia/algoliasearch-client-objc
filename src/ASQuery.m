@@ -162,7 +162,7 @@
 -(ASQuery*) searchAroundLatitudeLongitudeViaIP:(NSUInteger)maxDist precision:(NSUInteger)precision
 {
     self.aroundRadius = maxDist;
-    self.aroundPrecision = precisionl;
+    self.aroundPrecision = precision;
     self.aroundLatLongViaIP = YES;
     return self;
 }
