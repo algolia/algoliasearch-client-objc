@@ -204,7 +204,7 @@
     if (self.attributesToHighlight != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:@"disableTypoToleranceOnAttributes="];
+        [stringBuilder appendString:@"attributesToHighlight="];
         BOOL first = YES;
         for (NSString* attribute in self.attributesToHighlight) {
             if (!first)
@@ -216,7 +216,7 @@
     if (self.disableTypoToleranceOnAttributes != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:@"attributesToHighlight="];
+        [stringBuilder appendString:@"disableTypoToleranceOnAttributes="];
         BOOL first = YES;
         for (NSString* attribute in self.disableTypoToleranceOnAttributes) {
             if (!first)
