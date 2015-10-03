@@ -70,6 +70,7 @@
         _aroundLatLong = nil;
         _aroundLatLongViaIP = NO;
         _optionalWords = nil;
+        _filters = nil;
         _facetFilters = nil;
         _facetFiltersRaw = nil;
         _facets = nil;
@@ -114,6 +115,7 @@
     new.aroundLatLong = [self.aroundLatLong copyWithZone:zone];
     new.aroundLatLongViaIP = self.aroundLatLongViaIP;
     new.optionalWords = [self.optionalWords copyWithZone:zone];
+    new.filters = [self.filters copyWithZone:zone];
     new.facetFilters = [self.facetFilters copyWithZone:zone];
     new.facetFiltersRaw = [self.facetFiltersRaw copyWithZone:zone];
     new.facets = [self.facets copyWithZone:zone];
@@ -236,6 +238,12 @@
             [stringBuilder appendString:[ASAPIClient urlEncode:attribute]];
             first = NO;
         }
+    }
+    if (self.filters != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:@"filters="];
+        [stringBuilder appendString:[ASAPIClient urlEncode:self.filters]];
     }
     if (self.facetFilters != nil) {
         if ([stringBuilder length] > 0)
