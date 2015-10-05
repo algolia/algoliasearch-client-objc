@@ -338,4 +338,9 @@
  */
 @property BOOL                             aroundLatLongViaIP;
 
+/**
+ * If set to YES,  the advanced query syntax will be availabel. Default to false.
+ */
+@property BOOL                             advancedSyntax;
+
 @end
