@@ -120,6 +120,11 @@
 @property (nonatomic) NSString            *queryType;
 
 /**
+ * Set full text search of similar query (like this)
+ */
+@property (nonatomic) NSString            *similarQuery;
+
+/**
  * Select the strategy to avoid having an empty result page.
  * "None": No specific processing is done when a query does not return any result,
  * "LastWords": when a query does not return any result, the final word will be removed until there is results,
@@ -342,5 +347,10 @@
  * If set to YES,  the advanced query syntax will be availabel. Default to false.
  */
 @property BOOL                             advancedSyntax;
+
+/**
+ * If set to YES, enable removal of stop words
+ */
+@property BOOL                             removeStopWords;
 
 @end

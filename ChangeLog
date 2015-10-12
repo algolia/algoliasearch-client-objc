@@ -1,5 +1,10 @@
 CHANGELOG
 
+2015-10-12 3.6.2
+- Added remove stop words query parameter
+- Added support of similar queries
+- Added advanced syntax option
+	
 2015-09-30 3.6.1
  * Added support of multiple bounding box for geo-search
  * Added support of polygon for geo-search

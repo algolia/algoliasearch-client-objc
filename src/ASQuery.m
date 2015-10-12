@@ -58,6 +58,7 @@
         _numericFilters = nil;
         _fullTextQuery = pfullTextQuery;
         _queryType = nil;
+	_similarQuery = nil;
         _removeWordsIfNoResult = nil;
         _typoTolerance = nil;
         _typosOnNumericTokens = YES;
@@ -79,6 +80,7 @@
         _highlightPostTag = nil;
         _analyticsTags = nil;
         _advancedSyntax = NO;
+	_removeStopWords = NO;
     }
     return self;
 }
@@ -104,6 +106,7 @@
     new.numericFilters = [self.numericFilters copyWithZone:zone];
     new.fullTextQuery = [self.fullTextQuery copyWithZone:zone];
     new.queryType = [self.queryType copyWithZone:zone];
+    new.similarQuery = [self.similarQuery copyWithZone:zone];
     new.removeWordsIfNoResult = [self.removeWordsIfNoResult copyWithZone:zone];
     new.typoTolerance = [self.typoTolerance copyWithZone:zone];
     new.typosOnNumericTokens = self.typosOnNumericTokens;
@@ -125,7 +128,7 @@
     new.highlightPostTag = [self.highlightPostTag copyWithZone:zone];
     new.analyticsTags = [self.analyticsTags copyWithZone:zone];
     new.advancedSyntax = self.advancedSyntax;
-    
+    new.ChangeLog = self.ChangeLog;
     return new;
 }
 
@@ -379,6 +382,11 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"queryType=%@", [ASAPIClient urlEncode:self.queryType]];
     }
+    if (self.similarQuery != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"similarQuery=%@", [ASAPIClient urlEncode:self.similarQuery]];
+    }
     if (self.removeWordsIfNoResult != nil) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
@@ -449,6 +457,12 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"advancedSyntax=true"];
     }
+    if (self.removeStopWords) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"removeStopWords=true"];
+    }
+
     return stringBuilder;
 }
 
