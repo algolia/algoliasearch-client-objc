@@ -128,7 +128,7 @@
     new.highlightPostTag = [self.highlightPostTag copyWithZone:zone];
     new.analyticsTags = [self.analyticsTags copyWithZone:zone];
     new.advancedSyntax = self.advancedSyntax;
-    new.ChangeLog = self.ChangeLog;
+    new.removeStopWords = self.removeStopWords;
     return new;
 }
 
