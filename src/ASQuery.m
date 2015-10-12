@@ -78,6 +78,7 @@
         _highlightPreTag = nil;
         _highlightPostTag = nil;
         _analyticsTags = nil;
+        _advancedSyntax = NO;
     }
     return self;
 }
@@ -123,6 +124,7 @@
     new.highlightPreTag = [self.highlightPreTag copyWithZone:zone];
     new.highlightPostTag = [self.highlightPostTag copyWithZone:zone];
     new.analyticsTags = [self.analyticsTags copyWithZone:zone];
+    new.advancedSyntax = self.advancedSyntax;
     
     return new;
 }
@@ -441,6 +443,11 @@
             [stringBuilder appendString:[ASAPIClient urlEncode:tag]];
             first = NO;
         }
+    }
+    if (self.advancedSyntax) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"advancedSyntax=true"];
     }
     return stringBuilder;
 }
