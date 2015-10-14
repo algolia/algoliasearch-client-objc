@@ -462,6 +462,16 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"removeStopWords=true"];
     }
+    if (self.userToken != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"userToken=%@", [ASAPIClient urlEncode:self.userToken]];
+    }
+    if (self.referers != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"referer=%@", [ASAPIClient urlEncode:self.referers]];
+    }
 
     return stringBuilder;
 }

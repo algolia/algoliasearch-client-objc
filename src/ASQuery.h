@@ -353,4 +353,14 @@
  */
 @property BOOL                             removeStopWords;
 
+/**
+ * Set the key used to compute the rate-limit
+ */
+@property (nonatomic) NSString             *userToken;
+
+/**
+ * Restrict the search to a referer
+ */
+@property (nonatomic) NSString             *referers;
+
 @end
