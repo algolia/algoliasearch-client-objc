@@ -182,12 +182,14 @@
  * Defaults to 3.
  */
 @property (nonatomic) NSUInteger           minWordSizeForApprox1;
+@property BOOL                             minWordSizeForApprox1Set;
 
 /**
  * Specify the minimum number of characters in a query word to accept two typos in this word.
  * Defaults to 7.
  */
 @property (nonatomic) NSUInteger           minWordSizeForApprox2;
+@property BOOL                             minWordSizeForApprox2Set;
 
 /**
  * Set the page to retrieve (zero base). Defaults to 0.
@@ -198,22 +200,26 @@
  *  Set the number of hits per page. Defaults to 10.
  */
 @property (nonatomic) NSUInteger           hitsPerPage;
+@property BOOL                             hitsPerPageSet;
 
 /**
  * Configure the precision of the proximity ranking criterion. By default, the minimum (and best) proximity value distance between 2 matching words is 1. Setting it to 2 (or 3) would allow 1 (or 2) words to be found between the matching words without degrading the proximity ranking value.
  * Considering the query "javascript framework", if you set minProximity=2 the records "JavaScript framework" and "JavaScript charting framework" will get the same proximity score, even if the second one contains a word between the 2 matching words. Default to 1.
  */
 @property (nonatomic) NSUInteger           minProximity;
+@property BOOL                             minProximitySet;
 
 /**
  * if set, the result hits will contain ranking information in _rankingInfo attribute.
  */
 @property BOOL                             getRankingInfo;
+@property BOOL                             getRankingInfoSet;
 
 /**
  * If set to YES, plural won't be considered as a typo (for example car/cars will be considered as equals). Default to NO.
  */
 @property BOOL                             ignorePlural;
+@property BOOL                             ignorePluralSet;
 
 /**
  * This option allow to control the number of typo in the results set.
@@ -224,21 +230,25 @@
  *  If set to false, disable typo-tolerance on numeric tokens. Default to true.
  */
 @property BOOL                             typosOnNumericTokens;
+@property BOOL                             typosOnNumericTokensSet;
 
 /**
  * If set to false, disable this query won't appear in the analytics. Default to true.
  */
 @property BOOL                             analytics;
+@property BOOL                             analyticsSet;
 
 /**
  * If set to false, this query will not use synonyms defined in configuration. Default to true.
  */
 @property BOOL                             synonyms;
+@property BOOL                             synonymsSet;
 
 /**
  * If set to false, words matched via synonyms expansion will not be replaced by the matched synonym in highlight result. Default to true.
  */
 @property BOOL                             replaceSynonyms;
+@property BOOL                             replaceSynonymsSet;
 
 /**
  *
@@ -250,6 +260,7 @@
  * Specify the maximum number of hits to keep for each distinct value.
  */
 @property (nonatomic) NSUInteger           distinct;
+@property BOOL                             distinctSet;
 
 /**
   * Set the list of words that should be considered as optional when found in the query (array of NSString).
@@ -260,6 +271,7 @@
  *  Set the minimum number of optional words that need to match
  */
 @property (nonatomic) NSUInteger           optionalWordsMinimumMatched;
+@property BOOL                             optionalWordsMinimumMatchedSet;
 
 /**
  * Filter the query with numeric, facet or/and tag filters. The syntax is a SQL like syntax, you can use the OR and AND keywords.
@@ -328,10 +340,12 @@
  * Change the radius or around latitude/longitude query
  */
 @property (nonatomic) NSUInteger           aroundRadius;
+@property BOOL                             aroundRadiusSet;
 /**
  * Change the precision or around latitude/longitude query
  */
 @property (nonatomic) NSUInteger           aroundPrecision;
+@property BOOL                             aroundPrecisionSet;
 
 /**
  * Tags can be used in the Analytics to analyze a subset of searches only. Comma-separated string list like @[@"ios", @"web"]
@@ -342,24 +356,27 @@
  * If set to YES use geolocation via client IP instead of passing a latitude/longitude manually
  */
 @property BOOL                             aroundLatLongViaIP;
+@property BOOL                             aroundLatLongViaIPSet;
 
 /**
  * If set to YES,  the advanced query syntax will be availabel. Default to false.
  */
 @property BOOL                             advancedSyntax;
+@property BOOL                             advancedSyntaxSet;
 
 /**
  * If set to YES, enable removal of stop words
  */
 @property BOOL                             removeStopWords;
+@property BOOL                             removeStopWordsSet;
 
 /**
- * Set the key used to compute the rate-limit
+ *
  */
 @property (nonatomic) NSString             *userToken;
 
 /**
- * Restrict the search to a referer
+ *
  */
 @property (nonatomic) NSString             *referers;
 

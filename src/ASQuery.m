@@ -40,16 +40,10 @@
 {
     self = [super init];
     if (self) {
-        _minWordSizeForApprox1 = 3;
-        _minWordSizeForApprox2 = 7;
-        _getRankingInfo = NO;
-        _ignorePlural = NO;
-        _distinct = 0;
-        _aroundPrecision = 0;
-        _aroundRadius = 0;
+        _minWordSizeForApprox1Set = _minWordSizeForApprox2Set = _getRankingInfoSet = _ignorePluralSet = _distinctSet = _hitsPerPageSet = _minProximitySet = NO;
+        _typosOnNumericTokensSet = _analyticsSet = _synonymsSet = _replaceSynonymsSet = _optionalWordsMinimumMatchedSet = _aroundLatLongViaIPSet = NO;
+        _advancedSyntaxSet = _removeStopWordsSet = _aroundPrecisionSet = _aroundRadiusSet = NO;
         _page = 0;
-        _hitsPerPage = 20;
-        _minProximity = 1;
         _attributesToHighlight = nil;
         _disableTypoToleranceOnAttributes = nil;
         _attributesToRetrieve = nil;
@@ -58,18 +52,12 @@
         _numericFilters = nil;
         _fullTextQuery = pfullTextQuery;
         _queryType = nil;
-	_similarQuery = nil;
+        _similarQuery = nil;
         _removeWordsIfNoResult = nil;
         _typoTolerance = nil;
-        _typosOnNumericTokens = YES;
-        _analytics = YES;
-        _synonyms = YES;
-        _replaceSynonyms = YES;
-        _optionalWordsMinimumMatched = 0;
         _insideBoundingBox = nil;
         _insidePolygon = nil;
         _aroundLatLong = nil;
-        _aroundLatLongViaIP = NO;
         _optionalWords = nil;
         _filters = nil;
         _facetFilters = nil;
@@ -79,8 +67,8 @@
         _highlightPreTag = nil;
         _highlightPostTag = nil;
         _analyticsTags = nil;
-        _advancedSyntax = NO;
-	_removeStopWords = NO;
+        _userToken = nil;
+        _referers = nil;
     }
     return self;
 }
@@ -89,15 +77,24 @@
     ASQuery *new = [[ASQuery alloc] init];
     
     new.minWordSizeForApprox1 = self.minWordSizeForApprox1;
+    new.minWordSizeForApprox1Set = self.minWordSizeForApprox1Set;
     new.minWordSizeForApprox2 = self.minWordSizeForApprox2;
+    new.minWordSizeForApprox2Set = self.minWordSizeForApprox2Set;
     new.getRankingInfo = self.getRankingInfo;
+    new.getRankingInfoSet = self.getRankingInfoSet;
     new.ignorePlural = self.ignorePlural;
+    new.ignorePluralSet = self.ignorePluralSet;
     new.distinct = self.distinct;
-    new.aroundRadius = new.aroundRadius;
-    new.aroundPrecision = new.aroundPrecision;
+    new.distinctSet = self.distinctSet;
+    new.aroundRadius = self.aroundRadius;
+    new.aroundRadiusSet = self.aroundRadiusSet;
+    new.aroundPrecision = self.aroundPrecision;
+    new.aroundPrecisionSet = self.aroundPrecisionSet;
     new.page = self.page;
     new.hitsPerPage = self.hitsPerPage;
+    new.hitsPerPageSet = self.hitsPerPageSet;
     new.minProximity = self.minProximity;
+    new.minProximitySet = self.minProximitySet;
     new.attributesToHighlight = [self.attributesToHighlight copyWithZone:zone];
     new.disableTypoToleranceOnAttributes = [self.disableTypoToleranceOnAttributes copyWithZone:zone];
     new.attributesToRetrieve = [self.attributesToRetrieve copyWithZone:zone];
@@ -110,14 +107,20 @@
     new.removeWordsIfNoResult = [self.removeWordsIfNoResult copyWithZone:zone];
     new.typoTolerance = [self.typoTolerance copyWithZone:zone];
     new.typosOnNumericTokens = self.typosOnNumericTokens;
+    new.typosOnNumericTokensSet = self.typosOnNumericTokensSet;
     new.analytics = self.analytics;
+    new.analyticsSet = self.analyticsSet;
     new.synonyms = self.synonyms;
+    new.synonymsSet = self.synonymsSet;
     new.replaceSynonyms = self.replaceSynonyms;
+    new.replaceSynonymsSet = self.replaceSynonymsSet;
     new.optionalWordsMinimumMatched = self.optionalWordsMinimumMatched;
+    new.optionalWordsMinimumMatchedSet = self.optionalWordsMinimumMatchedSet;
     new.insideBoundingBox = [self.insideBoundingBox copyWithZone:zone];
     new.insidePolygon = [self.insidePolygon copyWithZone:zone];
     new.aroundLatLong = [self.aroundLatLong copyWithZone:zone];
     new.aroundLatLongViaIP = self.aroundLatLongViaIP;
+    new.aroundLatLongViaIPSet = self.aroundLatLongViaIPSet;
     new.optionalWords = [self.optionalWords copyWithZone:zone];
     new.filters = [self.filters copyWithZone:zone];
     new.facetFilters = [self.facetFilters copyWithZone:zone];
@@ -128,7 +131,12 @@
     new.highlightPostTag = [self.highlightPostTag copyWithZone:zone];
     new.analyticsTags = [self.analyticsTags copyWithZone:zone];
     new.advancedSyntax = self.advancedSyntax;
+    new.advancedSyntaxSet = self.advancedSyntaxSet;
     new.removeStopWords = self.removeStopWords;
+    new.removeStopWordsSet = self.removeStopWordsSet;
+    new.userToken = self.userToken;
+    new.referers = self.referers;
+    
     return new;
 }
 
@@ -293,35 +301,35 @@
             first = NO;
         }
     }
-    if (self.optionalWordsMinimumMatched > 0) {
+    if (self.optionalWordsMinimumMatchedSet) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"optionalWordsMinimumMatched=%zd", self.optionalWordsMinimumMatched];
     }
-    if (self.minWordSizeForApprox1 != 3) {
+    if (self.minWordSizeForApprox1Set) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"minWordSizefor1Typo=%zd", self.minWordSizeForApprox1];
     }
-    if (self.minWordSizeForApprox2 != 7) {
+    if (self.minWordSizeForApprox2Set) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"minWordSizefor2Typos=%zd", self.minWordSizeForApprox2];
     }
-    if (self.ignorePlural) {
+    if (self.ignorePluralSet) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:@"ignorePlural=true"];
+        [stringBuilder appendFormat:@"ignorePlural=%d", self.ignorePlural];
     }
-    if (self.getRankingInfo) {
+    if (self.getRankingInfoSet) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:@"getRankingInfo=1"];
+        [stringBuilder appendFormat:@"getRankingInfo=%d", self.getRankingInfo];
     }
-    if (!self.typosOnNumericTokens) {
+    if (self.typosOnNumericTokensSet) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:@"allowTyposOnNumericTokens=false"];
+        [stringBuilder appendFormat:@"allowTyposOnNumericTokens=%d", self.typosOnNumericTokens];
     }
     if (self.typoTolerance  != nil) {
         if ([stringBuilder length] > 0)
@@ -329,38 +337,38 @@
         [stringBuilder appendString:@"typoTolerance="];
         [stringBuilder appendString:self.typoTolerance];
     }
-    if (self.aroundRadius > 0) {
+    if (self.aroundRadiusSet) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
 
         [stringBuilder appendFormat:@"aroundRadius=%zd", self.aroundRadius];
     }
-    if (self.aroundPrecision > 0) {
+    if (self.aroundPrecisionSet) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
 
         [stringBuilder appendFormat:@"aroundPrecision=%zd", self.aroundPrecision];
     }
-    if (self.distinct > 0) {
+    if (self.distinctSet) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
 
         [stringBuilder appendFormat:@"distinct=%zd", self.distinct];
     }
-    if (!self.analytics) {
+    if (self.analyticsSet) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:@"analytics=0"];
+        [stringBuilder appendFormat:@"analytics=%d", self.analytics];
     }
-    if (!self.synonyms) {
+    if (self.synonymsSet) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:@"synonyms=0"];
+        [stringBuilder appendFormat:@"synonyms=%d", self.synonyms];
     }
-    if (!self.replaceSynonyms) {
+    if (self.replaceSynonymsSet) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:@"replaceSynonymsInHighlight=0"];
+        [stringBuilder appendFormat:@"replaceSynonymsInHighlight=%d", self.replaceSynonyms];
     }
     if (self.page > 0) {
         if ([stringBuilder length] > 0)
@@ -372,7 +380,7 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"hitsPerPage=%zd", self.hitsPerPage];
     }
-    if (self.minProximity > 1) {
+    if (self.minProximitySet) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"minProximity=%zd", self.minProximity];
@@ -415,10 +423,10 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendString:self.insidePolygon];        
     }
-    if (self.aroundLatLongViaIP) {
+    if (self.aroundLatLongViaIPSet) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendString:@"aroundLatLngViaIP=true"];
+        [stringBuilder appendFormat:@"aroundLatLngViaIP=%d", self.aroundLatLongViaIP];
     }
     if (self.fullTextQuery != nil) {
         if ([stringBuilder length] > 0)
@@ -452,15 +460,15 @@
             first = NO;
         }
     }
-    if (self.advancedSyntax) {
+    if (self.advancedSyntaxSet) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendFormat:@"advancedSyntax=true"];
+        [stringBuilder appendFormat:@"advancedSyntax=%d", self.advancedSyntax];
     }
-    if (self.removeStopWords) {
+    if (self.removeStopWordsSet) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
-        [stringBuilder appendFormat:@"removeStopWords=true"];
+        [stringBuilder appendFormat:@"removeStopWords=%d", self.removeStopWords];
     }
     if (self.userToken != nil) {
         if ([stringBuilder length] > 0)
@@ -474,6 +482,192 @@
     }
 
     return stringBuilder;
+}
+
+@synthesize minWordSizeForApprox1 = _minWordSizeForApprox1;
+-(void) setMinWordSizeForApprox1:(NSUInteger)minWordSizeForApprox1 {
+    _minWordSizeForApprox1 = minWordSizeForApprox1;
+    self.minWordSizeForApprox1Set = true;
+}
+
+-(NSUInteger)minWordSizeForApprox1 {
+    self.minWordSizeForApprox1Set = true;
+    return _minWordSizeForApprox1;
+}
+
+@synthesize minWordSizeForApprox2 = _minWordSizeForApprox2;
+-(void) setMinWordSizeForApprox2:(NSUInteger)minWordSizeForApprox2 {
+    _minWordSizeForApprox2 = minWordSizeForApprox2;
+    self.minWordSizeForApprox2Set = true;
+}
+
+-(NSUInteger)minWordSizeForApprox2 {
+    self.minWordSizeForApprox2Set = true;
+    return _minWordSizeForApprox2;
+}
+
+@synthesize hitsPerPage = _hitsPerPage;
+-(void) setHitsPerPage:(NSUInteger)hitsPerPage {
+    _hitsPerPage = hitsPerPage;
+    self.hitsPerPageSet = true;
+}
+
+-(NSUInteger)hitsPerPage {
+    self.hitsPerPageSet = true;
+    return _hitsPerPage;
+}
+
+@synthesize minProximity = _minProximity;
+-(void) setMinProximity:(NSUInteger)minProximity {
+    _minProximity = minProximity;
+    self.minProximitySet = true;
+}
+
+-(NSUInteger)minProximity {
+    self.minProximitySet = true;
+    return _minProximity;
+}
+
+@synthesize getRankingInfo = _getRankingInfo;
+-(void) setGetRankingInfo:(BOOL)getRankingInfo {
+    _getRankingInfo = getRankingInfo;
+    self.getRankingInfoSet = true;
+}
+
+-(BOOL)getRankingInfo {
+    self.getRankingInfoSet = true;
+    return _getRankingInfo;
+}
+
+@synthesize ignorePlural = _ignorePlural;
+-(void) setIgnorePlural:(BOOL)ignorePlural {
+    _ignorePlural = ignorePlural;
+    self.ignorePluralSet = true;
+}
+
+-(BOOL)ignorePlural {
+    self.ignorePluralSet = true;
+    return _ignorePlural;
+}
+
+@synthesize typosOnNumericTokens = _typosOnNumericTokens;
+-(void) setTyposOnNumericTokens:(BOOL)typosOnNumericTokens {
+    _typosOnNumericTokens = typosOnNumericTokens;
+    self.typosOnNumericTokensSet = true;
+}
+
+-(BOOL)typosOnNumericTokens {
+    self.typosOnNumericTokensSet = true;
+    return _typosOnNumericTokens;
+}
+
+@synthesize analytics = _analytics;
+-(void) setAnalytics:(BOOL)analytics {
+    _analytics = analytics;
+    self.analyticsSet = true;
+}
+
+-(BOOL)analytics {
+    self.analyticsSet = true;
+    return _analytics;
+}
+
+@synthesize synonyms = _synonyms;
+-(void) setSynonyms:(BOOL)synonyms {
+    _synonyms = synonyms;
+    self.synonymsSet = true;
+}
+
+-(BOOL)synonyms {
+    self.synonymsSet = true;
+    return _synonyms;
+}
+
+@synthesize replaceSynonyms = _replaceSynonyms;
+-(void) setReplaceSynonyms:(BOOL)replaceSynonyms {
+    _replaceSynonyms = replaceSynonyms;
+    self.replaceSynonymsSet = true;
+}
+
+-(BOOL)replaceSynonyms {
+    self.replaceSynonymsSet = true;
+    return _replaceSynonyms;
+}
+
+@synthesize distinct = _distinct;
+-(void) setDistinct:(NSUInteger)distinct {
+    _distinct = distinct;
+    self.distinctSet = true;
+}
+
+-(NSUInteger)distinct {
+    self.distinctSet = true;
+    return _distinct;
+}
+
+@synthesize optionalWordsMinimumMatched = _optionalWordsMinimumMatched;
+-(void)setOptionalWordsMinimumMatched:(NSUInteger)optionalWordsMinimumMatched {
+    _optionalWordsMinimumMatched = optionalWordsMinimumMatched;
+    self.optionalWordsMinimumMatchedSet = true;
+}
+
+-(NSUInteger)optionalWordsMinimumMatched {
+    self.optionalWordsMinimumMatchedSet = true;
+    return _optionalWordsMinimumMatched;
+}
+@synthesize aroundRadius = _aroundRadius;
+-(void) setAroundRadius:(NSUInteger)aroundRadius {
+    _aroundRadius = aroundRadius;
+    self.aroundRadiusSet = true;
+}
+
+-(NSUInteger)aroundRadius {
+    self.aroundRadiusSet = true;
+    return _aroundRadius;
+}
+
+@synthesize aroundPrecision = _aroundPrecision;
+-(void) setAroundPrecision:(NSUInteger)aroundPrecision {
+    _aroundPrecision = aroundPrecision;
+    self.aroundPrecisionSet = true;
+}
+
+-(NSUInteger)aroundPrecision {
+    self.aroundPrecisionSet = true;
+    return _aroundPrecision;
+}
+
+@synthesize aroundLatLongViaIP = _aroundLatLongViaIP;
+-(void) setAroundLatLongViaIP:(BOOL)aroundLatLongViaIP {
+    _aroundLatLongViaIP = aroundLatLongViaIP;
+    self.aroundLatLongViaIPSet = true;
+}
+
+-(BOOL)aroundLatLongViaIP {
+    self.aroundLatLongViaIPSet = true;
+    return _aroundLatLongViaIP;
+}
+
+@synthesize advancedSyntax = _advancedSyntax;
+-(void)setAdvancedSyntax:(BOOL)advancedSyntax {
+    _advancedSyntax = advancedSyntax;
+    self.advancedSyntaxSet = true;
+}
+
+-(BOOL)advancedSyntax {
+    self.advancedSyntaxSet = true;
+    return _advancedSyntax;
+}
+
+@synthesize removeStopWords = _removeStopWords;
+-(void) setRemoveStopWords:(BOOL)removeStopWords {
+    _removeStopWords = removeStopWords;
+    self.removeStopWordsSet = true;
+}
+
+-(BOOL)removeStopWords {
+    self.removeStopWordsSet = true;
+    return _removeStopWords;
 }
 
 @end
