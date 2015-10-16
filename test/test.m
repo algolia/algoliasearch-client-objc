@@ -1216,4 +1216,50 @@ NSString* safeIndexName(NSString* indexName)
     [self waitForExpectationsWithTimeout:100 handler:nil];
 }
 
+-(void)testQueryParameters
+{
+    XCTestExpectation *expecation = [self expectationWithDescription:@"testAdd"];
+    NSDictionary *obj = @{@"city": @"San Francisco", @"objectID": @"a/go/?à"};
+    
+    [self.index addObject:obj success:^(ASRemoteIndex *index, NSDictionary *object, NSDictionary *result) {
+        [index waitTask:result[@"taskID"] success:^(ASRemoteIndex *index, NSString *taskID, NSDictionary *result) {
+            XCTAssertEqualObjects(result[@"status"], @"published", "Wait task failed");
+            ASQuery *query = [[ASQuery alloc] initWithFullTextQuery:@""];
+            query.synonyms = false;
+            query.analytics = true;
+            query.advancedSyntax = false;
+            query.aroundLatLongViaIP = false;
+            query.aroundPrecision = 42;
+            query.aroundRadius = 42;
+            query.hitsPerPage = 20;
+            query.removeStopWords = false;
+            query.optionalWordsMinimumMatched = true;
+            query.distinct = 42;
+            query.replaceSynonyms = true;
+            query.ignorePlural = true;
+            query.getRankingInfo = true;
+            query.minProximity = 2;
+            query.hitsPerPage = 7;
+            query.minWordSizeForApprox1 = 3;
+            query.minWordSizeForApprox2 = 7;
+            [self.index search:query success:^(ASRemoteIndex *index, ASQuery *query, NSDictionary *result) {
+                NSMutableString *nbHits = [NSMutableString stringWithFormat:@"%@",result[@"nbHits"]];
+                XCTAssertEqualObjects(nbHits, @"1", @"Wrong number of object in the index");
+                [expecation fulfill];
+            } failure:^(ASRemoteIndex *index, ASQuery *query, NSString *errorMessage) {
+                XCTFail("@Error during search: %@", errorMessage);
+                [expecation fulfill];
+            }];
+        } failure:^(ASRemoteIndex *index, NSString *taskID, NSString *errorMessage) {
+            XCTFail("@Error during waitTask: %@", errorMessage);
+            [expecation fulfill];
+        }];
+    } failure:^(ASRemoteIndex *index, NSDictionary *object, NSString *errorMessage) {
+        XCTFail("@Error during addObject: %@", errorMessage);
+        [expecation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:100 handler:nil];
+}
+
 @end

@@ -328,6 +328,7 @@
  * Change the radius or around latitude/longitude query
  */
 @property (nonatomic) NSUInteger           aroundRadius;
+
 /**
  * Change the precision or around latitude/longitude query
  */
@@ -352,5 +353,15 @@
  * If set to YES, enable removal of stop words
  */
 @property BOOL                             removeStopWords;
+
+/**
+ *
+ */
+@property (nonatomic) NSString             *userToken;
+
+/**
+ *
+ */
+@property (nonatomic) NSString             *referers;
 
 @end
