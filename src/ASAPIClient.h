@@ -22,7 +22,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AFNetworking.h"
+#import <AFNetworking/AFNetworking.h>
 #import "ASRemoteIndex.h"
 
 FOUNDATION_EXPORT NSString *const Version;
