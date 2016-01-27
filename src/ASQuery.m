@@ -84,6 +84,7 @@
         _restrictSearchableAttributes = nil;
         _highlightPreTag = nil;
         _highlightPostTag = nil;
+        _snippetEllipsisText = nil;
         _analyticsTags = nil;
         _userToken = nil;
         _referers = nil;
@@ -147,6 +148,7 @@
     new.restrictSearchableAttributes = [self.restrictSearchableAttributes copyWithZone:zone];
     new.highlightPreTag = [self.highlightPreTag copyWithZone:zone];
     new.highlightPostTag = [self.highlightPostTag copyWithZone:zone];
+    new.snippetEllipsisText = [self.snippetEllipsisText copyWithZone:zone];
     new.analyticsTags = [self.analyticsTags copyWithZone:zone];
     if (advancedSyntaxSet)
         new.advancedSyntax = self.advancedSyntax;
@@ -465,6 +467,11 @@
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"highlightPostTag=%@", [ASAPIClient urlEncode:self.highlightPostTag]];
+    }
+    if (self.snippetEllipsisText != nil) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"snippetEllipsisText=%@", [ASAPIClient urlEncode:self.snippetEllipsisText]];
     }
     if (self.analyticsTags != nil) {
         if ([stringBuilder length] > 0)

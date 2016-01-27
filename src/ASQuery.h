@@ -310,6 +310,12 @@
 @property (nonatomic) NSString            *highlightPostTag;
 
 /**
+ * Specify the string that is used as an ellipsis indicator when a snippet
+ * is truncated (defaults to the empty string).
+ */
+@property (nonatomic) NSString            *snippetEllipsisText;
+
+/**
  * Contains insideBoundingBox query (you should use searchInsideBoundingBox selector to set it)
  */
 @property (nonatomic) NSString            *insideBoundingBox;
