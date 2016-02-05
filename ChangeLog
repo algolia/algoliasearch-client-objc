@@ -1,5 +1,8 @@
 CHANGELOG
 
+2016-02-05 3.6.4
+- Added support of snippet ellipsis
+	
 2015-10-16 3.6.3
 - Fixed ability to override index settings
 
