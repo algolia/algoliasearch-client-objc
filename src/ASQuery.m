@@ -42,6 +42,7 @@
     BOOL    aroundLatLongViaIPSet;
     BOOL    advancedSyntaxSet;
     BOOL    removeStopWordsSet;
+    BOOL    maxValuesPerFacetSet;
 }
 
 +(instancetype) queryWithFullTextQuery:(NSString *)fullTextQuery
@@ -58,7 +59,7 @@
 {
     self = [super init];
     if (self) {
-        minWordSizeForApprox1Set = minWordSizeForApprox2Set = getRankingInfoSet = ignorePluralSet = distinctSet = hitsPerPageSet = minProximitySet = NO;
+        minWordSizeForApprox1Set = minWordSizeForApprox2Set = getRankingInfoSet = ignorePluralSet = distinctSet = hitsPerPageSet = minProximitySet = maxValuesPerFacetSet = NO;
         typosOnNumericTokensSet = analyticsSet = synonymsSet = replaceSynonymsSet = optionalWordsMinimumMatchedSet = aroundLatLongViaIPSet = NO;
         advancedSyntaxSet = removeStopWordsSet = aroundPrecisionSet = aroundRadiusSet = NO;
         _page = 0;
@@ -156,6 +157,8 @@
         new.removeStopWords = self.removeStopWords;
     new.userToken = self.userToken;
     new.referers = self.referers;
+    if (maxValuesPerFacetSet)
+        new.maxValuesPerFacet = self.maxValuesPerFacet;
     
     return new;
 }
@@ -395,7 +398,7 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"page=%zd", self.page];
     }
-    if (self.hitsPerPage != 20 && self.hitsPerPage > 0) {
+    if (hitsPerPageSet) {
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"hitsPerPage=%zd", self.hitsPerPage];
@@ -504,6 +507,11 @@
         if ([stringBuilder length] > 0)
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"referer=%@", [ASAPIClient urlEncode:self.referers]];
+    }
+    if (maxValuesPerFacetSet) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendFormat:@"maxValuesPerFacet=%zd", self.maxValuesPerFacet];
     }
 
     return stringBuilder;
@@ -693,6 +701,17 @@
 -(BOOL)removeStopWords {
     removeStopWordsSet = true;
     return _removeStopWords;
+}
+
+@synthesize maxValuesPerFacet = _maxValuesPerFacet;
+-(void) setMaxValuesPerFacet:(NSUInteger)maxValuesPerFacet {
+    _maxValuesPerFacet = maxValuesPerFacet;
+    maxValuesPerFacetSet = true;
+}
+
+-(NSUInteger)maxValuesPerFacet {
+    maxValuesPerFacetSet = true;
+    return _maxValuesPerFacet;
 }
 
 @end

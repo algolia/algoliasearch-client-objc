@@ -370,4 +370,9 @@
  */
 @property (nonatomic) NSString             *referers;
 
+/**
+ * Define the maximum number of values returns foreach facet
+ */
+@property (nonatomic) NSUInteger           maxValuesPerFacet;
+
 @end

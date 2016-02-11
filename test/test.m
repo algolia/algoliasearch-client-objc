@@ -1234,6 +1234,7 @@ NSString* safeIndexName(NSString* indexName)
             query.hitsPerPage = 20;
             query.removeStopWords = false;
             query.optionalWordsMinimumMatched = true;
+            query.maxValuesPerFacet = 2;
             query.distinct = 42;
             query.replaceSynonyms = true;
             query.ignorePlural = true;
