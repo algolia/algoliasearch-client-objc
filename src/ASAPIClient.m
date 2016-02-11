@@ -26,7 +26,7 @@
 #import "ASRemoteIndex.h"
 
 
-NSString *const Version = @"3.6.4";
+NSString *const Version = @"3.6.5";
 
 @implementation ASAPIClient
 
