@@ -43,6 +43,7 @@
     BOOL    advancedSyntaxSet;
     BOOL    removeStopWordsSet;
     BOOL    maxValuesPerFacetSet;
+    NSMutableDictionary<NSString*, NSString*>* _parameters;
 }
 
 +(instancetype) queryWithFullTextQuery:(NSString *)fullTextQuery
@@ -59,6 +60,7 @@
 {
     self = [super init];
     if (self) {
+        _parameters = [NSMutableDictionary dictionary];
         minWordSizeForApprox1Set = minWordSizeForApprox2Set = getRankingInfoSet = ignorePluralSet = distinctSet = hitsPerPageSet = minProximitySet = maxValuesPerFacetSet = NO;
         typosOnNumericTokensSet = analyticsSet = synonymsSet = replaceSynonymsSet = optionalWordsMinimumMatchedSet = aroundLatLongViaIPSet = NO;
         advancedSyntaxSet = removeStopWordsSet = aroundPrecisionSet = aroundRadiusSet = NO;
@@ -96,6 +98,7 @@
 -(instancetype) copyWithZone:(NSZone*)zone {
     ASQuery *new = [[ASQuery alloc] init];
     
+    new->_parameters = [NSMutableDictionary dictionaryWithDictionary:self->_parameters];
     if (minWordSizeForApprox1Set)
         new.minWordSizeForApprox1 = self.minWordSizeForApprox1;
     if (minWordSizeForApprox2Set)
@@ -513,8 +516,36 @@
             [stringBuilder appendString:@"&"];
         [stringBuilder appendFormat:@"maxValuesPerFacet=%zd", self.maxValuesPerFacet];
     }
+    // WARNING: Any extra parameter will override any previous one with the same name.
+    for (NSString* name in _parameters) {
+        if ([stringBuilder length] > 0)
+            [stringBuilder appendString:@"&"];
+        [stringBuilder appendString:[ASAPIClient urlEncode:name]];
+        [stringBuilder appendString:@"="];
+        [stringBuilder appendString:[ASAPIClient urlEncode:[_parameters objectForKey:name]]];
+    }
 
     return stringBuilder;
+}
+
+- (void)set:(NSString * _Nonnull)name value:(NSString * _Nullable)value {
+    if (value == nil) {
+        [_parameters removeObjectForKey:name];
+    } else {
+        [_parameters setObject:value forKey:name];
+    }
+}
+
+- (NSString * _Nullable)get:(NSString * _Nonnull)name {
+    return [_parameters objectForKey:name];
+}
+
+- (void)setObject:(NSString * _Nullable)newValue forKeyedSubscript:(NSString * _Nonnull)index {
+    [self set:index value:newValue];
+}
+
+- (NSString * _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)index {
+    return [self get:index];
 }
 
 @synthesize minWordSizeForApprox1 = _minWordSizeForApprox1;

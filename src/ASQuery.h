@@ -112,6 +112,31 @@
 -(NSString*) buildURL;
 
 /**
+ * Set a parameter by name and string value.
+ *
+ * WARNING: Parameters set this way override any conflicting typed property. No consistency check is performed.
+ * Whenever available, the typed property should be preferred.
+ */
+- (void)set:(NSString * _Nonnull)name value:(NSString * _Nullable)value;
+
+/**
+ * Get the value of an extra parameter.
+ *
+ * WARNING: Only parameters set using `-[ASQuery set:value:]` (or the subscript operator) can be read this way.
+ */
+- (NSString * _Nullable)get:(NSString * _Nonnull)name;
+
+/**
+ * Subscript assignment operator. Convenience shortcut for `-[ASQuery set:value:]`.
+ */
+- (void)setObject:(NSString * _Nullable)newValue forKeyedSubscript:(NSString * _Nonnull)index;
+
+/**
+ * Subscript read operator. Convenience shortcut for `-[ASQuery get:]`.
+ */
+- (NSString * _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)index;
+
+/**
  * Select how the query words are interpreted:
  * "prefixAll": all query words are interpreted as prefixes,
  * "prefixLast": only the last word is interpreted as a prefix (default behavior),
