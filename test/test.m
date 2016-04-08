@@ -72,6 +72,51 @@ NSString* safeIndexName(NSString* indexName)
     [self waitForExpectationsWithTimeout:1000 handler:nil];
 }
 
+- (void)testQueryExtraParameters
+{
+    // Accessor methods.
+    {
+        ASQuery* query = [[ASQuery alloc] init];
+        [query set:@"extra" value:@"value"];
+        XCTAssertEqualObjects([query get:@"extra"], @"value");
+        XCTAssertEqualObjects([query buildURL], @"extra=value");
+        [query set:@"abc" value:@"def"];
+        NSString* url = [query buildURL];
+        XCTAssert([url isEqualToString:@"abc=def&extra=value"] || [url isEqualToString:@"extra=value&abc=def"]);
+    }
+    // Subscripting.
+    {
+        ASQuery* query = [[ASQuery alloc] init];
+        query[@"extra"] = @"value";
+        XCTAssertEqualObjects(query[@"extra"], @"value");
+        XCTAssertEqualObjects([query buildURL], @"extra=value");
+        query[@"abc"] = @"def";
+        NSString* url = [query buildURL];
+        XCTAssert([url isEqualToString:@"abc=def&extra=value"] || [url isEqualToString:@"extra=value&abc=def"]);
+    }
+    // Percent escaping.
+    {
+        ASQuery* query = [[ASQuery alloc] init];
+        query[@"%&="] = @"àéïôù";
+        XCTAssertEqualObjects([query buildURL], @"%25%26%3D=%C3%A0%C3%A9%C3%AF%C3%B4%C3%B9");
+    }
+    // Overriding a typed query parameter.
+    {
+        ASQuery* query = [[ASQuery alloc] init];
+        query.hitsPerPage = 100;
+        query[@"hitsPerPage"] = @"666";
+        XCTAssertEqualObjects([query buildURL], @"hitsPerPage=100&hitsPerPage=666");
+    }
+    // Deleting a parameter.
+    {
+        ASQuery* query = [[ASQuery alloc] init];
+        query[@"abc"] = @"ABC";
+        query[@"def"] = @"DEF";
+        query[@"abc"] = nil;
+        XCTAssertEqualObjects([query buildURL], @"def=DEF");
+    }
+}
+
 - (void)testQueryErrorHandling
 {
     XCTestExpectation *notFoundExpectation = [self expectationWithDescription:@"ressourceDoesNotExist"];
