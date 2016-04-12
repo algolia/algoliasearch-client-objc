@@ -5,15 +5,10 @@
 <!--/NO_HTML-->
 
 
-**&lt;Welcome Swift developers&gt;**
+**WARNING: Deprecated.** In July 2015, we released our [Swift API Client](https://github.com/algolia/algoliasearch-client-swift), able to work with Swift and Objective-C. As of version 3 (April 2016), Swift has become the reference implementation for both Swift and Objective-C projects.
 
-In June 2015, we release our [Swift API Client](https://github.com/algolia/algoliasearch-client-swift).
+*This Objective-C API Client is no longer under active development.* It is still supported for bug fixes, but will not receive new features.
 
-It is able to work with Swift and Objective-C. If you plan to use Swift in your project, please use it since we don't support Swift in our Objective-C API Client.
-
-The Objective-C API Client is still supported and updated.
-
-**&lt;/Welcome Swift developers&gt;**
 
 
 
@@ -24,7 +19,6 @@ The Objective-C API Client is still supported and updated.
 <!--/NO_HTML-->
 
 Our Objective-C client lets you easily use the [Algolia Search API](https://www.algolia.com/doc/rest) from your iOS & OS X applications. It wraps the [Algolia Search REST API](https://www.algolia.com/doc/rest).
-
 
 
 
@@ -44,7 +38,6 @@ Table of Contents
 
 1. [Setup](#setup)
 1. [Quick Start](#quick-start)
-
 1. [Guides & Tutorials](#guides-tutorials)
 
 
@@ -64,10 +57,8 @@ Table of Contents
 1. [Clear an index](#clear-an-index)
 1. [Wait indexing](#wait-indexing)
 1. [Batch writes](#batch-writes)
-1. [Security / User API Keys](#security--user-api-keys)
-1. [Copy or rename an index](#copy-or-rename-an-index)
-1. [Backup / Retrieve all index content](#backup--retrieve-of-all-index-content)
-1. [Logs](#logs)
+1. [Copy / Move an index](#copy--move-an-index)
+1. [Backup / Export an index](#backup--export-an-index)
 
 
 <!--/NO_HTML-->
@@ -2005,226 +1996,7 @@ The attribute **action** can have these values:
 - partialUpdateObjectNoCreate
 - deleteObject
 
-Security / User API Keys
-==================
-
-The ADMIN API key provides full control of all your indices.
-You can also generate user API keys to control security.
-These API keys can be restricted to a set of operations or/and restricted to a given index.
-
-To list existing keys, you can use `listUserKeys` method:
-```objc
-// Lists global API Keys
-[apiClient listUserKeys:^(ASAPIClient *client, NSDictionary *result) {
-    NSLog(@"User keys: %@", result);
-} failure:nil];
-// Lists API Keys that can access only to this index
-[index listUserKeys:^(ASRemoteIndex *index, NSDictionary *result) {
-    NSLog(@"User keys: %@", result);
-} failure:nil];
-```
-
-Each key is defined by a set of permissions that specify the authorized actions. The different permissions are:
- * **search**: Allowed to search.
- * **browse**: Allowed to retrieve all index contents via the browse API.
- * **addObject**: Allowed to add/update an object in the index.
- * **deleteObject**: Allowed to delete an existing object.
- * **deleteIndex**: Allowed to delete index content.
- * **settings**: allows to get index settings.
- * **editSettings**: Allowed to change index settings.
- * **analytics**: Allowed to retrieve analytics through the analytics API.
- * **listIndexes**: Allowed to list all accessible indexes.
-
-Example of API Key creation:
-```objc
-// Creates a new global API key that can only perform search actions
-[apiClient addUserKey:@[@"search"] 
-  success:^(ASAPIClient *client, NSArray *acls, NSDictionary *result) {
-    NSLog(@"API Key: %@", result[@"key"]);
-} failure:nil];
-// Creates a new API key that can only perform search action on this index
-[index addUserKey:@[@"search"] 
-  success:^(ASRemoteIndex *index, NSArray *acls, NSDictionary *result) {
-    NSLog(@"API Key: %@", result[@"key"]);
-} failure:nil];
-```
-
-You can also create an API Key with advanced settings:
-
-<table><tbody>
-  
-    <tr>
-      <td valign='top'>
-        <div class='client-readme-param-container'>
-          <div class='client-readme-param-container-inner'>
-            <div class='client-readme-param-name'><code>validity</code></div>
-            
-          </div>
-        </div>
-      </td>
-      <td class='client-readme-param-content'>
-        <p>Add a validity period. The key will be valid for a specific period of time (in seconds).</p>
-
-      </td>
-    </tr>
-    
-  
-    <tr>
-      <td valign='top'>
-        <div class='client-readme-param-container'>
-          <div class='client-readme-param-container-inner'>
-            <div class='client-readme-param-name'><code>maxQueriesPerIPPerHour</code></div>
-            
-          </div>
-        </div>
-      </td>
-      <td class='client-readme-param-content'>
-        <p>Specify the maximum number of API calls allowed from an IP address per hour. Each time an API call is performed with this key, a check is performed. If the IP at the source of the call did more than this number of calls in the last hour, a 403 code is returned. Defaults to 0 (no rate limit). This parameter can be used to protect you from attempts at retrieving your entire index contents by massively querying the index.</p>
-
-      </td>
-    </tr>
-    
-  
-    <tr>
-      <td valign='top'>
-        <div class='client-readme-param-container'>
-          <div class='client-readme-param-container-inner'>
-            <div class='client-readme-param-name'><code>maxHitsPerQuery</code></div>
-            
-          </div>
-        </div>
-      </td>
-      <td class='client-readme-param-content'>
-        <p>Specify the maximum number of hits this API key can retrieve in one call. Defaults to 0 (unlimited). This parameter can be used to protect you from attempts at retrieving your entire index contents by massively querying the index.</p>
-
-      </td>
-    </tr>
-    
-  
-    <tr>
-      <td valign='top'>
-        <div class='client-readme-param-container'>
-          <div class='client-readme-param-container-inner'>
-            <div class='client-readme-param-name'><code>indexes</code></div>
-            
-          </div>
-        </div>
-      </td>
-      <td class='client-readme-param-content'>
-        <p>Specify the list of targeted indices. You can target all indices starting with a prefix or ending with a suffix using the &#39;*&#39; character. For example, &quot;dev_*&quot; matches all indices starting with &quot;dev_&quot; and &quot;*_dev&quot; matches all indices ending with &quot;_dev&quot;. Defaults to all indices if empty or blank.</p>
-
-      </td>
-    </tr>
-    
-  
-    <tr>
-      <td valign='top'>
-        <div class='client-readme-param-container'>
-          <div class='client-readme-param-container-inner'>
-            <div class='client-readme-param-name'><code>referers</code></div>
-            
-          </div>
-        </div>
-      </td>
-      <td class='client-readme-param-content'>
-        <p>Specify the list of referers. You can target all referers starting with a prefix or ending with a suffix using the &#39;*&#39; character. For example, &quot;algolia.com/*&quot; matches all referers starting with &quot;algolia.com/&quot; and &quot;*.algolia.com&quot; matches all referers ending with &quot;.algolia.com&quot;. Defaults to all referers if empty or blank.</p>
-
-      </td>
-    </tr>
-    
-  
-    <tr>
-      <td valign='top'>
-        <div class='client-readme-param-container'>
-          <div class='client-readme-param-container-inner'>
-            <div class='client-readme-param-name'><code>queryParameters</code></div>
-            
-          </div>
-        </div>
-      </td>
-      <td class='client-readme-param-content'>
-        <p>Specify the list of query parameters. You can force the query parameters for a query using the url string format (param1=X&amp;param2=Y...).</p>
-
-      </td>
-    </tr>
-    
-  
-    <tr>
-      <td valign='top'>
-        <div class='client-readme-param-container'>
-          <div class='client-readme-param-container-inner'>
-            <div class='client-readme-param-name'><code>description</code></div>
-            
-          </div>
-        </div>
-      </td>
-      <td class='client-readme-param-content'>
-        <p>Specify a description to describe where the key is used.</p>
-
-      </td>
-    </tr>
-    
-
-</tbody></table>
-
-```objc
-// Creates a new index specific API key valid for 300 seconds, with a rate limit of 100 calls per hour per IP and a maximum of 20 hits
-
-NSDictionary *params = @{@"validity": 300, @"maxQueriesPerIPPerHour": 100
-					, @"maxHitsPerQuery": 20, @"indexes": @[@"dev_*"], @"referers": @[@"algolia.com/*"]
-					, @"queryParameters": @"typoTolerance=strict&ignorePlurals=false"
-					, @"description": @"Limited search only API key for algolia.com"};
-
-[index addUserKey:[@"search"] withParams:params
-  success:^(ASRemoteIndex *index, NSArray *acls, NSDictionary* params, NSDictionary *result) {
-    NSLog(@"API Key: %@", result[@"key"]);
-} failure:nil];
-```
-
-Update the permissions of an existing key:
-```objc
-// Update an existing global API key that is valid for 300 seconds
-[apiClient updateUserKey:@"myAPIKey", withACL:@[@"search"] withValidity:300 maxQueriesPerIPPerHour:0 maxHitsPerQuery:0
-  success:^(ASAPIClient *client, NSString *key, NSArray *acls, NSDictionary *result) {
-    NSLog(@"API Key: %@", result[@"key"]);
-} failure:nil];
-// Update an existing index specific API key valid for 300 seconds, with a rate limit of 100 calls per hour per IP and a maximum of 20 hits
-[index updateUserKey:@"myAPIKey" withACL:@[@"search"] withValidity:300 maxQueriesPerIPPerHour:100 maxHitsPerQuery:20
-  success:^(ASRemoteIndex *index, NSString *key, NSArray *acls, NSDictionary *result) {
-    NSLog(@"API Key: %@", result[@"key"]);
-} failure:nil];
-```
-Get the permissions of a given key:
-```objc
-// Gets the rights of a global key
-[apiClient getUserKeyACL:@"79710f2fbe18a06fdf12c17a16878654" 
-  success:^(ASAPIClient *client, NSString *key, NSDictionary *result) {
-    NSLog(@"Key details: %@", result);
-} failure:nil];
-// Gets the rights of an index specific key
-[index getUserKeyACL:@"013464b04012cb73299395a635a2fc6c" 
-  success:^(ASRemoteIndex *index, NSString *key, NSDictionary *result) {
-    NSLog(@"Key details: %@", result);
-} failure:nil];
-```
-
-Delete an existing key:
-```objc
-// Deletes a global key
-[apiClient deleteUserKey:@"79710f2fbe18a06fdf12c17a16878654" success:nil 
-  failure:^(ASAPIClient *client, NSString *key, NSString *errorMessage) {
-    NSLog(@"Delete error: %@", errorMessage);
-}];    
-// Deletes an index specific key
-[index deleteUserKey:@"013464b04012cb73299395a635a2fc6c" success:nil 
-  failure:^(ASRemoteIndex *index, NSString *key, NSString *errorMessage) {
-   NSLog(@"Delete error: %@", errorMessage);
-}]; 
-```
-
-
-
-Copy or rename an index
+Copy / Move an index
 ==================
 
 You can easily copy or rename an existing index using the `copy` and `move` commands.
@@ -2261,8 +2033,7 @@ The move command is particularly useful if you want to update a big index atomic
 }];
 ```
 
-
-Backup / Retrieve of all index content
+Backup / Export an index
 ==================
 
 The `search` method cannot return more than 1,000 results. If you need to
@@ -2301,112 +2072,6 @@ Example:
 ```
 
 
-
-
-Logs
-==================
-
-You can retrieve the latest logs via this API. Each log entry contains:
- * Timestamp in ISO-8601 format
- * Client IP
- * Request Headers (API Key is obfuscated)
- * Request URL
- * Request method
- * Request body
- * Answer HTTP code
- * Answer body
- * SHA1 ID of entry
-
-You can retrieve the logs of your last 1,000 API calls and browse them using the offset/length parameters:
-
-<table><tbody>
-  
-    <tr>
-      <td valign='top'>
-        <div class='client-readme-param-container'>
-          <div class='client-readme-param-container-inner'>
-            <div class='client-readme-param-name'><code>offset</code></div>
-            
-          </div>
-        </div>
-      </td>
-      <td class='client-readme-param-content'>
-        <p>Specify the first entry to retrieve (0-based, 0 is the most recent log entry). Defaults to 0.</p>
-
-      </td>
-    </tr>
-    
-  
-    <tr>
-      <td valign='top'>
-        <div class='client-readme-param-container'>
-          <div class='client-readme-param-container-inner'>
-            <div class='client-readme-param-name'><code>length</code></div>
-            
-          </div>
-        </div>
-      </td>
-      <td class='client-readme-param-content'>
-        <p>Specify the maximum number of entries to retrieve starting at the offset. Defaults to 10. Maximum allowed value: 1,000.</p>
-
-      </td>
-    </tr>
-    
-  
-    <tr>
-      <td valign='top'>
-        <div class='client-readme-param-container'>
-          <div class='client-readme-param-container-inner'>
-            <div class='client-readme-param-name'><code>onlyErrors</code></div>
-            
-          </div>
-        </div>
-      </td>
-      <td class='client-readme-param-content'>
-        <p>Retrieve only logs with an HTTP code different than 200 or 201. (deprecated)</p>
-
-      </td>
-    </tr>
-    
-  
-    <tr>
-      <td valign='top'>
-        <div class='client-readme-param-container'>
-          <div class='client-readme-param-container-inner'>
-            <div class='client-readme-param-name'><code>type</code></div>
-            
-          </div>
-        </div>
-      </td>
-      <td class='client-readme-param-content'>
-        <p>Specify the type of logs to retrieve:</p>
-
-<ul>
-<li><code>query</code>: Retrieve only the queries.</li>
-<li><code>build</code>: Retrieve only the build operations.</li>
-<li><code>error</code>: Retrieve only the errors (same as <code>onlyErrors</code> parameters).</li>
-</ul>
-
-      </td>
-    </tr>
-    
-</tbody></table>
-
-```objc
-// Get last 10 log entries
-[apiClient getLogs:^(ASAPIClient *client, NSDictionary *result) {
-    NSLog(@"GetLogs success: %@", result);
-} failure:^(ASAPIClient *client, NSString *errorMessage) {
-    NSLog(@"GetLogs failure: %@", errorMessage);
-}];
-// Get last 100 log entries
-[apiClient getLogsWithOffset:0 length:100 
-  success:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSDictionary *result) {
-    NSLog(@"GetLog success: %@", result);
-} failure:^(ASAPIClient *client, NSUInteger offset, NSUInteger length, NSString *errorMessage) {
-    NSLog(@"GetLogs failure: %@", errorMessage);
-}];
-```
 
 
 
