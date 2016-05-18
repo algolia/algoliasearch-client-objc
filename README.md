@@ -12,6 +12,7 @@
 
 
 
+
 <!--NO_HTML-->
 
 [Algolia Search](https://www.algolia.com) is a hosted full-text, numerical, and faceted search engine capable of delivering realtime results from the first keystroke.
@@ -26,6 +27,7 @@ Our Objective-C client lets you easily use the [Algolia Search API](https://www.
 [![CocoaPods](https://img.shields.io/cocoapods/v/AlgoliaSearch-Client.svg)]()
 [![CocoaPods](https://img.shields.io/cocoapods/p/AlgoliaSearch-Client.svg)]()
 [![CocoaPods](https://img.shields.io/cocoapods/l/AlgoliaSearch-Client.svg)]()
+
 
 
 
