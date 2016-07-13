@@ -186,7 +186,7 @@ Check our [online guides](https://www.algolia.com/doc):
 <!--/NO_HTML-->
 
 
-## Features
+## Reference
 
 
 
@@ -377,7 +377,7 @@ The server response will look like:
 
 You can use the following optional arguments on ASQuery class:
 
-## Full Text Search Parameters
+### Full Text Search Parameters
 <table><tbody>
 
   
@@ -737,7 +737,7 @@ You can use the following optional arguments on ASQuery class:
   
 </tbody></table>
 
-## Pagination Parameters
+### Pagination Parameters
 
 <table><tbody>
 
@@ -778,7 +778,7 @@ You can use the following optional arguments on ASQuery class:
 </tbody></table>
 
 
-## Geo-search Parameters
+### Geo-search Parameters
 <table><tbody>
   
 
@@ -892,7 +892,7 @@ You can use the following optional arguments on ASQuery class:
 </tbody></table>
 
 
-## Parameters to Control Results Content
+### Parameters to Control Results Content
 
 <table><tbody>
   
@@ -1009,7 +1009,7 @@ You can use the following optional arguments on ASQuery class:
 
 </tbody></table>
 
-## Numeric Search Parameters
+### Numeric Search Parameters
 
 <table><tbody>
   
@@ -1036,7 +1036,7 @@ You can also mix OR and AND operators. The OR operator is defined with a parenth
 
 You can also use a string array encoding (for example `numericFilters: ["price>100","price<1000"]`).
 
-## Category Search Parameters
+### Category Search Parameters
 
 <table><tbody>
   
@@ -1059,7 +1059,7 @@ You can also use a string array encoding (for example `numericFilters: ["price>1
     
 </tbody></table>
 
-## Faceting Parameters
+### Faceting Parameters
 
 <table><tbody>
 
@@ -1118,7 +1118,7 @@ You can also use a string array encoding (for example `numericFilters: ["price>1
 
 </tbody></table>
 
-## Unified Filter Parameter (SQL - like)
+### Unified Filter Parameter (SQL - like)
 
 <table><tbody>
 
@@ -1161,7 +1161,7 @@ You can also use a string array encoding (for example `numericFilters: ["price>1
 * It's not possible to negate a group, it's only possible to negate a filter:  NOT(FILTER1 OR (FILTER2) is not allowed.
 
 
-## Distinct Parameter
+### Distinct Parameter
 
 <table><tbody>
 
@@ -1300,7 +1300,7 @@ NSDictionary *settings = @{@"customRanking": customRanking};
 ```
 
 
-## Indexing parameters
+### Indexing parameters
 
 <table><tbody>
 
@@ -1518,7 +1518,7 @@ To get a full description of how the Ranking works, you can have a look at our <
 
 </tbody></table>
 
-## Query expansion
+### Query expansion
 
 <table><tbody>
   
@@ -1649,7 +1649,7 @@ To get a full description of how the Ranking works, you can have a look at our <
 
 </tbody></table>
 
-## Default query parameters (can be overwritten by queries)
+### Default query parameters (can be overwritten by queries)
 
 <table><tbody>
   
