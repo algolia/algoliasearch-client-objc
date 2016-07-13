@@ -4,13 +4,13 @@
 
 <!--/NO_HTML-->
 
+## Deprecated
 
-**WARNING: Deprecated.** In July 2015, we released our [Swift API Client](https://github.com/algolia/algoliasearch-client-swift), able to work with Swift and Objective-C. As of version 3 (April 2016), Swift has become the reference implementation for both Swift and Objective-C projects.
+### WARNING - Deprecated
+
+In July 2015, we released our [Swift API Client](https://github.com/algolia/algoliasearch-client-swift), able to work with Swift and Objective-C. As of version 3 (April 2016), Swift has become the reference implementation for both Swift and Objective-C projects.
 
 *This Objective-C API Client is no longer under active development.* It is still supported for bug fixes, but will not receive new features.
-
-
-
 
 
 <!--NO_HTML-->
@@ -67,12 +67,11 @@ Table of Contents
 
 
 
-Setup
-============
+## Setup
+
+### Installation
+
 To setup your project, follow these steps:
-
-
-
 
  1. [Download and add sources](https://github.com/algolia/algoliasearch-client-objc/archive/master.zip) to your project or use cocoapods by adding `pod 'AlgoliaSearch-Client', '~> 3.5'` in your Podfile (or `pod 'AlgoliaSearch-Client', '~> 2.0'` if your are using AFNetworking 1.x in your project)  or drop the source folder on your project (If you are not using a Podfile, you will also need to add [AFNetworking library](https://github.com/AFNetworking/AFNetworking) in your project).
  2. Add the `#import "ASAPIClient.h"` call to your project
@@ -86,8 +85,7 @@ ASAPIClient *apiClient =
 
 
 
-Quick Start
--------------
+### Quick Start
 
 
 In 30 seconds, this quick start tutorial will show you how to index and search objects.
@@ -188,12 +186,11 @@ Check our [online guides](https://www.algolia.com/doc):
 <!--/NO_HTML-->
 
 
+## Features
 
 
 
-
-Add a new object to the Index
-==================
+### Add a new object to the Index
 
 Each entry in an index has a unique identifier called `objectID`. There are two ways to add an entry to the index:
 
@@ -223,8 +220,7 @@ NSDictionary *newObject = @{@"firstname": @"Jimmie", @"lastname": @"Barninger"};
 } failure:nil];
 ```
 
-Update an existing object in the Index
-==================
+### Update an existing object in the Index
 
 You have three options when updating an existing object:
 
@@ -320,8 +316,7 @@ NSDictionary *partialObject = @{@"price": operation};
 Note: Here we are decrementing the value by `42`. To decrement just by one, put
 `value:1`.
 
-Search
-==================
+### Search
 
 
 
@@ -1193,8 +1188,7 @@ To get a full understanding of how `Distinct` works, you can have a look at our 
 
 
 
-Search cache
-==================
+### Search cache
 
 You can easily cache the results of the search queries by enabling the search cache.
 The results will be cached during a defined amount of time (default: 2 min).
@@ -1216,8 +1210,7 @@ Or:
 
 
 
-Multiple queries
-==================
+### Multiple queries
 
 You can send multiple queries with a single API call using a batch of queries:
 
@@ -1244,8 +1237,7 @@ You can specify a `strategy` parameter to optimize your multiple queries:
 
 
 
-Get an object
-==================
+### Get an object
 
 You can easily retrieve an object using its `objectID` and optionally specify a comma separated list of attributes you want:
 
@@ -1271,8 +1263,7 @@ You can also retrieve a set of objects:
 } failure:nil];
 ```
 
-Delete an object
-==================
+### Delete an object
 
 You can delete an object using its `objectID`:
 
@@ -1280,8 +1271,7 @@ You can delete an object using its `objectID`:
 [index deleteObject:@"myID" success:nil failure:nil];
 ```
 
-Delete by query
-==================
+### Delete by query
 
 You can delete all objects matching a single query with the following code. Internally, the API client performs the query, deletes all matching hits, and waits until the deletions have been applied.
 
@@ -1292,8 +1282,7 @@ ASQuery *query = /* [...] */;
 ```
 
 
-Index Settings
-==================
+### Index Settings
 
 You can easily retrieve or update settings:
 
@@ -2010,8 +1999,8 @@ To get a full description of how the Ranking works, you can have a look at our <
 
 
 
-List indices
-==================
+### List indices
+
 You can list all your indices along with their associated information (number of entries, disk size, etc.) with the `listIndexes` method:
 
 ```objc
@@ -2024,8 +2013,8 @@ You can list all your indices along with their associated information (number of
 
 
 
-Delete an index
-==================
+### Delete an index
+
 You can delete an index using its name:
 
 ```objc
@@ -2039,8 +2028,8 @@ You can delete an index using its name:
 
 
 
-Clear an index
-==================
+### Clear an index
+
 You can delete the index contents without removing settings and index specific API keys by using the clearIndex command:
 
 ```objc
@@ -2050,8 +2039,7 @@ You can delete the index contents without removing settings and index specific A
 }];
 ```
 
-Wait indexing
-==================
+### Wait indexing
 
 All write operations in Algolia are asynchronous by design.
 
@@ -2078,8 +2066,7 @@ For example, to wait for indexing of a new object:
 If you want to ensure multiple objects have been indexed, you only need to check
 the biggest `taskID`.
 
-Batch writes
-==================
+### Batch writes
 
 You may want to perform multiple operations with one API call to reduce latency.
 We expose four methods to perform batch operations:
@@ -2145,8 +2132,7 @@ The attribute **action** can have these values:
 - partialUpdateObjectNoCreate
 - deleteObject
 
-Copy / Move an index
-==================
+### Copy / Move an index
 
 You can easily copy or rename an existing index using the `copy` and `move` commands.
 **Note**: Move and copy commands overwrite the destination index.
@@ -2182,8 +2168,7 @@ The move command is particularly useful if you want to update a big index atomic
 }];
 ```
 
-Backup / Export an index
-==================
+### Backup / Export an index
 
 The `search` method cannot return more than 1,000 results. If you need to
 retrieve all the content of your index (for backup, SEO purposes or for running
