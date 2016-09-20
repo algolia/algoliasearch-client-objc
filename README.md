@@ -6,15 +6,11 @@
 
 ## Deprecated
 
-<div style="background-color: #FFE890; color: #A00000; padding: 0.5em; margin: 1em 0; border-radius: 3px;">
-
-**WARNING: Deprecated.** —
+### WARNING: Deprecated
 
 In July 2015, we released our [Swift API Client](https://github.com/algolia/algoliasearch-client-swift), able to work with Swift and Objective-C. As of version 3 (April 2016), Swift has become the reference implementation for both Swift and Objective-C projects.
 
 *This Objective-C API Client is no longer under active development.* It is still supported for bug fixes, but will not receive new features.
-
-</div>
 
 <!--NO_HTML-->
 
